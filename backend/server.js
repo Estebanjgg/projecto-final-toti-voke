@@ -19,8 +19,8 @@ app.use(morgan('combined'));
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   'http://localhost:5174',
-  'https://your-frontend-app.vercel.app', // Reemplazar con tu dominio de frontend
-  'https://your-frontend-app.netlify.app'  // Reemplazar con tu dominio de frontend
+  'https://projecto-final-toti-voke-x5vm.vercel.app', // Dominio real de Vercel
+  'https://projecto-final-toti-voke.vercel.app' // Dominio alternativo de Vercel
 ];
 
 app.use(cors({
