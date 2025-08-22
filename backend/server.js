@@ -6,6 +6,8 @@ require('dotenv').config();
 
 const productRoutes = require('./routes/products');
 const categoryRoutes = require('./routes/categories');
+const cartRoutes = require('./routes/cart');
+const authRoutes = require('./routes/auth');
 const { setupSwagger } = require('./config/swagger');
 
 const app = express();
@@ -61,9 +63,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API Routes
+// Routes
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

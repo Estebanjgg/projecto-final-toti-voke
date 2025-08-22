@@ -418,6 +418,405 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /cart:
+    get:
+      summary: Obtener carrito de compras
+      description: Retorna todos los productos en el carrito del usuario o sesión
+      tags:
+        - Carrito
+      parameters:
+        - name: x-user-id
+          in: header
+          description: ID del usuario (opcional)
+          required: false
+          schema:
+            type: string
+            example: user123
+        - name: x-session-id
+          in: header
+          description: ID de sesión (opcional)
+          required: false
+          schema:
+            type: string
+            example: session456
+        - name: user_id
+          in: query
+          description: ID del usuario (alternativo)
+          required: false
+          schema:
+            type: string
+        - name: session_id
+          in: query
+          description: ID de sesión (alternativo)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CartItem'
+                  count:
+                    type: integer
+                    example: 3
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/summary:
+    get:
+      summary: Obtener resumen del carrito
+      description: Retorna el resumen con totales del carrito
+      tags:
+        - Carrito
+      parameters:
+        - name: x-user-id
+          in: header
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: x-session-id
+          in: header
+          description: ID de sesión
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resumen del carrito obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/CartSummary'
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/add:
+    post:
+      summary: Agregar producto al carrito
+      description: Agrega un producto al carrito o actualiza la cantidad si ya existe
+      tags:
+        - Carrito
+      parameters:
+        - name: x-user-id
+          in: header
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: x-session-id
+          in: header
+          description: ID de sesión
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  format: uuid
+                  description: ID del producto
+                  example: 123e4567-e89b-12d3-a456-426614174000
+                quantity:
+                  type: integer
+                  minimum: 1
+                  description: Cantidad a agregar
+                  example: 2
+              required:
+                - product_id
+      responses:
+        '201':
+          description: Producto agregado al carrito exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto agregado al carrito
+                  data:
+                    $ref: '#/components/schemas/CartItem'
+        '400':
+          description: Datos inválidos o stock insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/update/{id}:
+    put:
+      summary: Actualizar cantidad en el carrito
+      description: Actualiza la cantidad de un producto en el carrito
+      tags:
+        - Carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            type: string
+            format: uuid
+        - name: x-user-id
+          in: header
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: x-session-id
+          in: header
+          description: ID de sesión
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 0
+                  description: Nueva cantidad (0 para eliminar)
+                  example: 3
+              required:
+                - quantity
+      responses:
+        '200':
+          description: Cantidad actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Cantidad actualizada
+                  data:
+                    $ref: '#/components/schemas/CartItem'
+        '400':
+          description: Datos inválidos o stock insuficiente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/remove/{id}:
+    delete:
+      summary: Eliminar producto del carrito
+      description: Elimina un producto específico del carrito
+      tags:
+        - Carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            type: string
+            format: uuid
+        - name: x-user-id
+          in: header
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: x-session-id
+          in: header
+          description: ID de sesión
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto eliminado del carrito
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/clear:
+    delete:
+      summary: Limpiar carrito
+      description: Elimina todos los productos del carrito
+      tags:
+        - Carrito
+      parameters:
+        - name: x-user-id
+          in: header
+          description: ID del usuario
+          required: false
+          schema:
+            type: string
+        - name: x-session-id
+          in: header
+          description: ID de sesión
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito vaciado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Carrito vaciado exitosamente
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /cart/migrate:
+    post:
+      summary: Migrar carrito de sesión a usuario
+      description: Transfiere el carrito de una sesión anónima a un usuario logueado
+      tags:
+        - Carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                  description: ID de la sesión anónima
+                  example: session456
+                user_id:
+                  type: string
+                  description: ID del usuario logueado
+                  example: user123
+              required:
+                - session_id
+                - user_id
+      responses:
+        '200':
+          description: Carrito migrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Carrito migrado exitosamente
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CartItem'
+        '400':
+          description: Parámetros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Product:
@@ -674,6 +1073,94 @@ components:
         - offset
         - limit
 
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único del item del carrito
+          example: cart123e4567-e89b-12d3-a456-426614174000
+        user_id:
+          type: string
+          description: ID del usuario (si está logueado)
+          example: user123
+        session_id:
+          type: string
+          description: ID de sesión (si es anónimo)
+          example: session456
+        product_id:
+          type: string
+          format: uuid
+          description: ID del producto
+          example: 123e4567-e89b-12d3-a456-426614174000
+        quantity:
+          type: integer
+          minimum: 1
+          description: Cantidad del producto
+          example: 2
+        price:
+          type: number
+          format: float
+          description: Precio del producto al momento de agregarlo
+          example: 4299.99
+        created_at:
+          type: string
+          format: date-time
+          description: Fecha de creación
+          example: 2025-08-22T16:33:53.03547+00:00
+        updated_at:
+          type: string
+          format: date-time
+          description: Fecha de última actualización
+          example: 2025-08-22T16:33:53.03547+00:00
+        products:
+          $ref: '#/components/schemas/Product'
+      required:
+        - id
+        - product_id
+        - quantity
+        - price
+
+    CartSummary:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          description: Lista de productos en el carrito
+        itemCount:
+          type: integer
+          description: Número de productos únicos
+          example: 3
+        totalQuantity:
+          type: integer
+          description: Cantidad total de productos
+          example: 5
+        subtotal:
+          type: number
+          format: float
+          description: Subtotal sin descuentos
+          example: 12999.95
+        totalDiscount:
+          type: number
+          format: float
+          description: Total de descuentos aplicados
+          example: 1500.00
+        total:
+          type: number
+          format: float
+          description: Total final a pagar
+          example: 11499.95
+      required:
+        - items
+        - itemCount
+        - totalQuantity
+        - subtotal
+        - totalDiscount
+        - total
+
     Error:
       type: object
       properties:
@@ -697,6 +1184,8 @@ tags:
     description: Operaciones relacionadas con productos
   - name: Categorías
     description: Operaciones relacionadas con categorías
+  - name: Carrito
+    description: Operaciones del carrito de compras
 
 externalDocs:
   description: Repositorio del proyecto
