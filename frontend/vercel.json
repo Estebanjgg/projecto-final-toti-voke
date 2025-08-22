@@ -1,31 +1,20 @@
 {
-  "version": 2,
-  "name": "voke-frontend",
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "headers": {
-        "cache-control": "max-age=31536000, immutable"
-      }
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -43,13 +32,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }
+  ]
 }
