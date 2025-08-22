@@ -1,0 +1,231 @@
+/* Sidebar Filters Styles */
+.sidebar-filters {
+  width: 280px;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.filters-header {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.filters-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-section {
+  margin-bottom: 30px;
+}
+
+.filter-section h4 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  position: relative;
+  padding-left: 30px;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.filter-option:hover {
+  color: #333;
+}
+
+/* Hide default radio and checkbox */
+.filter-option input[type="radio"],
+.filter-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Custom Radio Button */
+.radio-custom {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  height: 16px;
+  width: 16px;
+  background-color: white;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.filter-option input[type="radio"]:checked ~ .radio-custom {
+  background-color: #4A90E2;
+  border-color: #4A90E2;
+}
+
+.filter-option input[type="radio"]:checked ~ .radio-custom:after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Custom Checkbox */
+.checkbox-custom {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  height: 16px;
+  width: 16px;
+  background-color: white;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.filter-option input[type="checkbox"]:checked ~ .checkbox-custom {
+  background-color: #4A90E2;
+  border-color: #4A90E2;
+}
+
+.filter-option input[type="checkbox"]:checked ~ .checkbox-custom:after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Hover effects */
+.filter-option:hover .radio-custom,
+.filter-option:hover .checkbox-custom {
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Filter Actions */
+.filter-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+}
+
+.clear-filters-btn {
+  width: 100%;
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.clear-filters-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar-filters {
+    width: 250px;
+    padding: 15px;
+  }
+  
+  .filters-header h3 {
+    font-size: 16px;
+  }
+  
+  .filter-section h4 {
+    font-size: 15px;
+  }
+  
+  .filter-option {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-filters {
+    width: 100%;
+    position: static;
+    margin-bottom: 20px;
+  }
+  
+  .filter-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar-filters {
+    padding: 12px;
+  }
+  
+  .filter-option {
+    padding-left: 25px;
+    font-size: 12px;
+  }
+  
+  .radio-custom,
+  .checkbox-custom {
+    height: 14px;
+    width: 14px;
+  }
+  
+  .filter-option input[type="radio"]:checked ~ .radio-custom:after {
+    width: 6px;
+    height: 6px;
+    top: 1px;
+    left: 1px;
+  }
+  
+  .filter-option input[type="checkbox"]:checked ~ .checkbox-custom:after {
+    width: 4px;
+    height: 8px;
+    left: 2px;
+  }
+}

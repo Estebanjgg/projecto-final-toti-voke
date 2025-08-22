@@ -1,45 +1,51 @@
 import React from 'react';
 import './BrandStores.css';
 
-const BrandStores = () => {
+const BrandStores = ({ onCategorySelect }) => {
   const stores = [
     {
-      title: 'Loja APPLE',
-      subtitle: 'A Marca mais desejada do Brasil',
+      title: '📱 Smartphones',
+      subtitle: 'iPhone, Samsung Galaxy, Xiaomi e muito mais!',
       description: 'Descubra smartphones',
-      buttonText: 'Compre agora!',
+      buttonText: 'Ver Smartphones',
       backgroundColor: '#4A90E2',
-      image: '📱',
+      category: 'Smartphone',
       productImage: '📱'
     },
     {
-      title: 'Loja SAMSUNG',
-      subtitle: 'Toda a linha Galaxy e muito mais!',
-      description: 'Descubra smartphones',
-      buttonText: 'Compre agora!',
-      backgroundColor: '#FFA500',
-      image: '📱',
+      title: '📱 Tablets',
+      subtitle: 'iPad, Galaxy Tab, Surface e outros tablets!',
+      description: 'Descubra tablets',
+      buttonText: 'Ver Tablets',
+      backgroundColor: '#32CD32',
+      category: 'Tablet',
       productImage: '📱'
     },
     {
-      title: 'Loja LENOVO',
-      subtitle: 'Encontre Notebooks, computadores, monitores e muito mais!',
-      description: 'Mais sem-fio!',
-      buttonText: 'Compre agora!',
-      backgroundColor: '#4A90E2',
-      image: '💻',
+      title: '💻 Notebooks',
+      subtitle: 'MacBook, Dell, Lenovo, ASUS e muito mais!',
+      description: 'Notebooks para trabalho e gaming',
+      buttonText: 'Ver Notebooks',
+      backgroundColor: '#FF6347',
+      category: 'Notebook',
       productImage: '💻'
     },
     {
-      title: 'Loja DELL',
-      subtitle: 'Toda linha DELL, exclusivo para você!',
-      description: 'Versatilidade e economia',
-      buttonText: 'Compre agora!',
-      backgroundColor: '#FFA500',
-      image: '💻',
-      productImage: '💻'
+      title: '🖥️ Eletrônicos',
+      subtitle: 'Desktops, monitores, acessórios e tecnologia!',
+      description: 'Tecnologia completa',
+      buttonText: 'Ver Eletrônicos',
+      backgroundColor: '#9370DB',
+      category: 'Electrónicos',
+      productImage: '🖥️'
     }
   ];
+  
+  const handleStoreClick = (store) => {
+    if (onCategorySelect) {
+      onCategorySelect(store.category);
+    }
+  };
 
   return (
     <section className="brand-stores">
@@ -50,10 +56,11 @@ const BrandStores = () => {
               key={index} 
               className="store-card"
               style={{ backgroundColor: store.backgroundColor }}
+              onClick={() => handleStoreClick(store)}
             >
               <div className="store-content">
                 <div className="store-text">
-                  <span className="store-label">Descubra smartphones</span>
+                  <span className="store-label">{store.description}</span>
                   <h3 className="store-title">{store.title}</h3>
                   <p className="store-subtitle">{store.subtitle}</p>
                   <button className="store-button">{store.buttonText}</button>

@@ -77,13 +77,13 @@ export const productsAPI = {
   },
 
   // Obtener productos destacados
-  getFeatured: async () => {
-    return apiRequest('/products?featured=true');
+  getFeatured: async (limit = 10) => {
+    return apiRequest(`/products?featured=true&limit=${limit}`);
   },
 
   // Obtener ofertas
-  getOffers: async () => {
-    return apiRequest('/products?offer=true');
+  getOffers: async (limit = 10) => {
+    return apiRequest(`/products?offer=true&limit=${limit}`);
   },
 
   // Obtener productos más vendidos
