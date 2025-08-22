@@ -1,9 +1,9 @@
 // Configuración de la API
 // Siempre usa la API de Heroku para evitar compartir credenciales locales
-const API_BASE_URL = 'https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api';
+export const API_BASE_URL = 'https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api';
 
 // Para desarrollo local con backend propio, descomenta la línea siguiente:
-// const API_BASE_URL = 'http://localhost:3001/api';
+// export const API_BASE_URL = 'http://localhost:3001/api';
 
 // Función auxiliar para manejar respuestas de la API
 const handleResponse = async (response) => {

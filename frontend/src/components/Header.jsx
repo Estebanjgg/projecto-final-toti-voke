@@ -1,5 +1,64 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './Header.css';
+
+// Componente para el botón de autenticación
+const AuthButton = () => {
+  const { user, isAuthenticated, logout } = useAuth();
+  const [showDropdown, setShowDropdown] = React.useState(false);
+
+  const handleLogout = async () => {
+    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+      await logout();
+      setShowDropdown(false);
+    }
+  };
+
+  if (isAuthenticated && user) {
+    return (
+      <div className="auth-dropdown">
+        <button 
+          className="action-btn user-btn"
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
+          <span className="user-avatar">
+            {user.first_name?.charAt(0)?.toUpperCase() || '👤'}
+          </span>
+          <span className="user-name">{user.first_name}</span>
+          <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
+        </button>
+        
+        {showDropdown && (
+          <div className="dropdown-menu">
+            <Link to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
+              👤 Mi Perfil
+            </Link>
+            <Link to="/orders" className="dropdown-item" onClick={() => setShowDropdown(false)}>
+              📦 Mis Pedidos
+            </Link>
+            <button className="dropdown-item logout" onClick={handleLogout}>
+              🚪 Cerrar Sesión
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="auth-buttons">
+      <Link to="/login" className="action-btn login-btn">
+        <span>🔑</span>
+        <span>Entrar</span>
+      </Link>
+      <Link to="/register" className="action-btn register-btn">
+        <span>👤</span>
+        <span>Registro</span>
+      </Link>
+    </div>
+  );
+};
 
 const Header = () => {
   return (
@@ -46,6 +105,9 @@ const Header = () => {
                 <span>🛒</span>
                 <span className="cart-count">1</span>
               </button>
+              
+              {/* Auth button */}
+              <AuthButton />
             </div>
           </div>
         </div>
