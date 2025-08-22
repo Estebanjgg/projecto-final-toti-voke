@@ -1,0 +1,703 @@
+openapi: 3.0.3
+info:
+  title: Voke E-commerce API
+  description: |
+    API completa para la tienda electrónica Voke.
+    
+    Esta API proporciona endpoints para gestionar productos, categorías y realizar búsquedas.
+    
+    ## Características principales:
+    - Gestión completa de productos electrónicos
+    - Filtrado avanzado por categorías, precios y marcas
+    - Búsqueda de productos
+    - Paginación de resultados
+    - Productos destacados y ofertas
+    
+    ## Base URL
+    - **Desarrollo:** `http://localhost:3001/api`
+    - **Producción:** `https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api`
+  version: 1.0.0
+  contact:
+    name: Voke Team
+    email: support@voke.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api
+    description: Servidor de Producción (Heroku)
+  - url: http://localhost:3001/api
+    description: Servidor de Desarrollo
+
+paths:
+  /products:
+    get:
+      summary: Obtener todos los productos
+      description: |
+        Retorna una lista de productos con filtros opcionales.
+        
+        Soporta filtrado por categoría, marca, precio, condición y más.
+      tags:
+        - Productos
+      parameters:
+        - name: category
+          in: query
+          description: Filtrar por categoría
+          required: false
+          schema:
+            type: string
+            enum: [Smartphone, Tablet, Notebook, Electrónicos]
+            example: Smartphone
+        - name: brand
+          in: query
+          description: Filtrar por marca
+          required: false
+          schema:
+            type: string
+            example: Apple
+        - name: minPrice
+          in: query
+          description: Precio mínimo
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            example: 100.00
+        - name: maxPrice
+          in: query
+          description: Precio máximo
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            example: 5000.00
+        - name: condition
+          in: query
+          description: Condición del producto
+          required: false
+          schema:
+            type: string
+            enum: [Novo, Seminovo, Usado]
+            example: Novo
+        - name: featured
+          in: query
+          description: Solo productos destacados
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: offer
+          in: query
+          description: Solo productos en oferta
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: bestseller
+          in: query
+          description: Solo productos más vendidos
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: Búsqueda por texto en título, descripción o marca
+          required: false
+          schema:
+            type: string
+            example: iPhone
+        - name: limit
+          in: query
+          description: Número máximo de productos a retornar
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 10
+        - name: offset
+          in: query
+          description: Número de productos a omitir (para paginación)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 0
+      responses:
+        '200':
+          description: Lista de productos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      summary: Crear un nuevo producto
+      description: Crea un nuevo producto en la base de datos
+      tags:
+        - Productos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto creado exitosamente
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products/{id}:
+    get:
+      summary: Obtener un producto por ID
+      description: Retorna los detalles de un producto específico
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del producto
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      summary: Actualizar un producto
+      description: Actualiza los datos de un producto existente
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del producto
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto actualizado exitosamente
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      summary: Eliminar un producto
+      description: Elimina un producto de la base de datos
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único del producto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Producto eliminado exitosamente
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /categories:
+    get:
+      summary: Obtener todas las categorías
+      description: Retorna una lista de todas las categorías disponibles
+      tags:
+        - Categorías
+      responses:
+        '200':
+          description: Lista de categorías obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /categories/{category}/products:
+    get:
+      summary: Obtener productos por categoría
+      description: Retorna todos los productos de una categoría específica
+      tags:
+        - Categorías
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: Nombre de la categoría
+          schema:
+            type: string
+            enum: [Smartphone, Tablet, Notebook, Electrónicos]
+            example: Smartphone
+        - name: limit
+          in: query
+          description: Número máximo de productos a retornar
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Número de productos a omitir
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Productos de la categoría obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '404':
+          description: Categoría no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único del producto
+          example: 123e4567-e89b-12d3-a456-426614174000
+        title:
+          type: string
+          description: Título del producto
+          example: iPhone 13 128GB - Azul
+        brand:
+          type: string
+          description: Marca del producto
+          example: Apple
+        category:
+          type: string
+          description: Categoría del producto
+          enum: [Smartphone, Tablet, Notebook, Electrónicos]
+          example: Smartphone
+        original_price:
+          type: number
+          format: float
+          description: Precio original del producto
+          example: 4999.99
+        current_price:
+          type: number
+          format: float
+          description: Precio actual del producto
+          example: 4299.99
+        discount:
+          type: integer
+          description: Porcentaje de descuento
+          minimum: 0
+          maximum: 100
+          example: 14
+        installments:
+          type: object
+          description: Información de cuotas
+          properties:
+            times:
+              type: string
+              example: 12x
+            value:
+              type: string
+              example: 358,33
+        image:
+          type: string
+          description: URL de la imagen del producto
+          example: https://example.com/image.jpg
+        description:
+          type: string
+          description: Descripción del producto
+          example: iPhone 13 com chip A15 Bionic, sistema de câmera dupla avançado
+        stock:
+          type: integer
+          description: Cantidad en stock
+          minimum: 0
+          example: 20
+        is_active:
+          type: boolean
+          description: Si el producto está activo
+          example: true
+        is_featured:
+          type: boolean
+          description: Si el producto está destacado
+          example: true
+        is_offer:
+          type: boolean
+          description: Si el producto está en oferta
+          example: true
+        is_best_seller:
+          type: boolean
+          description: Si el producto es más vendido
+          example: true
+        condition:
+          type: string
+          description: Condición del producto
+          enum: [Novo, Seminovo, Usado]
+          example: Novo
+        warranty:
+          type: string
+          description: Garantía del producto
+          example: 1 ano
+        specifications:
+          type: object
+          description: Especificaciones técnicas del producto
+          example:
+            processador: A15 Bionic
+            armazenamento: 128GB
+            camera: 12MP dupla
+            tela: 6.1 polegadas
+        created_at:
+          type: string
+          format: date-time
+          description: Fecha de creación
+          example: 2025-08-22T16:33:53.03547+00:00
+        updated_at:
+          type: string
+          format: date-time
+          description: Fecha de última actualización
+          example: 2025-08-22T16:33:53.03547+00:00
+      required:
+        - id
+        - title
+        - category
+        - current_price
+        - is_active
+
+    ProductInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto
+          example: iPhone 13 128GB - Azul
+        brand:
+          type: string
+          description: Marca del producto
+          example: Apple
+        category:
+          type: string
+          description: Categoría del producto
+          enum: [Smartphone, Tablet, Notebook, Electrónicos]
+          example: Smartphone
+        originalPrice:
+          type: number
+          format: float
+          description: Precio original del producto
+          example: 4999.99
+        currentPrice:
+          type: number
+          format: float
+          description: Precio actual del producto
+          example: 4299.99
+        discount:
+          type: integer
+          description: Porcentaje de descuento
+          minimum: 0
+          maximum: 100
+          example: 14
+        installments:
+          type: object
+          description: Información de cuotas
+          properties:
+            times:
+              type: string
+              example: 12x
+            value:
+              type: string
+              example: 358,33
+        image:
+          type: string
+          description: URL de la imagen del producto
+          example: https://example.com/image.jpg
+        description:
+          type: string
+          description: Descripción del producto
+          example: iPhone 13 com chip A15 Bionic
+        stock:
+          type: integer
+          description: Cantidad en stock
+          minimum: 0
+          example: 20
+        isActive:
+          type: boolean
+          description: Si el producto está activo
+          default: true
+        isFeatured:
+          type: boolean
+          description: Si el producto está destacado
+          default: false
+        isOffer:
+          type: boolean
+          description: Si el producto está en oferta
+          default: false
+        isBestSeller:
+          type: boolean
+          description: Si el producto es más vendido
+          default: false
+        condition:
+          type: string
+          description: Condición del producto
+          enum: [Novo, Seminovo, Usado]
+          default: Novo
+        warranty:
+          type: string
+          description: Garantía del producto
+          example: 1 ano
+        specifications:
+          type: object
+          description: Especificaciones técnicas del producto
+      required:
+        - title
+        - category
+        - currentPrice
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la categoría
+          example: 1
+        name:
+          type: string
+          description: Nombre de la categoría
+          example: Smartphone
+        description:
+          type: string
+          description: Descripción de la categoría
+          example: Teléfonos inteligentes
+        is_active:
+          type: boolean
+          description: Si la categoría está activa
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: Fecha de creación
+        updated_at:
+          type: string
+          format: date-time
+          description: Fecha de última actualización
+      required:
+        - id
+        - name
+        - is_active
+
+    Pagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Número de elementos en la respuesta actual
+          example: 10
+        offset:
+          type: integer
+          description: Número de elementos omitidos
+          example: 0
+        limit:
+          type: integer
+          description: Límite máximo de elementos
+          example: 20
+        total:
+          type: integer
+          description: Total de elementos disponibles
+          example: 51
+      required:
+        - count
+        - offset
+        - limit
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error interno del servidor
+        error:
+          type: string
+          description: Detalles del error
+          example: Database connection failed
+      required:
+        - success
+        - message
+
+tags:
+  - name: Productos
+    description: Operaciones relacionadas con productos
+  - name: Categorías
+    description: Operaciones relacionadas con categorías
+
+externalDocs:
+  description: Repositorio del proyecto
+  url: https://github.com/tu-usuario/projecto-final-toti-voke
