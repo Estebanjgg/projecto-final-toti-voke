@@ -1,7 +1,40 @@
+/* Brand Section Styles */
+.brand-section {
+  background: #ffffff;
+  padding: 40px 20px;
+  margin: 40px 0 0 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.brand-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.brand-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Video Section Styles */
 .video-section {
+  padding: 40px 20px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.video-section-content {
   background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
-  padding: 60px 20px;
-  margin: 40px 0;
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 20px;
 }
 
 .video-container {
@@ -12,27 +45,33 @@
 .video-content {
   display: flex;
   align-items: center;
-  gap: 40px;
-  margin-bottom: 40px;
+  gap: 30px;
+  margin-bottom: 30px;
 }
 
 .video-text {
-  flex: 1;
+  flex: 2;
   color: white;
 }
 
 .video-text h2 {
-  font-size: 2.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 20px;
-  line-height: 1.2;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  font-family: 'Arial', sans-serif;
 }
 
 .video-text p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
   opacity: 0.95;
+  letter-spacing: 0px;
+  word-spacing: 1px;
+  font-family: 'Arial', sans-serif;
+  text-align: justify;
 }
 
 .video-btn {
@@ -62,20 +101,25 @@
 }
 
 .video-player {
-  flex: 1;
+  flex: 0.5;
   position: relative;
+  max-width: 300px;
 }
 
 .video-wrapper {
   position: relative;
   width: 100%;
-  height: 315px;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;
@@ -125,29 +169,70 @@
 .brand-logo {
   height: 40px;
   width: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
+  opacity: 0.7;
   transition: all 0.3s ease;
+  filter: grayscale(100%);
 }
 
 .brand-logo:hover {
   opacity: 1;
   transform: scale(1.1);
+  filter: grayscale(0%);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .brand-section {
+    padding: 30px 15px;
+  }
+  
+  .brand-title {
+    font-size: 1.5rem;
+  }
+  
+  .video-section {
+    padding: 20px 10px;
+  }
+  
+  .video-section-content {
+    margin: 10px;
+    padding: 30px 20px;
+    border-radius: 10px;
+  }
+  
   .video-content {
     flex-direction: column;
     text-align: center;
+    gap: 20px;
+  }
+  
+  .video-text {
+    flex: 1;
+  }
+  
+  .video-player {
+    flex: 1;
+    max-width: 280px;
+    margin: 0 auto;
   }
   
   .video-text h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
+    letter-spacing: -0.3px;
+    margin-bottom: 15px;
+  }
+  
+  .video-text p {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    letter-spacing: 0px;
+    word-spacing: 1px;
+    text-align: left;
   }
   
   .video-wrapper {
-    height: 250px;
+    padding-bottom: 56.25%; /* Mantener proporción 16:9 */
+    height: 0;
   }
   
   .brand-logos {

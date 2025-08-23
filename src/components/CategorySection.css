@@ -72,9 +72,20 @@
   transform: scale(1.05);
 }
 
-.category-icon span {
-  font-size: 32px;
+.category-icon-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
   filter: brightness(0) invert(1);
+  transition: all 0.3s ease;
+}
+
+.category-item.active .category-icon-img {
+  filter: brightness(0) invert(1);
+}
+
+.category-icon:hover .category-icon-img {
+  transform: scale(1.1);
 }
 
 .category-name {
@@ -96,8 +107,9 @@
     height: 60px;
   }
   
-  .category-icon span {
-    font-size: 24px;
+  .category-icon-img {
+    width: 30px;
+    height: 30px;
   }
   
   .category-name {

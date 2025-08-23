@@ -3,7 +3,8 @@ import Banner from './Banner';
 import CategorySection from './CategorySection';
 import ProductSection from './ProductSection';
 import CategoryProducts from './CategoryProducts';
-import BrandStores from './BrandStores';
+import BrandOffers from './BrandOffers';
+import VideoSection from './VideoSection';
 import { productsAPI } from '../services/api';
 
 const Home = () => {
@@ -95,13 +96,15 @@ const Home = () => {
         backgroundColor="#4A90E2"
       />
       
-      <BrandStores onCategorySelect={handleCategorySelect} />
+      <BrandOffers onCategorySelect={handleCategorySelect} />
       
       <ProductSection 
         title="🔥 Ofertas Imperdíveis" 
         products={offerProducts}
         backgroundColor="#FF6B6B"
       />
+      
+      <VideoSection />
     </main>
   );
 };

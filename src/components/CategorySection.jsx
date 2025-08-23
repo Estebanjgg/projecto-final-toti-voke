@@ -4,37 +4,37 @@ import './CategorySection.css';
 const CategorySection = ({ onCategorySelect, selectedCategory }) => {
   const categories = [
     {
-      icon: '📱',
+      icon: '/picture/Smartphones.png',
       name: 'Smartphones',
       key: 'Smartphone',
       color: '#FF69B4'
     },
     {
-      icon: '📱',
+      icon: '/picture/Tablets.png',
       name: 'Tablets',
       key: 'Tablet',
       color: '#4A90E2'
     },
     {
-      icon: '💻',
+      icon: '/picture/Notebooks.png',
       name: 'Notebooks',
       key: 'Notebook',
       color: '#32CD32'
     },
     {
-      icon: '🖥️',
+      icon: '/picture/Desktops.png',
       name: 'Desktops',
       key: 'Electrónicos',
       color: '#FF6347'
     },
     {
-      icon: '🖥️',
+      icon: '/picture/Monitores.png',
       name: 'Monitores',
       key: 'Electrónicos',
       color: '#9370DB'
     },
     {
-      icon: '🎧',
+      icon: '/picture/Acessorios.png',
       name: 'Acessórios',
       key: 'Electrónicos',
       color: '#FFD700'
@@ -62,7 +62,7 @@ const CategorySection = ({ onCategorySelect, selectedCategory }) => {
                 className="category-icon"
                 style={{ backgroundColor: category.color }}
               >
-                <span>{category.icon}</span>
+                <img src={category.icon} alt={category.name} className="category-icon-img" />
               </div>
               <span className="category-name">{category.name}</span>
             </div>
