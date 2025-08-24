@@ -57,6 +57,17 @@ const Profile = () => {
     }
   }, [user]);
 
+  // Inicializar datos cuando el usuario cambie
+  React.useEffect(() => {
+    if (user) {
+      setEditProfileData({
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        phone: user.phone || ''
+      });
+    }
+  }, [user]);
+
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setEditProfileData(prev => ({
@@ -258,6 +269,84 @@ const Profile = () => {
   const handleCancelEditPassword = () => {
     setIsEditingPassword(false);
     setErrors({});
+  };
+
+  // Función para guardar perfil
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    
+    try {
+      // Validar campos requeridos
+      if (!editProfileData.first_name || !editProfileData.first_name.trim()) {
+        setErrors({ submit: 'El nombre es requerido' });
+        return;
+      }
+      
+      if (!editProfileData.last_name || !editProfileData.last_name.trim()) {
+        setErrors({ submit: 'El apellido es requerido' });
+        return;
+      }
+      
+      // Preparar datos para enviar - asegurándonos de que no sean undefined
+      const updatedFields = {
+        first_name: editProfileData.first_name.trim(),
+        last_name: editProfileData.last_name.trim(),
+        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
+      };
+      
+      console.log('Datos a enviar desde frontend:', updatedFields);
+      
+      // Usar la función updateProfile del contexto
+      await updateProfile(updatedFields);
+      
+      setIsEditingProfile(false);
+      setErrors({});
+      setSuccess('Perfil actualizado exitosamente');
+      
+      // Limpiar mensaje de éxito después de 3 segundos
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      console.error('Error al actualizar perfil:', error);
+      setErrors({ submit: error.message || 'Error al actualizar el perfil' });
+    }
+  };
+
+  // Función para cambiar contraseña
+  const handleSavePassword = async (e) => {
+    e.preventDefault();
+    
+    // Validar que las contraseñas coincidan
+    if (editPasswordData.new_password !== editPasswordData.confirm_password) {
+      setErrors({ submit: 'Las contraseñas no coinciden' });
+      return;
+    }
+
+    if (editPasswordData.new_password.length < 6) {
+      setErrors({ submit: 'La nueva contraseña debe tener al menos 6 caracteres' });
+      return;
+    }
+
+    try {
+      // Usar la función changePassword del contexto
+      await changePassword({
+        current_password: editPasswordData.current_password,
+        new_password: editPasswordData.new_password
+      });
+      
+      setIsEditingPassword(false);
+      setEditPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: ''
+      });
+      setErrors({});
+      setSuccess('Contraseña cambiada exitosamente');
+      
+      // Limpiar mensaje de éxito después de 3 segundos
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setErrors({ submit: error.message || 'Error al cambiar la contraseña' });
+    }
   };
 
   // Funciones para direcciones y pagos
