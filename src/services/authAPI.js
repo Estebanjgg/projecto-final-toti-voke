@@ -184,9 +184,8 @@ class AuthAPI {
   // Verificar token de recuperación
   async verifyResetToken(token) {
     try {
-      const response = await this.makeRequest('/verify-reset-token', {
-        method: 'POST',
-        body: JSON.stringify({ token })
+      const response = await this.makeRequest(`/verify-reset-token/${token}`, {
+        method: 'GET'
       });
 
       return response;
