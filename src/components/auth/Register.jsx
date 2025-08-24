@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAlert } from '../../contexts/AlertContext';
 import './Auth.css';
 
 const Register = () => {
   const navigate = useNavigate();
   const { register, loading } = useAuth();
+  
+  // Hook para alertas
+  const { 
+    showError, 
+    showSuccess 
+  } = useAlert();
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -77,6 +85,12 @@ const Register = () => {
     e.preventDefault();
     
     if (!validateForm()) {
+      // Mostrar errores de validación con alertas
+      Object.entries(errors).forEach(([field, message]) => {
+        if (message) {
+          showError(message);
+        }
+      });
       return;
     }
 
@@ -90,9 +104,24 @@ const Register = () => {
       };
 
       await register(userData);
-      navigate('/', { replace: true });
+      showSuccess('🎉 ¡Cuenta creada exitosamente! Bienvenido a Voke.');
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 1500);
     } catch (error) {
       console.error('Error en registro:', error);
+      
+      // Manejar diferentes tipos de errores con alertas bonitas
+      if (error.message.includes('ya existe') || error.message.includes('already exists')) {
+        showError('📧 Este email ya está registrado. Intenta con otro email o inicia sesión.');
+      } else if (error.message.includes('password') || error.message.includes('contraseña')) {
+        showError('🔒 La contraseña no cumple con los requisitos de seguridad.');
+      } else if (error.message.includes('red') || error.message.includes('network')) {
+        showError('🌐 Error de conexión. Verifica tu conexión a internet.');
+      } else {
+        showError(`⚠️ ${error.message || 'Error al crear la cuenta'}`);
+      }
+      
       setErrors({ submit: error.message || 'Error al registrar usuario' });
     }
   };

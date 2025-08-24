@@ -9,15 +9,15 @@ class AuthAPI {
   async makeRequest(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     
-    const defaultOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
+    const defaultHeaders = {
+      'Content-Type': 'application/json'
     };
 
     const config = {
-      ...defaultOptions,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers
+      },
       ...options
     };
 
@@ -44,7 +44,15 @@ class AuthAPI {
   // Obtener headers de autenticación
   getAuthHeaders() {
     const token = this.getToken();
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
   }
 
   // Registro de usuario

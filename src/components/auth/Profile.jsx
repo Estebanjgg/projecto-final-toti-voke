@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAlert } from '../../contexts/AlertContext';
 import { authAPI } from '../../services/authAPI';
+import ConfirmModal from '../ui/ConfirmModal';
 import './Auth.css';
 
 const Profile = () => {
   const { user, updateProfile, changePassword, logout, loading } = useAuth();
+  
+  // Hook para alertas
+  const { 
+    showSuccess, 
+    showError, 
+    showWarning 
+  } = useAlert();
   
   // Estados simplificados
   const [editProfileData, setEditProfileData] = useState({
@@ -22,6 +31,12 @@ const Profile = () => {
   const [success, setSuccess] = useState('');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  // Estados para modales de confirmación
+  const [showProfileConfirm, setShowProfileConfirm] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [pendingProfileData, setPendingProfileData] = useState(null);
+  const [pendingPasswordData, setPendingPasswordData] = useState(null);
 
   // Estados para otros componentes (direcciones, pagos, etc.)
   const [addresses, setAddresses] = useState([]);
@@ -49,7 +64,6 @@ const Profile = () => {
   // Inicializar datos cuando el usuario cambie
   React.useEffect(() => {
     if (user) {
-      console.log('🔄 Inicializando editProfileData con usuario:', user);
       setEditProfileData({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
@@ -162,33 +176,20 @@ const Profile = () => {
         updatedFields.phone = editProfileData.phone ? editProfileData.phone.trim() : '';
       }
       
-      console.log('📊 Estado editProfileData completo:', editProfileData);
-      console.log('� Usuario actual:', user);
-      console.log('�📤 Datos preparados para enviar (solo cambios):', updatedFields);
-      console.log('📤 Tipos de datos:', {
-        first_name: typeof updatedFields.first_name,
-        last_name: typeof updatedFields.last_name,
-        phone: typeof updatedFields.phone
-      });
-      
       // Verificar si hay cambios para enviar
       if (Object.keys(updatedFields).length === 0) {
-        setSuccess('No hay cambios para actualizar');
+        showWarning('No hay cambios para actualizar');
         setIsEditingProfile(false);
-        setTimeout(() => setSuccess(''), 3000);
         return;
       }
       
-      await updateProfile(updatedFields);
-      setSuccess('Perfil actualizado exitosamente');
-      setErrors({});
-      setIsEditingProfile(false);
+      // Guardar datos pendientes y mostrar modal de confirmación
+      setPendingProfileData(updatedFields);
+      setShowProfileConfirm(true);
       
-      // Limpiar mensaje de éxito después de 3 segundos
-      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
-      console.error('Error actualizando perfil:', error);
-      setErrors({ submit: error.message || 'Error al actualizar perfil' });
+      console.error('Error validando perfil:', error);
+      showError('Error al validar los datos del perfil');
     }
   };
 
@@ -199,13 +200,23 @@ const Profile = () => {
       return;
     }
 
+    // Guardar datos pendientes y mostrar modal de confirmación
+    setPendingPasswordData({
+      current_password: editPasswordData.current_password,
+      new_password: editPasswordData.new_password
+    });
+    setShowPasswordConfirm(true);
+  };
+
+  // Función para confirmar el cambio de contraseña
+  const confirmChangePassword = async () => {
     try {
-      await changePassword({
-        current_password: editPasswordData.current_password,
-        new_password: editPasswordData.new_password
-      });
+      if (!pendingPasswordData) return;
+
+      await changePassword(pendingPasswordData);
       
-      setSuccess('Contraseña cambiada exitosamente');
+      setShowPasswordConfirm(false);
+      setPendingPasswordData(null);
       setErrors({});
       setEditPasswordData({
         current_password: '',
@@ -214,10 +225,12 @@ const Profile = () => {
       });
       setIsEditingPassword(false);
       
-      // Limpiar mensaje de éxito después de 3 segundos
-      setTimeout(() => setSuccess(''), 3000);
+      showSuccess('🔒 Contraseña cambiada exitosamente');
+      
     } catch (error) {
       console.error('Error cambiando contraseña:', error);
+      setShowPasswordConfirm(false);
+      showError(error.message || 'Error al cambiar contraseña');
       setErrors({ submit: error.message || 'Error al cambiar contraseña' });
     }
   };
@@ -229,8 +242,6 @@ const Profile = () => {
       last_name: user?.last_name || '',
       phone: user?.phone || ''
     };
-    console.log('✏️ Inicializando edición con usuario:', user);
-    console.log('✏️ Datos iniciales para edición:', currentData);
     setEditProfileData(currentData);
     setIsEditingProfile(true);
     setErrors({}); // Limpiar errores previos
@@ -289,42 +300,73 @@ const Profile = () => {
     setErrors({});
   };
 
-  // Función para guardar perfil
+  // Función para iniciar guardado de perfil (mostrar modal)
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     
     try {
+      // Limpiar errores previos
+      setErrors({});
+      
       // Validar campos requeridos
       if (!editProfileData.first_name || !editProfileData.first_name.trim()) {
-        setErrors({ submit: 'El nombre es requerido' });
+        showError('El nombre es requerido');
+        setErrors({ first_name: 'El nombre es requerido' });
         return;
       }
       
       if (!editProfileData.last_name || !editProfileData.last_name.trim()) {
-        setErrors({ submit: 'El apellido es requerido' });
+        showError('El apellido es requerido');
+        setErrors({ last_name: 'El apellido es requerido' });
         return;
       }
       
-      // Preparar datos para enviar - asegurándonos de que no sean undefined
-      const updatedFields = {
-        first_name: editProfileData.first_name.trim(),
-        last_name: editProfileData.last_name.trim(),
-        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
-      };
+      // Detectar campos que realmente cambiaron
+      const changes = {};
+      if (editProfileData.first_name !== user.first_name) {
+        changes.first_name = editProfileData.first_name.trim();
+      }
+      if (editProfileData.last_name !== user.last_name) {
+        changes.last_name = editProfileData.last_name.trim();
+      }
+      if (editProfileData.phone !== user.phone) {
+        changes.phone = editProfileData.phone ? editProfileData.phone.trim() : '';
+      }
+
+      // Si no hay cambios, mostrar mensaje
+      if (Object.keys(changes).length === 0) {
+        showWarning('No hay cambios para actualizar');
+        return;
+      }
+
+      // Guardar datos pendientes y mostrar modal de confirmación
+      setPendingProfileData(changes);
+      setShowProfileConfirm(true);
       
-      console.log('Datos a enviar desde frontend:', updatedFields);
-      
-      // Usar la función updateProfile del contexto
-      await updateProfile(updatedFields);
+    } catch (error) {
+      console.error('Error validando perfil:', error);
+      showError('Error al validar los datos del perfil');
+    }
+  };
+
+  // Función para confirmar el guardado del perfil
+  const confirmSaveProfile = async () => {
+    try {
+      if (!pendingProfileData) return;
+
+      await updateProfile(pendingProfileData);
       
       setIsEditingProfile(false);
       setErrors({});
-      setSuccess('Perfil actualizado exitosamente');
+      setShowProfileConfirm(false);
+      setPendingProfileData(null);
       
-      // Limpiar mensaje de éxito después de 3 segundos
-      setTimeout(() => setSuccess(''), 3000);
+      showSuccess('✅ Perfil actualizado exitosamente');
+      
     } catch (error) {
       console.error('Error al actualizar perfil:', error);
+      setShowProfileConfirm(false);
+      showError(error.message || 'Error al actualizar el perfil');
       setErrors({ submit: error.message || 'Error al actualizar el perfil' });
     }
   };
@@ -814,6 +856,35 @@ const Profile = () => {
           </div>
         </div>
       )}
+
+      {/* Modales de confirmación */}
+      <ConfirmModal
+        isOpen={showProfileConfirm}
+        onClose={() => {
+          setShowProfileConfirm(false);
+          setPendingProfileData(null);
+        }}
+        onConfirm={confirmSaveProfile}
+        title="Confirmar cambios de perfil"
+        message="¿Estás seguro de que deseas guardar los cambios en tu perfil?"
+        confirmText="Guardar cambios"
+        cancelText="Cancelar"
+        type="info"
+      />
+
+      <ConfirmModal
+        isOpen={showPasswordConfirm}
+        onClose={() => {
+          setShowPasswordConfirm(false);
+          setPendingPasswordData(null);
+        }}
+        onConfirm={confirmChangePassword}
+        title="Confirmar cambio de contraseña"
+        message="¿Estás seguro de que deseas cambiar tu contraseña? Esta acción no se puede deshacer."
+        confirmText="Cambiar contraseña"
+        cancelText="Cancelar"
+        type="warning"
+      />
     </div>
   );
 };

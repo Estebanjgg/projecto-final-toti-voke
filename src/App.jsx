@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { AlertProvider } from './contexts/AlertContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -10,6 +11,8 @@ import Profile from './components/auth/Profile';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import AlertContainer from './components/ui/AlertContainer';
+import { useAlert } from './contexts/AlertContext';
 import './App.css';
 
 // Componente Layout que incluye Header y Footer
@@ -23,49 +26,63 @@ const Layout = ({ children }) => {
   );
 };
 
+// Componente que renderiza las alertas globales
+const GlobalAlerts = () => {
+  const { alerts, removeAlert } = useAlert();
+  return (
+    <AlertContainer 
+      alerts={alerts} 
+      onRemoveAlert={removeAlert} 
+    />
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={
-            <Layout>
-              <Home />
-            </Layout>
-          } />
-          <Route path="/login" element={
-            <ProtectedRoute requireAuth={false}>
+      <AlertProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={
               <Layout>
-                <Login />
+                <Home />
               </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/register" element={
-            <ProtectedRoute requireAuth={false}>
+            } />
+            <Route path="/login" element={
+              <ProtectedRoute requireAuth={false}>
+                <Layout>
+                  <Login />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/register" element={
+              <ProtectedRoute requireAuth={false}>
+                <Layout>
+                  <Register />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute requireAuth={true}>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/forgot-password" element={
               <Layout>
-                <Register />
+                <ForgotPassword />
               </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute requireAuth={true}>
+            } />
+            <Route path="/reset-password/:token" element={
               <Layout>
-                <Profile />
+                <ResetPassword />
               </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/forgot-password" element={
-            <Layout>
-              <ForgotPassword />
-            </Layout>
-          } />
-          <Route path="/reset-password/:token" element={
-            <Layout>
-              <ResetPassword />
-            </Layout>
-          } />
-        </Routes>
-      </Router>
+            } />
+          </Routes>
+          <GlobalAlerts />
+        </Router>
+      </AlertProvider>
     </AuthProvider>
   );
 }

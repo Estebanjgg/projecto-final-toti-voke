@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAlert } from '../../contexts/AlertContext';
 import './Auth.css';
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, loading } = useAuth();
+  
+  // Hook para alertas
+  const { 
+    showError, 
+    showSuccess 
+  } = useAlert();
+  
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -56,6 +64,12 @@ const Login = () => {
     e.preventDefault();
     
     if (!validateForm()) {
+      // Mostrar errores de validación con alertas
+      Object.entries(errors).forEach(([field, message]) => {
+        if (message) {
+          showError(message);
+        }
+      });
       return;
     }
 
@@ -70,21 +84,20 @@ const Login = () => {
     } catch (error) {
       console.error('Error en login:', error);
       
-      // Manejar diferentes tipos de errores
-      let errorMessage = 'Error al iniciar sesión';
-      
+      // Manejar diferentes tipos de errores con alertas bonitas
       if (error.message.includes('Email o contraseña incorrectos') || 
           error.message.includes('Credenciales inválidas')) {
-        errorMessage = '❌ Email o contraseña incorrectos. Por favor, verifica tus datos.';
+        showError('❌ Email o contraseña incorrectos. Por favor, verifica tus datos.');
       } else if (error.message.includes('Demasiados intentos')) {
-        errorMessage = '⏰ Demasiados intentos de login. Intenta de nuevo en 15 minutos.';
+        showError('⏰ Demasiados intentos de login. Intenta de nuevo en 15 minutos.');
       } else if (error.message.includes('red') || error.message.includes('network')) {
-        errorMessage = '🌐 Error de conexión. Verifica tu conexión a internet.';
+        showError('🌐 Error de conexión. Verifica tu conexión a internet.');
       } else {
-        errorMessage = `⚠️ ${error.message || 'Error inesperado al iniciar sesión'}`;
+        showError(`⚠️ ${error.message || 'Error inesperado al iniciar sesión'}`);
       }
       
-      setErrors({ submit: errorMessage });
+      // También mantener el error en el estado para mostrar en el formulario si es necesario
+      setErrors({ submit: error.message });
     }
   };
 
@@ -165,6 +178,23 @@ const Login = () => {
               'Iniciar Sesión'
             )}
           </button>
+          
+          {/* Botón de prueba temporal - ELIMINAR DESPUÉS */}
+          <button 
+            type="button" 
+            onClick={() => showError('🧪 Esta es una alerta de prueba')}
+            style={{
+              marginTop: '10px',
+              padding: '8px 16px',
+              background: '#ff6b6b',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Probar Alerta
+          </button>
         </form>
 
 
@@ -182,7 +212,6 @@ const Login = () => {
             </Link>
           </p>
         </div>
-
 
       </div>
     </div>

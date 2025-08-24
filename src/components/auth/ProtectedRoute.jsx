@@ -6,7 +6,6 @@ const ProtectedRoute = ({ children, requireAuth = true }) => {
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // Mostrar loading mientras se verifica la autenticación
   if (loading) {
     return (
       <div className="loading-container">
