@@ -1,18 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Modal from './Modal';
 import './Header.css';
 
 // Componente para el botón de autenticación
 const AuthButton = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [showDropdown, setShowDropdown] = React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
-  const handleLogout = async () => {
-    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-      await logout();
-      setShowDropdown(false);
-    }
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+    setShowDropdown(false);
+  };
+
+  const handleLogoutConfirm = async () => {
+    await logout();
+    setShowLogoutModal(false);
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);
   };
 
   if (isAuthenticated && user) {
@@ -40,11 +49,22 @@ const AuthButton = () => {
             <Link to="/orders" className="dropdown-item" onClick={() => setShowDropdown(false)}>
               📦 Mis Pedidos
             </Link>
-            <button className="dropdown-item logout" onClick={handleLogout}>
+            <button className="dropdown-item logout" onClick={handleLogoutClick}>
               🚪 Cerrar Sesión
             </button>
           </div>
         )}
+        
+        <Modal
+          isOpen={showLogoutModal}
+          onClose={handleLogoutCancel}
+          onConfirm={handleLogoutConfirm}
+          title="Cerrar Sesión"
+          message={`¿Estás seguro de que quieres cerrar sesión, ${user?.first_name}? Tendrás que volver a iniciar sesión para acceder a tu cuenta.`}
+          confirmText="Cerrar Sesión"
+          cancelText="Cancelar"
+          type="danger"
+        />
       </div>
     );
   }

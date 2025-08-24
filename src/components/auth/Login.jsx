@@ -69,22 +69,26 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Error en login:', error);
-      setErrors({ submit: error.message || 'Error al iniciar sesión' });
+      
+      // Manejar diferentes tipos de errores
+      let errorMessage = 'Error al iniciar sesión';
+      
+      if (error.message.includes('Email o contraseña incorrectos') || 
+          error.message.includes('Credenciales inválidas')) {
+        errorMessage = '❌ Email o contraseña incorrectos. Por favor, verifica tus datos.';
+      } else if (error.message.includes('Demasiados intentos')) {
+        errorMessage = '⏰ Demasiados intentos de login. Intenta de nuevo en 15 minutos.';
+      } else if (error.message.includes('red') || error.message.includes('network')) {
+        errorMessage = '🌐 Error de conexión. Verifica tu conexión a internet.';
+      } else {
+        errorMessage = `⚠️ ${error.message || 'Error inesperado al iniciar sesión'}`;
+      }
+      
+      setErrors({ submit: errorMessage });
     }
   };
 
-  const handleDemoLogin = async () => {
-    try {
-      await login({
-        email: 'user@test.com',
-        password: '123456'
-      });
-      navigate(from, { replace: true });
-    } catch (error) {
-      console.error('Error en demo login:', error);
-      setErrors({ submit: 'Error al iniciar sesión con usuario demo' });
-    }
-  };
+
 
   return (
     <div className="auth-container">
@@ -163,18 +167,7 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="auth-divider">
-          <span>o</span>
-        </div>
 
-        <button
-          type="button"
-          className="demo-button"
-          onClick={handleDemoLogin}
-          disabled={loading}
-        >
-          🚀 Probar con Usuario Demo
-        </button>
 
         <div className="auth-footer">
           <p>
@@ -190,25 +183,7 @@ const Login = () => {
           </p>
         </div>
 
-        <div className="demo-info">
-          <h3>👤 Usuarios Demo Disponibles:</h3>
-          <div className="demo-users">
-            <div className="demo-user">
-              <strong>Usuario de Prueba:</strong>
-              <br />
-              📧 user@test.com
-              <br />
-              🔑 123456
-            </div>
-            <div className="demo-user">
-              <strong>Administrador:</strong>
-              <br />
-              📧 admin@voke.com
-              <br />
-              🔑 123456
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );

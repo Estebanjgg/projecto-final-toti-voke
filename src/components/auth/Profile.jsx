@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { authAPI } from '../../services/authAPI';
 import './Auth.css';
 
 const Profile = () => {
   const { user, updateProfile, changePassword, logout, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile');
   const [profileData, setProfileData] = useState({
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
@@ -15,12 +15,50 @@ const Profile = () => {
     new_password: '',
     confirm_password: ''
   });
+  const [addresses, setAddresses] = useState([
+    // Direcciones de ejemplo
+  ]);
+  const [paymentMethods, setPaymentMethods] = useState([
+    // Métodos de pago de ejemplo
+  ]);
+  const [newAddress, setNewAddress] = useState({
+    street: '',
+    number: '',
+    complement: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    isDefault: false
+  });
+  const [newPayment, setNewPayment] = useState({
+    cardNumber: '',
+    cardName: '',
+    expiryDate: '',
+    cvv: '',
+    isDefault: false
+  });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false
+  });
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  const [editProfileData, setEditProfileData] = useState({
+    first_name: '',
+    last_name: '',
+    phone: ''
+  });
+  const [editPasswordData, setEditPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
   });
 
   const handleProfileChange = (e) => {
@@ -155,6 +193,183 @@ const Profile = () => {
     }));
   };
 
+  const handleAddressChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewAddress(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handlePaymentChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewPayment(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleAddAddress = (e) => {
+    e.preventDefault();
+    if (newAddress.street && newAddress.city && newAddress.zipCode) {
+      const address = {
+        id: Date.now(),
+        ...newAddress
+      };
+      setAddresses(prev => [...prev, address]);
+      setNewAddress({
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        isDefault: false
+      });
+      setShowAddressForm(false);
+      setSuccess('Endereço adicionado com sucesso!');
+      setTimeout(() => setSuccess(''), 3000);
+    }
+  };
+
+  const handleAddPayment = (e) => {
+    e.preventDefault();
+    if (newPayment.cardNumber && newPayment.cardName && newPayment.expiryDate && newPayment.cvv) {
+      const payment = {
+        id: Date.now(),
+        ...newPayment,
+        cardNumber: '**** **** **** ' + newPayment.cardNumber.slice(-4)
+      };
+      setPaymentMethods(prev => [...prev, payment]);
+      setNewPayment({
+        cardNumber: '',
+        cardName: '',
+        expiryDate: '',
+        cvv: '',
+        isDefault: false
+      });
+      setShowPaymentForm(false);
+      setSuccess('Cartão adicionado com sucesso!');
+      setTimeout(() => setSuccess(''), 3000);
+    }
+  };
+
+  // Funciones para edición de perfil
+  const handleEditProfile = () => {
+    setEditProfileData({
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      phone: user?.phone || ''
+    });
+    setIsEditingProfile(true);
+  };
+
+  const handleProfileDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditProfileData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    try {
+      // Filtrar solo los campos que han cambiado y no están vacíos
+      const updatedFields = {};
+      
+      if (editProfileData.first_name && editProfileData.first_name.trim() !== user?.first_name) {
+        updatedFields.first_name = editProfileData.first_name.trim();
+      }
+      
+      if (editProfileData.last_name && editProfileData.last_name.trim() !== user?.last_name) {
+        updatedFields.last_name = editProfileData.last_name.trim();
+      }
+      
+      if (editProfileData.phone && editProfileData.phone.trim() !== user?.phone) {
+        updatedFields.phone = editProfileData.phone.trim();
+      }
+      
+      // Verificar que hay al menos un campo para actualizar
+      if (Object.keys(updatedFields).length === 0) {
+        setErrors({ submit: 'No hay cambios para guardar' });
+        return;
+      }
+      
+      // Usar la función updateProfile del contexto
+      await updateProfile(updatedFields);
+      
+      setIsEditingProfile(false);
+      setErrors({});
+      alert('Perfil actualizado exitosamente');
+    } catch (error) {
+      setErrors({ submit: error.message || 'Error al actualizar el perfil' });
+    }
+  };
+
+  const handleCancelEditProfile = () => {
+    setIsEditingProfile(false);
+    setErrors({});
+  };
+
+  // Funciones para cambio de contraseña
+  const handleEditPassword = () => {
+    setEditPasswordData({
+      current_password: '',
+      new_password: '',
+      confirm_password: ''
+    });
+    setIsEditingPassword(true);
+  };
+
+  const handlePasswordDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSavePassword = async (e) => {
+    e.preventDefault();
+    
+    // Validar que las contraseñas coincidan
+    if (editPasswordData.new_password !== editPasswordData.confirm_password) {
+      setErrors({ submit: 'Las contraseñas no coinciden' });
+      return;
+    }
+
+    if (editPasswordData.new_password.length < 6) {
+      setErrors({ submit: 'La nueva contraseña debe tener al menos 6 caracteres' });
+      return;
+    }
+
+    try {
+      // Usar la función changePassword del contexto
+      await changePassword({
+        current_password: editPasswordData.current_password,
+        new_password: editPasswordData.new_password
+      });
+      
+      setIsEditingPassword(false);
+      setEditPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: ''
+      });
+      setErrors({});
+      alert('Contraseña cambiada exitosamente');
+    } catch (error) {
+      setErrors({ submit: error.message || 'Error al cambiar la contraseña' });
+    }
+  };
+
+  const handleCancelEditPassword = () => {
+    setIsEditingPassword(false);
+    setErrors({});
+  };
+
   const handleLogout = async () => {
     if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
       await logout();
@@ -162,245 +377,383 @@ const Profile = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card profile-card">
-        <div className="auth-header">
-          <h1>Mi Perfil</h1>
-          <p>Gestiona tu información personal</p>
-        </div>
-
-        {/* Información del usuario */}
-        <div className="user-info">
-          <div className="user-avatar profile-avatar">
-            <span className="avatar-letter">
-              {user?.first_name?.charAt(0)?.toUpperCase() || 'U'}
-            </span>
-            <div className="avatar-ring"></div>
-          </div>
-          <div className="user-details">
-            <h3>{user?.first_name} {user?.last_name}</h3>
-            <p>{user?.email}</p>
-            <span className="user-since">
-              Miembro desde {new Date(user?.created_at).toLocaleDateString()}
-            </span>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="profile-tabs">
-          <button
-            className={`tab ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
-          >
-            📝 Información Personal
-          </button>
-          <button
-            className={`tab ${activeTab === 'password' ? 'active' : ''}`}
-            onClick={() => setActiveTab('password')}
-          >
-            🔒 Cambiar Contraseña
-          </button>
-        </div>
-
-        {/* Mensajes */}
-        {success && (
-          <div className="success-message">
-            {success}
-          </div>
-        )}
-
-        {errors.submit && (
-          <div className="error-message">
-            {errors.submit}
-          </div>
-        )}
-
-        {/* Contenido de tabs */}
-        {activeTab === 'profile' && (
-          <form onSubmit={handleProfileSubmit} className="auth-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="first_name">Nombre *</label>
-                <input
-                  type="text"
-                  id="first_name"
-                  name="first_name"
-                  value={profileData.first_name}
-                  onChange={handleProfileChange}
-                  className={errors.first_name ? 'error' : ''}
-                  disabled={loading}
-                />
-                {errors.first_name && (
-                  <span className="error-text">{errors.first_name}</span>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="last_name">Apellido</label>
-                <input
-                  type="text"
-                  id="last_name"
-                  name="last_name"
-                  value={profileData.last_name}
-                  onChange={handleProfileChange}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={user?.email || ''}
-                disabled
-                className="disabled-input"
-              />
-              <span className="help-text">El email no se puede cambiar</span>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="phone">Teléfono</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={profileData.phone}
-                onChange={handleProfileChange}
-                className={errors.phone ? 'error' : ''}
-                disabled={loading}
-              />
-              {errors.phone && (
-                <span className="error-text">{errors.phone}</span>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="auth-button"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  Actualizando...
-                </>
+    <div className="profile-container">
+      <div className="profile-header">
+        <h1>Minha Conta</h1>
+      </div>
+      
+      <div className="profile-grid">
+        {/* Card de Perfil */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon">👤</div>
+            <div className="card-title">
+              <h2>Perfil</h2>
+              {!isEditingProfile ? (
+                <button className="edit-button" onClick={handleEditProfile}>Editar</button>
               ) : (
-                'Actualizar Perfil'
-              )}
-            </button>
-          </form>
-        )}
-
-        {activeTab === 'password' && (
-          <form onSubmit={handlePasswordSubmit} className="auth-form">
-            <div className="form-group">
-              <label htmlFor="current_password">Contraseña Actual *</label>
-              <div className="password-input">
-                <input
-                  type={showPasswords.current ? 'text' : 'password'}
-                  id="current_password"
-                  name="current_password"
-                  value={passwordData.current_password}
-                  onChange={handlePasswordChange}
-                  className={errors.current_password ? 'error' : ''}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => togglePasswordVisibility('current')}
-                  disabled={loading}
-                >
-                  {showPasswords.current ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-              {errors.current_password && (
-                <span className="error-text">{errors.current_password}</span>
+                <div className="edit-actions">
+                  <button className="save-button" onClick={handleSaveProfile}>Salvar</button>
+                  <button className="cancel-button" onClick={handleCancelEditProfile}>Cancelar</button>
+                </div>
               )}
             </div>
+          </div>
+          
+          <div className="user-info-card">
+            {!isEditingProfile ? (
+              <>
+                <div className="user-avatar profile-avatar">
+                  <span className="avatar-letter">
+                    {user?.first_name?.charAt(0)?.toUpperCase() || 'U'}
+                  </span>
+                </div>
+                <div className="user-details">
+                  <h3>{user?.first_name || 'Esteban'}</h3>
+                  <p className="user-surname">{user?.last_name || 'Gomez'}</p>
+                  <p className="user-email">{user?.email || 'esteban050994@gmail.com'}</p>
+                  <p className="user-phone">{user?.phone || '(11) 91860-7488'}</p>
+                  <button className="exclude-button">Excluir cadastro</button>
+                </div>
+              </>
+            ) : (
+              <form onSubmit={handleSaveProfile} className="edit-profile-form">
+                <div className="form-group">
+                  <label>Nome *</label>
+                  <input
+                    type="text"
+                    name="first_name"
+                    value={editProfileData.first_name}
+                    onChange={handleProfileDataChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Sobrenome *</label>
+                  <input
+                    type="text"
+                    name="last_name"
+                    value={editProfileData.last_name}
+                    onChange={handleProfileDataChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="disabled-input"
+                  />
+                  <small>O email não pode ser alterado</small>
+                </div>
+                <div className="form-group">
+                  <label>Telefone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={editProfileData.phone}
+                    onChange={handleProfileDataChange}
+                  />
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
 
-            <div className="form-group">
-              <label htmlFor="new_password">Nueva Contraseña *</label>
-              <div className="password-input">
-                <input
-                  type={showPasswords.new ? 'text' : 'password'}
-                  id="new_password"
-                  name="new_password"
-                  value={passwordData.new_password}
-                  onChange={handlePasswordChange}
-                  className={errors.new_password ? 'error' : ''}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => togglePasswordVisibility('new')}
-                  disabled={loading}
-                >
-                  {showPasswords.new ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-              {errors.new_password && (
-                <span className="error-text">{errors.new_password}</span>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="confirm_password">Confirmar Nueva Contraseña *</label>
-              <div className="password-input">
-                <input
-                  type={showPasswords.confirm ? 'text' : 'password'}
-                  id="confirm_password"
-                  name="confirm_password"
-                  value={passwordData.confirm_password}
-                  onChange={handlePasswordChange}
-                  className={errors.confirm_password ? 'error' : ''}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => togglePasswordVisibility('confirm')}
-                  disabled={loading}
-                >
-                  {showPasswords.confirm ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-              {errors.confirm_password && (
-                <span className="error-text">{errors.confirm_password}</span>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="auth-button"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  Cambiando...
-                </>
+        {/* Card de Senha */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon">🔒</div>
+            <div className="card-title">
+              <h2>Senha</h2>
+              {!isEditingPassword ? (
+                <button className="edit-button" onClick={handleEditPassword}>Editar</button>
               ) : (
-                'Cambiar Contraseña'
+                <div className="edit-actions">
+                  <button className="save-button" onClick={handleSavePassword}>Salvar</button>
+                  <button className="cancel-button" onClick={handleCancelEditPassword}>Cancelar</button>
+                </div>
               )}
-            </button>
-          </form>
-        )}
+            </div>
+          </div>
+          
+          <div className="password-info">
+            {!isEditingPassword ? (
+              <p>••••••••</p>
+            ) : (
+              <form onSubmit={handleSavePassword} className="edit-password-form">
+                <div className="form-group">
+                  <label>Senha Atual *</label>
+                  <input
+                    type="password"
+                    name="current_password"
+                    value={editPasswordData.current_password}
+                    onChange={handlePasswordDataChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Nova Senha *</label>
+                  <input
+                    type="password"
+                    name="new_password"
+                    value={editPasswordData.new_password}
+                    onChange={handlePasswordDataChange}
+                    required
+                    minLength="6"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Confirmar Nova Senha *</label>
+                  <input
+                    type="password"
+                    name="confirm_password"
+                    value={editPasswordData.confirm_password}
+                    onChange={handlePasswordDataChange}
+                    required
+                    minLength="6"
+                  />
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
 
-        {/* Acciones adicionales */}
-        <div className="profile-actions">
-          <button
-            onClick={handleLogout}
-            className="logout-button"
-            disabled={loading}
-          >
-            🚪 Cerrar Sesión
-          </button>
+        {/* Card de Lista de endereços */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon">📍</div>
+            <div className="card-title">
+              <h2>Lista de endereços</h2>
+            </div>
+          </div>
+          
+          <div className="address-content">
+            <button className="add-button" onClick={() => setShowAddressForm(true)}>
+              ➕ Adicionar novo endereço
+            </button>
+          </div>
+        </div>
+
+        {/* Card de Pagamento */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon">💳</div>
+            <div className="card-title">
+              <h2>Pagamento</h2>
+              <div className="card-actions">
+                <button className="favorites-button">❤️ Meus favoritos</button>
+                <button className="view-all-button">Ver todos</button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="payment-content">
+            <button className="add-button" onClick={() => setShowPaymentForm(true)}>
+              ➕ Adicionar novo cartão
+            </button>
+          </div>
         </div>
       </div>
+
+      
+      {/* Mensajes */}
+      {success && (
+        <div className="success-message">
+          {success}
+        </div>
+      )}
+
+      {errors.submit && (
+        <div className="error-message">
+          {errors.submit}
+        </div>
+      )}
+      
+      {/* Modal para agregar dirección */}
+      {showAddressForm && (
+        <div className="modal-overlay" onClick={() => setShowAddressForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Adicionar Novo Endereço</h3>
+              <button className="close-button" onClick={() => setShowAddressForm(false)}>×</button>
+            </div>
+            <form onSubmit={handleAddAddress} className="modal-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Rua *</label>
+                  <input
+                    type="text"
+                    name="street"
+                    value={newAddress.street}
+                    onChange={handleAddressChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Número</label>
+                  <input
+                    type="text"
+                    name="number"
+                    value={newAddress.number}
+                    onChange={handleAddressChange}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Complemento</label>
+                <input
+                  type="text"
+                  name="complement"
+                  value={newAddress.complement}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Bairro</label>
+                  <input
+                    type="text"
+                    name="neighborhood"
+                    value={newAddress.neighborhood}
+                    onChange={handleAddressChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Cidade *</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={newAddress.city}
+                    onChange={handleAddressChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Estado</label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={newAddress.state}
+                    onChange={handleAddressChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>CEP *</label>
+                  <input
+                    type="text"
+                    name="zipCode"
+                    value={newAddress.zipCode}
+                    onChange={handleAddressChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="isDefault"
+                    checked={newAddress.isDefault}
+                    onChange={handleAddressChange}
+                  />
+                  Definir como endereço padrão
+                </label>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="cancel-button" onClick={() => setShowAddressForm(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="submit-button">
+                  Adicionar Endereço
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal para agregar método de pago */}
+      {showPaymentForm && (
+        <div className="modal-overlay" onClick={() => setShowPaymentForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Adicionar Novo Cartão</h3>
+              <button className="close-button" onClick={() => setShowPaymentForm(false)}>×</button>
+            </div>
+            <form onSubmit={handleAddPayment} className="modal-form">
+              <div className="form-group">
+                <label>Número do Cartão *</label>
+                <input
+                  type="text"
+                  name="cardNumber"
+                  value={newPayment.cardNumber}
+                  onChange={handlePaymentChange}
+                  placeholder="1234 5678 9012 3456"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Nome no Cartão *</label>
+                <input
+                  type="text"
+                  name="cardName"
+                  value={newPayment.cardName}
+                  onChange={handlePaymentChange}
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Data de Validade *</label>
+                  <input
+                    type="text"
+                    name="expiryDate"
+                    value={newPayment.expiryDate}
+                    onChange={handlePaymentChange}
+                    placeholder="MM/AA"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>CVV *</label>
+                  <input
+                    type="text"
+                    name="cvv"
+                    value={newPayment.cvv}
+                    onChange={handlePaymentChange}
+                    placeholder="123"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="isDefault"
+                    checked={newPayment.isDefault}
+                    onChange={handlePaymentChange}
+                  />
+                  Definir como cartão padrão
+                </label>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="cancel-button" onClick={() => setShowPaymentForm(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="submit-button">
+                  Adicionar Cartão
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
