@@ -9,8 +9,7 @@ const API_URLS = {
   development: 'http://localhost:3001/api'
 };
 
-// Configuración por defecto: siempre usar producción
-// Esto permite compartir el código sin exponer credenciales locales
+// Configuración por defecto: usar producción
 export const API_BASE_URL = API_URLS.production;
 
 // Para desarrolladores que quieran usar backend local:

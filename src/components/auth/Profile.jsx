@@ -276,26 +276,23 @@ const Profile = () => {
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     try {
-      // Filtrar solo los campos que han cambiado y no están vacíos
-      const updatedFields = {};
-      
-      if (editProfileData.first_name && editProfileData.first_name.trim() !== user?.first_name) {
-        updatedFields.first_name = editProfileData.first_name.trim();
-      }
-      
-      if (editProfileData.last_name && editProfileData.last_name.trim() !== user?.last_name) {
-        updatedFields.last_name = editProfileData.last_name.trim();
-      }
-      
-      if (editProfileData.phone && editProfileData.phone.trim() !== user?.phone) {
-        updatedFields.phone = editProfileData.phone.trim();
-      }
-      
-      // Verificar que hay al menos un campo para actualizar
-      if (Object.keys(updatedFields).length === 0) {
-        setErrors({ submit: 'No hay cambios para guardar' });
+      // Validar campos requeridos
+      if (!editProfileData.first_name || !editProfileData.first_name.trim()) {
+        setErrors({ submit: 'El nombre es requerido' });
         return;
       }
+      
+      if (!editProfileData.last_name || !editProfileData.last_name.trim()) {
+        setErrors({ submit: 'El apellido es requerido' });
+        return;
+      }
+      
+      // Preparar datos para enviar (incluyendo campos vacíos para phone)
+      const updatedFields = {
+        first_name: editProfileData.first_name.trim(),
+        last_name: editProfileData.last_name.trim(),
+        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
+      };
       
       // Usar la función updateProfile del contexto
       await updateProfile(updatedFields);
