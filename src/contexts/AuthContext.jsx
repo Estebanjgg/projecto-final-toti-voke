@@ -242,6 +242,7 @@ export const AuthProvider = ({ children }) => {
       
       return response;
     } catch (error) {
+      console.error('Error en AuthContext.updateProfile:', error);
       throw error;
     } finally {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });

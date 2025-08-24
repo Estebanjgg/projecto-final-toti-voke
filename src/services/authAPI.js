@@ -116,14 +116,22 @@ class AuthAPI {
   // Actualizar perfil del usuario
   async updateProfile(profileData) {
     try {
+      // Asegurar que los datos no sean undefined
+      const cleanData = {
+        first_name: profileData.first_name || '',
+        last_name: profileData.last_name || '',
+        phone: profileData.phone || ''
+      };
+      
       const response = await this.makeRequest('/profile', {
         method: 'PUT',
         headers: this.getAuthHeaders(),
-        body: JSON.stringify(profileData)
+        body: JSON.stringify(cleanData)
       });
 
       return response;
     } catch (error) {
+      console.error('Error en authAPI.updateProfile:', error);
       throw error;
     }
   }

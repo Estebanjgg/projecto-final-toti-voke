@@ -5,22 +5,27 @@ import './Auth.css';
 
 const Profile = () => {
   const { user, updateProfile, changePassword, logout, loading } = useAuth();
-  const [profileData, setProfileData] = useState({
-    first_name: user?.first_name || '',
-    last_name: user?.last_name || '',
-    phone: user?.phone || ''
+  
+  // Estados simplificados
+  const [editProfileData, setEditProfileData] = useState({
+    first_name: '',
+    last_name: '',
+    phone: ''
   });
-  const [passwordData, setPasswordData] = useState({
+  const [editPasswordData, setEditPasswordData] = useState({
     current_password: '',
     new_password: '',
     confirm_password: ''
   });
-  const [addresses, setAddresses] = useState([
-    // Direcciones de ejemplo
-  ]);
-  const [paymentMethods, setPaymentMethods] = useState([
-    // Métodos de pago de ejemplo
-  ]);
+  
+  const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState('');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  // Estados para otros componentes (direcciones, pagos, etc.)
+  const [addresses, setAddresses] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
   const [newAddress, setNewAddress] = useState({
     street: '',
     number: '',
@@ -38,32 +43,23 @@ const Profile = () => {
     cvv: '',
     isDefault: false
   });
-  const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState('');
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false
-  });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [isEditingPassword, setIsEditingPassword] = useState(false);
 
-  const [editProfileData, setEditProfileData] = useState({
-    first_name: '',
-    last_name: '',
-    phone: ''
-  });
-  const [editPasswordData, setEditPasswordData] = useState({
-    current_password: '',
-    new_password: '',
-    confirm_password: ''
-  });
+  // Inicializar datos cuando el usuario cambie
+  React.useEffect(() => {
+    if (user) {
+      setEditProfileData({
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        phone: user.phone || ''
+      });
+    }
+  }, [user]);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({
+    setEditProfileData(prev => ({
       ...prev,
       [name]: value
     }));
@@ -79,7 +75,7 @@ const Profile = () => {
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    setPasswordData(prev => ({
+    setEditPasswordData(prev => ({
       ...prev,
       [name]: value
     }));
@@ -96,13 +92,17 @@ const Profile = () => {
   const validateProfile = () => {
     const newErrors = {};
 
-    if (!profileData.first_name.trim()) {
+    if (!editProfileData.first_name.trim()) {
       newErrors.first_name = 'El nombre es requerido';
-    } else if (profileData.first_name.trim().length < 2) {
+    } else if (editProfileData.first_name.trim().length < 2) {
       newErrors.first_name = 'El nombre debe tener al menos 2 caracteres';
     }
 
-    if (profileData.phone && profileData.phone.trim().length < 8) {
+    if (!editProfileData.last_name.trim()) {
+      newErrors.last_name = 'El apellido es requerido';
+    }
+
+    if (editProfileData.phone && editProfileData.phone.trim().length < 8) {
       newErrors.phone = 'El teléfono debe tener al menos 8 caracteres';
     }
 
@@ -113,23 +113,23 @@ const Profile = () => {
   const validatePassword = () => {
     const newErrors = {};
 
-    if (!passwordData.current_password) {
+    if (!editPasswordData.current_password) {
       newErrors.current_password = 'La contraseña actual es requerida';
     }
 
-    if (!passwordData.new_password) {
+    if (!editPasswordData.new_password) {
       newErrors.new_password = 'La nueva contraseña es requerida';
-    } else if (passwordData.new_password.length < 6) {
+    } else if (editPasswordData.new_password.length < 6) {
       newErrors.new_password = 'La nueva contraseña debe tener al menos 6 caracteres';
     }
 
-    if (!passwordData.confirm_password) {
+    if (!editPasswordData.confirm_password) {
       newErrors.confirm_password = 'Confirma la nueva contraseña';
-    } else if (passwordData.new_password !== passwordData.confirm_password) {
+    } else if (editPasswordData.new_password !== editPasswordData.confirm_password) {
       newErrors.confirm_password = 'Las contraseñas no coinciden';
     }
 
-    if (passwordData.current_password === passwordData.new_password) {
+    if (editPasswordData.current_password === editPasswordData.new_password) {
       newErrors.new_password = 'La nueva contraseña debe ser diferente a la actual';
     }
 
@@ -145,9 +145,17 @@ const Profile = () => {
     }
 
     try {
-      await updateProfile(profileData);
+      // Preparar datos para enviar - asegurándonos de que no sean undefined
+      const updatedFields = {
+        first_name: editProfileData.first_name.trim(),
+        last_name: editProfileData.last_name.trim(),
+        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
+      };
+      
+      await updateProfile(updatedFields);
       setSuccess('Perfil actualizado exitosamente');
       setErrors({});
+      setIsEditingProfile(false);
       
       // Limpiar mensaje de éxito después de 3 segundos
       setTimeout(() => setSuccess(''), 3000);
@@ -166,17 +174,18 @@ const Profile = () => {
 
     try {
       await changePassword({
-        current_password: passwordData.current_password,
-        new_password: passwordData.new_password
+        current_password: editPasswordData.current_password,
+        new_password: editPasswordData.new_password
       });
       
       setSuccess('Contraseña cambiada exitosamente');
       setErrors({});
-      setPasswordData({
+      setEditPasswordData({
         current_password: '',
         new_password: '',
         confirm_password: ''
       });
+      setIsEditingPassword(false);
       
       // Limpiar mensaje de éxito después de 3 segundos
       setTimeout(() => setSuccess(''), 3000);
@@ -186,13 +195,72 @@ const Profile = () => {
     }
   };
 
-  const togglePasswordVisibility = (field) => {
-    setShowPasswords(prev => ({
-      ...prev,
-      [field]: !prev[field]
-    }));
+  // Funciones para edición de perfil
+  const handleEditProfile = () => {
+    const currentData = {
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      phone: user?.phone || ''
+    };
+    setEditProfileData(currentData);
+    setIsEditingProfile(true);
+    setErrors({}); // Limpiar errores previos
   };
 
+  const handleProfileDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditProfileData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Limpiar errores
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleCancelEditProfile = () => {
+    setIsEditingProfile(false);
+    setErrors({});
+  };
+
+  // Funciones para cambio de contraseña
+  const handleEditPassword = () => {
+    setEditPasswordData({
+      current_password: '',
+      new_password: '',
+      confirm_password: ''
+    });
+    setIsEditingPassword(true);
+    setErrors({}); // Limpiar errores previos
+  };
+
+  const handlePasswordDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Limpiar errores
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleCancelEditPassword = () => {
+    setIsEditingPassword(false);
+    setErrors({});
+  };
+
+  // Funciones para direcciones y pagos
   const handleAddressChange = (e) => {
     const { name, value, type, checked } = e.target;
     setNewAddress(prev => ({
@@ -255,118 +323,6 @@ const Profile = () => {
     }
   };
 
-  // Funciones para edición de perfil
-  const handleEditProfile = () => {
-    setEditProfileData({
-      first_name: user?.first_name || '',
-      last_name: user?.last_name || '',
-      phone: user?.phone || ''
-    });
-    setIsEditingProfile(true);
-  };
-
-  const handleProfileDataChange = (e) => {
-    const { name, value } = e.target;
-    setEditProfileData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSaveProfile = async (e) => {
-    e.preventDefault();
-    try {
-      // Validar campos requeridos
-      if (!editProfileData.first_name || !editProfileData.first_name.trim()) {
-        setErrors({ submit: 'El nombre es requerido' });
-        return;
-      }
-      
-      if (!editProfileData.last_name || !editProfileData.last_name.trim()) {
-        setErrors({ submit: 'El apellido es requerido' });
-        return;
-      }
-      
-      // Preparar datos para enviar (incluyendo campos vacíos para phone)
-      const updatedFields = {
-        first_name: editProfileData.first_name.trim(),
-        last_name: editProfileData.last_name.trim(),
-        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
-      };
-      
-      // Usar la función updateProfile del contexto
-      await updateProfile(updatedFields);
-      
-      setIsEditingProfile(false);
-      setErrors({});
-      alert('Perfil actualizado exitosamente');
-    } catch (error) {
-      setErrors({ submit: error.message || 'Error al actualizar el perfil' });
-    }
-  };
-
-  const handleCancelEditProfile = () => {
-    setIsEditingProfile(false);
-    setErrors({});
-  };
-
-  // Funciones para cambio de contraseña
-  const handleEditPassword = () => {
-    setEditPasswordData({
-      current_password: '',
-      new_password: '',
-      confirm_password: ''
-    });
-    setIsEditingPassword(true);
-  };
-
-  const handlePasswordDataChange = (e) => {
-    const { name, value } = e.target;
-    setEditPasswordData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSavePassword = async (e) => {
-    e.preventDefault();
-    
-    // Validar que las contraseñas coincidan
-    if (editPasswordData.new_password !== editPasswordData.confirm_password) {
-      setErrors({ submit: 'Las contraseñas no coinciden' });
-      return;
-    }
-
-    if (editPasswordData.new_password.length < 6) {
-      setErrors({ submit: 'La nueva contraseña debe tener al menos 6 caracteres' });
-      return;
-    }
-
-    try {
-      // Usar la función changePassword del contexto
-      await changePassword({
-        current_password: editPasswordData.current_password,
-        new_password: editPasswordData.new_password
-      });
-      
-      setIsEditingPassword(false);
-      setEditPasswordData({
-        current_password: '',
-        new_password: '',
-        confirm_password: ''
-      });
-      setErrors({});
-      alert('Contraseña cambiada exitosamente');
-    } catch (error) {
-      setErrors({ submit: error.message || 'Error al cambiar la contraseña' });
-    }
-  };
-
-  const handleCancelEditPassword = () => {
-    setIsEditingPassword(false);
-    setErrors({});
-  };
-
   const handleLogout = async () => {
     if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
       await logout();
@@ -390,7 +346,7 @@ const Profile = () => {
                 <button className="edit-button" onClick={handleEditProfile}>Editar</button>
               ) : (
                 <div className="edit-actions">
-                  <button className="save-button" onClick={handleSaveProfile}>Salvar</button>
+                  <button className="save-button" onClick={handleProfileSubmit}>Salvar</button>
                   <button className="cancel-button" onClick={handleCancelEditProfile}>Cancelar</button>
                 </div>
               )}
@@ -420,7 +376,7 @@ const Profile = () => {
                   <input
                     type="text"
                     name="first_name"
-                    value={editProfileData.first_name}
+                    value={editProfileData.first_name || ''}
                     onChange={handleProfileDataChange}
                     required
                   />
@@ -430,7 +386,7 @@ const Profile = () => {
                   <input
                     type="text"
                     name="last_name"
-                    value={editProfileData.last_name}
+                    value={editProfileData.last_name || ''}
                     onChange={handleProfileDataChange}
                     required
                   />
@@ -450,7 +406,7 @@ const Profile = () => {
                   <input
                     type="text"
                     name="phone"
-                    value={editProfileData.phone}
+                    value={editProfileData.phone || ''}
                     onChange={handleProfileDataChange}
                   />
                 </div>
@@ -469,7 +425,7 @@ const Profile = () => {
                 <button className="edit-button" onClick={handleEditPassword}>Editar</button>
               ) : (
                 <div className="edit-actions">
-                  <button className="save-button" onClick={handleSavePassword}>Salvar</button>
+                  <button className="save-button" onClick={handlePasswordSubmit}>Salvar</button>
                   <button className="cancel-button" onClick={handleCancelEditPassword}>Cancelar</button>
                 </div>
               )}
@@ -480,13 +436,13 @@ const Profile = () => {
             {!isEditingPassword ? (
               <p>••••••••</p>
             ) : (
-              <form onSubmit={handleSavePassword} className="edit-password-form">
+              <form onSubmit={handlePasswordSubmit} className="edit-password-form">
                 <div className="form-group">
                   <label>Senha Atual *</label>
                   <input
                     type="password"
                     name="current_password"
-                    value={editPasswordData.current_password}
+                    value={editPasswordData.current_password || ''}
                     onChange={handlePasswordDataChange}
                     required
                   />
@@ -496,7 +452,7 @@ const Profile = () => {
                   <input
                     type="password"
                     name="new_password"
-                    value={editPasswordData.new_password}
+                    value={editPasswordData.new_password || ''}
                     onChange={handlePasswordDataChange}
                     required
                     minLength="6"
@@ -507,7 +463,7 @@ const Profile = () => {
                   <input
                     type="password"
                     name="confirm_password"
-                    value={editPasswordData.confirm_password}
+                    value={editPasswordData.confirm_password || ''}
                     onChange={handlePasswordDataChange}
                     required
                     minLength="6"
