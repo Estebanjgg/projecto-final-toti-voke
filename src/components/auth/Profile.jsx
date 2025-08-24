@@ -171,8 +171,11 @@ const Profile = () => {
 
         {/* Información del usuario */}
         <div className="user-info">
-          <div className="user-avatar">
-            {user?.first_name?.charAt(0)?.toUpperCase() || '👤'}
+          <div className="user-avatar profile-avatar">
+            <span className="avatar-letter">
+              {user?.first_name?.charAt(0)?.toUpperCase() || 'U'}
+            </span>
+            <div className="avatar-ring"></div>
           </div>
           <div className="user-details">
             <h3>{user?.first_name} {user?.last_name}</h3>

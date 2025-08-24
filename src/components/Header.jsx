@@ -22,9 +22,12 @@ const AuthButton = () => {
           className="action-btn user-btn"
           onClick={() => setShowDropdown(!showDropdown)}
         >
-          <span className="user-avatar">
-            {user.first_name?.charAt(0)?.toUpperCase() || '👤'}
-          </span>
+          <div className="user-avatar">
+            <span className="avatar-letter">
+              {user.first_name?.charAt(0)?.toUpperCase() || 'U'}
+            </span>
+            <div className="avatar-ring"></div>
+          </div>
           <span className="user-name">{user.first_name}</span>
           <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
         </button>
@@ -123,11 +126,11 @@ const Header = () => {
               <button className="action-btn">
                 <span>♡</span>
               </button>
+              <AuthButton />
               <button className="action-btn cart">
                 <span>🛒</span>
                 <span className="cart-count">0</span>
               </button>
-              <AuthButton />
             </div>
           </div>
         </div>

@@ -377,17 +377,63 @@
 }
 
 .user-avatar {
-  width: 60px;
-  height: 60px;
+  position: relative;
+  width: 56px;
+  height: 56px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
   flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.25);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.profile-avatar .avatar-letter {
+  font-size: 28px;
+}
+
+.user-avatar .avatar-letter {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  z-index: 2;
+  position: relative;
+}
+
+.user-avatar .avatar-ring {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 200%;
+  animation: avatarGlow 3s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.user-info:hover .avatar-ring {
+  opacity: 1;
+}
+
+@keyframes avatarGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .user-details h3 {

@@ -208,16 +208,57 @@
 }
 
 .user-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  position: relative;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.user-avatar:hover {
+  transform: scale(1.03);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.35);
+}
+
+.avatar-letter {
+  color: white;
+  font-size: 10px;
   font-weight: 700;
+  z-index: 2;
+  position: relative;
+}
+
+.avatar-ring {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 200%;
+  animation: avatarGlow 3s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.user-btn:hover .avatar-ring {
+  opacity: 1;
+}
+
+@keyframes avatarGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .user-name {
