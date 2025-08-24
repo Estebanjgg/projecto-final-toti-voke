@@ -639,14 +639,31 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Card de Favoritos */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon">❤️</div>
+            <div className="card-title">
+              <h2>Mis Favoritos</h2>
+              <div className="card-actions">
+                <button className="view-all-button">Ver todos</button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="favorites-content">
+            <p className="placeholder-text">Aún no tienes productos favoritos</p>
+            <p className="subtitle-text">Los productos que marques como favoritos aparecerán aquí</p>
+          </div>
+        </div>
+
         {/* Card de Pagamento */}
         <div className="profile-card">
           <div className="card-header">
             <div className="card-icon">💳</div>
             <div className="card-title">
-              <h2>Pagamento</h2>
+              <h2>Métodos de Pago</h2>
               <div className="card-actions">
-                <button className="favorites-button">❤️ Meus favoritos</button>
                 <button className="view-all-button">Ver todos</button>
               </div>
             </div>

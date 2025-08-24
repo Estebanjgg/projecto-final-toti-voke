@@ -451,7 +451,7 @@
   gap: 8px;
 }
 
-.favorites-button, .view-all-button {
+.view-all-button {
   background: none;
   border: 1px solid #e2e8f0;
   padding: 4px 8px;
@@ -461,7 +461,7 @@
   transition: all 0.2s ease;
 }
 
-.favorites-button:hover, .view-all-button:hover {
+.view-all-button:hover {
   background: #f7fafc;
   border-color: #cbd5e0;
 }
@@ -540,6 +540,27 @@
 .payment-content {
   text-align: center;
   padding: 40px 20px;
+}
+
+/* Contenido de favoritos */
+.favorites-content {
+  text-align: center;
+  padding: 40px 20px;
+  color: #718096;
+}
+
+.favorites-content .placeholder-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #4a5568;
+  margin: 0 0 8px 0;
+}
+
+.favorites-content .subtitle-text {
+  font-size: 14px;
+  color: #a0aec0;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .add-button {
