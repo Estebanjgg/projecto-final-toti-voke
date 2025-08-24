@@ -44,10 +44,10 @@
 }
 
 /* Action buttons */
-.wishlist-btn,
 .add-to-cart-btn {
   position: absolute;
   top: 15px;
+  right: 15px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 50%;
@@ -61,15 +61,6 @@
   z-index: 2;
 }
 
-.wishlist-btn {
-  right: 55px;
-}
-
-.add-to-cart-btn {
-  right: 15px;
-}
-
-.wishlist-btn:hover,
 .add-to-cart-btn:hover {
   background: #4A90E2;
   color: white;
@@ -191,13 +182,8 @@
     font-size: 16px;
   }
   
-  .wishlist-btn,
   .add-to-cart-btn {
     width: 30px;
     height: 30px;
-  }
-  
-  .wishlist-btn {
-    right: 45px;
   }
 }

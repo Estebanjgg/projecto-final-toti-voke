@@ -1,8 +1,10 @@
 import React from 'react';
+import FavoriteButton from './ui/FavoriteButton';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
   const {
+    id,
     image,
     title,
     brand,
@@ -22,10 +24,12 @@ const ProductCard = ({ product }) => {
         {isBestSeller && <span className="badge bestseller-badge">Mais Bem</span>}
       </div>
 
-      {/* Wishlist button */}
-      <button className="wishlist-btn">
-        <span>♡</span>
-      </button>
+      {/* Favorite button */}
+      <FavoriteButton 
+        productId={id} 
+        className="card-overlay" 
+        size="medium"
+      />
 
       {/* Add to cart button */}
       <button className="add-to-cart-btn">
