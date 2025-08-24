@@ -116,12 +116,27 @@ class AuthAPI {
   // Actualizar perfil del usuario
   async updateProfile(profileData) {
     try {
-      // Asegurar que los datos no sean undefined
-      const cleanData = {
-        first_name: profileData.first_name || '',
-        last_name: profileData.last_name || '',
-        phone: profileData.phone || ''
-      };
+      console.log('🌐 authAPI.updateProfile - Datos originales recibidos:', profileData);
+      
+      // Enviar solo los campos que realmente se quieren actualizar
+      const cleanData = {};
+      
+      // Solo incluir campos que tienen valores válidos
+      if (profileData.first_name && profileData.first_name.trim().length > 0) {
+        cleanData.first_name = profileData.first_name.trim();
+      }
+      
+      if (profileData.last_name && profileData.last_name.trim().length > 0) {
+        cleanData.last_name = profileData.last_name.trim();
+      }
+      
+      // Para phone, siempre incluir (puede ser string vacío para eliminarlo)
+      if (profileData.hasOwnProperty('phone')) {
+        cleanData.phone = profileData.phone ? profileData.phone.trim() : '';
+      }
+      
+      console.log('🌐 authAPI.updateProfile - Datos limpiados a enviar:', cleanData);
+      console.log('🌐 authAPI.updateProfile - JSON que se enviará:', JSON.stringify(cleanData));
       
       const response = await this.makeRequest('/profile', {
         method: 'PUT',

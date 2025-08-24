@@ -49,17 +49,7 @@ const Profile = () => {
   // Inicializar datos cuando el usuario cambie
   React.useEffect(() => {
     if (user) {
-      setEditProfileData({
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
-        phone: user.phone || ''
-      });
-    }
-  }, [user]);
-
-  // Inicializar datos cuando el usuario cambie
-  React.useEffect(() => {
-    if (user) {
+      console.log('🔄 Inicializando editProfileData con usuario:', user);
       setEditProfileData({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
@@ -163,6 +153,14 @@ const Profile = () => {
         phone: editProfileData.phone ? editProfileData.phone.trim() : ''
       };
       
+      console.log('📊 Estado editProfileData completo:', editProfileData);
+      console.log('📤 Datos preparados para enviar:', updatedFields);
+      console.log('📤 Tipos de datos:', {
+        first_name: typeof updatedFields.first_name,
+        last_name: typeof updatedFields.last_name,
+        phone: typeof updatedFields.phone
+      });
+      
       await updateProfile(updatedFields);
       setSuccess('Perfil actualizado exitosamente');
       setErrors({});
@@ -213,6 +211,8 @@ const Profile = () => {
       last_name: user?.last_name || '',
       phone: user?.phone || ''
     };
+    console.log('✏️ Inicializando edición con usuario:', user);
+    console.log('✏️ Datos iniciales para edición:', currentData);
     setEditProfileData(currentData);
     setIsEditingProfile(true);
     setErrors({}); // Limpiar errores previos
