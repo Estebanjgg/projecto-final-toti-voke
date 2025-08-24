@@ -116,9 +116,25 @@
 /* Variantes de posicionamiento para diferentes contextos */
 .favorite-button.card-overlay {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
+  top: 15px;
+  right: 15px;
+  z-index: 3; /* Higher than cart button */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.favorite-button.card-overlay:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.favorite-button.card-overlay.is-favorite {
+  background: rgba(255, 182, 193, 0.95);
+}
+
+.favorite-button.card-overlay.is-favorite:hover {
+  background: rgba(255, 160, 177, 1);
 }
 
 .favorite-button.product-detail {
@@ -135,5 +151,16 @@
   .favorite-button.large {
     width: 40px;
     height: 40px;
+  }
+  
+  .favorite-button.card-overlay {
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .favorite-button.card-overlay .favorite-icon {
+    font-size: 14px;
   }
 }
