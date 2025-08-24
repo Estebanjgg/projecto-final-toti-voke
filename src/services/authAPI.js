@@ -164,6 +164,57 @@ class AuthAPI {
     }
   }
 
+  // Solicitar recuperación de contraseña
+  async forgotPassword(email) {
+    try {
+      const response = await this.makeRequest('/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+      });
+
+      return response;
+    } catch (error) {
+      if (error.message.includes('Usuario no encontrado')) {
+        throw new Error('No existe una cuenta con este email.');
+      }
+      throw error;
+    }
+  }
+
+  // Verificar token de recuperación
+  async verifyResetToken(token) {
+    try {
+      const response = await this.makeRequest('/verify-reset-token', {
+        method: 'POST',
+        body: JSON.stringify({ token })
+      });
+
+      return response;
+    } catch (error) {
+      if (error.message.includes('Token inválido') || error.message.includes('expirado')) {
+        throw new Error('El enlace de recuperación es inválido o ha expirado.');
+      }
+      throw error;
+    }
+  }
+
+  // Restablecer contraseña con token
+  async resetPassword(data) {
+    try {
+      const response = await this.makeRequest('/reset-password', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      });
+
+      return response;
+    } catch (error) {
+      if (error.message.includes('Token inválido') || error.message.includes('expirado')) {
+        throw new Error('El enlace de recuperación es inválido o ha expirado.');
+      }
+      throw error;
+    }
+  }
+
   // Verificar si un token es válido
   async verifyToken(token = null) {
     try {

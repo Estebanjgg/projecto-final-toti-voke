@@ -7,6 +7,9 @@ import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Profile from './components/auth/Profile';
+import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPassword from './components/auth/ResetPassword';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import './App.css';
 
 // Componente Layout que incluye Header y Footer
@@ -30,11 +33,35 @@ function App() {
               <Home />
             </Layout>
           } />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={
+            <ProtectedRoute requireAuth={false}>
+              <Layout>
+                <Login />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/register" element={
+            <ProtectedRoute requireAuth={false}>
+              <Layout>
+                <Register />
+              </Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/profile" element={
+            <ProtectedRoute requireAuth={true}>
+              <Layout>
+                <Profile />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/forgot-password" element={
             <Layout>
-              <Profile />
+              <ForgotPassword />
+            </Layout>
+          } />
+          <Route path="/reset-password/:token" element={
+            <Layout>
+              <ResetPassword />
             </Layout>
           } />
         </Routes>

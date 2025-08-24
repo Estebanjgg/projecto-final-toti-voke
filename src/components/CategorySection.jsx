@@ -50,7 +50,6 @@ const CategorySection = ({ onCategorySelect, selectedCategory }) => {
   return (
     <section className="category-section">
       <div className="container">
-        <h2 className="section-title">Categorias</h2>
         <div className="categories-grid">
           {categories.map((category, index) => (
             <div 
@@ -58,11 +57,12 @@ const CategorySection = ({ onCategorySelect, selectedCategory }) => {
               className={`category-item ${selectedCategory === category.key ? 'active' : ''}`}
               onClick={() => handleCategoryClick(category)}
             >
-              <div 
-                className="category-icon"
-                style={{ backgroundColor: category.color }}
-              >
-                <img src={category.icon} alt={category.name} className="category-icon-img" />
+              <div className="category-icon">
+                <img 
+                  src={category.icon} 
+                  alt={category.name} 
+                  className="category-icon-img"
+                />
               </div>
               <span className="category-name">{category.name}</span>
             </div>

@@ -49,29 +49,52 @@ const AuthButton = () => {
   return (
     <div className="auth-buttons">
       <Link to="/login" className="action-btn login-btn">
-        <span>🔑</span>
-        <span>Entrar</span>
-      </Link>
-      <Link to="/register" className="action-btn register-btn">
         <span>👤</span>
-        <span>Registro</span>
       </Link>
     </div>
   );
 };
 
 const Header = () => {
+  const [currentMessageIndex, setCurrentMessageIndex] = React.useState(0);
+  
+  const messages = [
+    "📧 Frete grátis para todo Brasil",
+    "👤 06 meses de garantia com a Voke",
+    "💳 5% de Desconto para Pix e Boleto"
+  ];
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prevIndex) => 
+        (prevIndex + 1) % messages.length
+      );
+    }, 3000); // Cambia cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  const handlePrevMessage = () => {
+    setCurrentMessageIndex((prevIndex) => 
+      prevIndex === 0 ? messages.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNextMessage = () => {
+    setCurrentMessageIndex((prevIndex) => 
+      (prevIndex + 1) % messages.length
+    );
+  };
+
   return (
     <header className="header">
       {/* Top bar */}
       <div className="top-bar">
         <div className="container">
           <div className="top-bar-content">
-            <span>📧 Até mesmo de gratuito com o Voke</span>
-            <div className="top-bar-nav">
-              <span>←</span>
-              <span>→</span>
-            </div>
+            <button className="top-nav-arrow" onClick={handlePrevMessage}>←</button>
+            <span className="promotional-message">{messages[currentMessageIndex]}</span>
+            <button className="top-nav-arrow" onClick={handleNextMessage}>→</button>
           </div>
         </div>
       </div>
@@ -99,14 +122,11 @@ const Header = () => {
             <div className="user-actions">
               <button className="action-btn">
                 <span>♡</span>
-                <span>2</span>
               </button>
               <button className="action-btn cart">
                 <span>🛒</span>
-                <span className="cart-count">1</span>
+                <span className="cart-count">0</span>
               </button>
-              
-              {/* Auth button */}
               <AuthButton />
             </div>
           </div>

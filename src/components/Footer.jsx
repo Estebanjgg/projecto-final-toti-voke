@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import './Footer.css';
 
 const Footer = () => {
-  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle newsletter subscription
     console.log('Newsletter subscription:', { name, email });
+    // Reset form
     setName('');
     setEmail('');
   };
@@ -42,18 +43,6 @@ const Footer = () => {
               Inscreva-se
             </button>
           </form>
-        </div>
-      </div>
-
-      {/* Trust Badges */}
-      <div className="trust-badges">
-        <div className="trust-container">
-          <div className="trust-badge">
-            <img src="/api/placeholder/120/60" alt="Ótimo - Reclame Aqui" className="trust-logo" />
-          </div>
-          <div className="trust-badge">
-            <img src="/api/placeholder/120/60" alt="Verificada por Reclame Aqui" className="trust-logo" />
-          </div>
         </div>
       </div>
 
