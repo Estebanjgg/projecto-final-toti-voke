@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFavorites } from '../../contexts/FavoritesContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { authAPI } from '../../services/authAPI';
 import ConfirmModal from '../ui/ConfirmModal';
@@ -7,6 +9,7 @@ import './Auth.css';
 
 const Profile = () => {
   const { user, updateProfile, changePassword, logout, loading } = useAuth();
+  const { favorites } = useFavorites();
   
   // Hook para alertas
   const { 
@@ -646,14 +649,25 @@ const Profile = () => {
             <div className="card-title">
               <h2>Mis Favoritos</h2>
               <div className="card-actions">
-                <button className="view-all-button">Ver todos</button>
+                <Link to="/favorites" className="view-all-button">
+                  Ver todos ({favorites.length})
+                </Link>
               </div>
             </div>
           </div>
           
           <div className="favorites-content">
-            <p className="placeholder-text">Aún no tienes productos favoritos</p>
-            <p className="subtitle-text">Los productos que marques como favoritos aparecerán aquí</p>
+            {favorites.length === 0 ? (
+              <>
+                <p className="placeholder-text">Aún no tienes productos favoritos</p>
+                <p className="subtitle-text">Los productos que marques como favoritos aparecerán aquí</p>
+              </>
+            ) : (
+              <div className="favorites-preview">
+                <p className="favorites-count">{favorites.length} {favorites.length === 1 ? 'producto favorito' : 'productos favoritos'}</p>
+                <p className="subtitle-text">Ve a la página de favoritos para ver todos tus productos</p>
+              </div>
+            )}
           </div>
         </div>
 

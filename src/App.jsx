@@ -6,6 +6,7 @@ import { FavoritesProvider } from './contexts/FavoritesContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
+import Favorites from './components/Favorites';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Profile from './components/auth/Profile';
@@ -48,6 +49,11 @@ function App() {
               <Route path="/" element={
                 <Layout>
                   <Home />
+                </Layout>
+              } />
+              <Route path="/favorites" element={
+                <Layout>
+                  <Favorites />
                 </Layout>
               } />
               <Route path="/login" element={

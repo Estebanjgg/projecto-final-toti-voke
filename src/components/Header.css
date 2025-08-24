@@ -146,7 +146,8 @@
   background-color: rgba(74, 144, 226, 0.1);
 }
 
-.cart-count {
+.cart-count,
+.favorites-count {
   background: #FF6B6B;
   color: white;
   border-radius: 50%;
@@ -159,6 +160,10 @@
   position: absolute;
   top: -5px;
   right: -5px;
+}
+
+.favorites-count {
+  background: #FF1493;
 }
 
 /* Auth buttons */

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useFavorites } from '../contexts/FavoritesContext';
 import Modal from './Modal';
 import './Header.css';
 
@@ -80,6 +81,7 @@ const AuthButton = () => {
 
 const Header = () => {
   const [currentMessageIndex, setCurrentMessageIndex] = React.useState(0);
+  const { favorites } = useFavorites();
   
   const messages = [
     "📧 Frete grátis para todo Brasil",
@@ -143,9 +145,12 @@ const Header = () => {
 
             {/* User actions */}
             <div className="user-actions">
-              <button className="action-btn">
+              <Link to="/favorites" className="action-btn">
                 <span>♡</span>
-              </button>
+                {favorites.length > 0 && (
+                  <span className="favorites-count">{favorites.length}</span>
+                )}
+              </Link>
               <AuthButton />
               <button className="action-btn cart">
                 <span>🛒</span>
