@@ -146,20 +146,38 @@ const Profile = () => {
     }
 
     try {
-      // Preparar datos para enviar - asegurándonos de que no sean undefined
-      const updatedFields = {
-        first_name: editProfileData.first_name.trim(),
-        last_name: editProfileData.last_name.trim(),
-        phone: editProfileData.phone ? editProfileData.phone.trim() : ''
-      };
+      // Preparar datos para enviar - solo campos que realmente cambiaron
+      const updatedFields = {};
+      
+      // Solo incluir campos que realmente cambiaron
+      if (editProfileData.first_name.trim() !== (user?.first_name || '')) {
+        updatedFields.first_name = editProfileData.first_name.trim();
+      }
+      
+      if (editProfileData.last_name.trim() !== (user?.last_name || '')) {
+        updatedFields.last_name = editProfileData.last_name.trim();
+      }
+      
+      if (editProfileData.phone !== (user?.phone || '')) {
+        updatedFields.phone = editProfileData.phone ? editProfileData.phone.trim() : '';
+      }
       
       console.log('📊 Estado editProfileData completo:', editProfileData);
-      console.log('📤 Datos preparados para enviar:', updatedFields);
+      console.log('� Usuario actual:', user);
+      console.log('�📤 Datos preparados para enviar (solo cambios):', updatedFields);
       console.log('📤 Tipos de datos:', {
         first_name: typeof updatedFields.first_name,
         last_name: typeof updatedFields.last_name,
         phone: typeof updatedFields.phone
       });
+      
+      // Verificar si hay cambios para enviar
+      if (Object.keys(updatedFields).length === 0) {
+        setSuccess('No hay cambios para actualizar');
+        setIsEditingProfile(false);
+        setTimeout(() => setSuccess(''), 3000);
+        return;
+      }
       
       await updateProfile(updatedFields);
       setSuccess('Perfil actualizado exitosamente');
