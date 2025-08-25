@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFavorites } from '../contexts/FavoritesContext';
+import { useCart } from '../contexts/CartContext';
+import CartIcon from './ui/CartIcon';
+import CartDrawer from './ui/CartDrawer';
 import Modal from './Modal';
 import './Header.css';
 
@@ -81,7 +84,9 @@ const AuthButton = () => {
 
 const Header = () => {
   const [currentMessageIndex, setCurrentMessageIndex] = React.useState(0);
+  const [isCartOpen, setIsCartOpen] = React.useState(false);
   const { favorites } = useFavorites();
+  const { totalItems } = useCart();
   
   const messages = [
     "📧 Frete grátis para todo Brasil",
@@ -109,6 +114,14 @@ const Header = () => {
     setCurrentMessageIndex((prevIndex) => 
       (prevIndex + 1) % messages.length
     );
+  };
+
+  const handleCartToggle = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  const handleCartClose = () => {
+    setIsCartOpen(false);
   };
 
   return (
@@ -152,10 +165,11 @@ const Header = () => {
                 )}
               </Link>
               <AuthButton />
-              <button className="action-btn cart">
-                <span>🛒</span>
-                <span className="cart-count">0</span>
-              </button>
+              <CartIcon 
+                className="action-btn cart"
+                size="medium"
+                onClick={() => setIsCartOpen(true)}
+              />
             </div>
           </div>
         </div>
@@ -176,6 +190,12 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      
+      {/* Cart Drawer */}
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+      />
     </header>
   );
 };

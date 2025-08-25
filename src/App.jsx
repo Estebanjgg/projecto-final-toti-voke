@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { AlertProvider } from './contexts/AlertContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
+import { CartProvider } from './contexts/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -44,52 +45,54 @@ function App() {
     <AuthProvider>
       <AlertProvider>
         <FavoritesProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={
-                <Layout>
-                  <Home />
-                </Layout>
-              } />
-              <Route path="/favorites" element={
-                <Layout>
-                  <Favorites />
-                </Layout>
-              } />
-              <Route path="/login" element={
-                <ProtectedRoute requireAuth={false}>
+          <CartProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={
                   <Layout>
-                    <Login />
+                    <Home />
                   </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/register" element={
-                <ProtectedRoute requireAuth={false}>
+                } />
+                <Route path="/favorites" element={
                   <Layout>
-                    <Register />
+                    <Favorites />
                   </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute requireAuth={true}>
+                } />
+                <Route path="/login" element={
+                  <ProtectedRoute requireAuth={false}>
+                    <Layout>
+                      <Login />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/register" element={
+                  <ProtectedRoute requireAuth={false}>
+                    <Layout>
+                      <Register />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute requireAuth={true}>
+                    <Layout>
+                      <Profile />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/forgot-password" element={
                   <Layout>
-                    <Profile />
+                    <ForgotPassword />
                   </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/forgot-password" element={
-                <Layout>
-                  <ForgotPassword />
-                </Layout>
-              } />
-              <Route path="/reset-password/:token" element={
-                <Layout>
-                  <ResetPassword />
-                </Layout>
-              } />
-            </Routes>
-            <GlobalAlerts />
-          </Router>
+                } />
+                <Route path="/reset-password/:token" element={
+                  <Layout>
+                    <ResetPassword />
+                  </Layout>
+                } />
+              </Routes>
+              <GlobalAlerts />
+            </Router>
+          </CartProvider>
         </FavoritesProvider>
       </AlertProvider>
     </AuthProvider>

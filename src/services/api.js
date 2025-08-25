@@ -166,6 +166,11 @@ export const formatPriceNumber = (price) => {
   }).format(price);
 };
 
+// Función helper para obtener productos por categoría (para TechOffers)
+export const getProductsByCategory = async (category) => {
+  return categoriesAPI.getProducts(category);
+};
+
 // Hook personalizado para manejar estados de carga
 export const useApiState = () => {
   const [loading, setLoading] = React.useState(false);

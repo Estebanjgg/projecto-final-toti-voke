@@ -1,0 +1,132 @@
+.cart-icon-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  gap: 8px;
+}
+
+.cart-icon-container:hover {
+  transform: translateY(-1px);
+}
+
+.cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.cart-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Tamaños */
+.cart-icon-container.small .cart-icon {
+  font-size: 1.2rem;
+}
+
+.cart-icon-container.medium .cart-icon {
+  font-size: 1.5rem;
+}
+
+.cart-icon-container.large .cart-icon {
+  font-size: 1.8rem;
+}
+
+/* Badge del contador */
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: pulse 0.5s ease-in-out;
+}
+
+.cart-icon-container.small .cart-badge {
+  min-width: 16px;
+  height: 16px;
+  font-size: 0.65rem;
+  top: -6px;
+  right: -6px;
+}
+
+.cart-icon-container.large .cart-badge {
+  min-width: 24px;
+  height: 24px;
+  font-size: 0.85rem;
+  top: -10px;
+  right: -10px;
+}
+
+/* Texto del carrito */
+.cart-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cart-icon-container.small .cart-text {
+  font-size: 0.75rem;
+}
+
+.cart-icon-container.large .cart-text {
+  font-size: 1rem;
+}
+
+/* Animaciones */
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Hover effects */
+.cart-icon-container:hover .cart-badge {
+  background: #c82333;
+  transform: scale(1.05);
+}
+
+.cart-icon-container:hover .cart-text {
+  color: #495057;
+}
+
+/* Active state */
+.cart-icon-container:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-text {
+    display: none;
+  }
+  
+  .cart-icon-container {
+    gap: 0;
+  }
+}

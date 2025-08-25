@@ -4,6 +4,7 @@ import CategorySection from './CategorySection';
 import ProductSection from './ProductSection';
 import CategoryProducts from './CategoryProducts';
 import BrandOffers from './BrandOffers';
+import TechOffers from './TechOffers';
 import VideoSection from './VideoSection';
 import { productsAPI } from '../services/api';
 
@@ -96,7 +97,11 @@ const Home = () => {
         backgroundColor="#4A90E2"
       />
       
-      <BrandOffers onCategorySelect={handleCategorySelect} />
+      {/* Sección de Ofertas Tech con filtros por categoría - ARRIBA */}
+      <TechOffers />
+      
+      {/* Tarjetas de las lojas de marcas - DEBAJO DE OFERTAS TECH */}
+      <BrandOffers />
       
       <ProductSection 
         title="🔥 Ofertas Imperdíveis" 

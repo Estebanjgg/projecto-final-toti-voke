@@ -43,28 +43,15 @@
   background: #4ECDC4;
 }
 
-/* Action buttons */
-.add-to-cart-btn {
+/* Action buttons overlay */
+.card-overlay {
   position: absolute;
-  top: 15px;
-  right: 55px; /* More space between cart and favorite button */
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
   z-index: 2;
 }
 
-.add-to-cart-btn:hover {
-  background: #4A90E2;
-  color: white;
-  border-color: #4A90E2;
+.cart-overlay {
+  top: 15px;
+  right: 55px; /* Space between cart and favorite button */
 }
 
 /* Product image */
@@ -183,9 +170,7 @@
     font-size: 16px;
   }
   
-  .add-to-cart-btn {
-    width: 30px;
-    height: 30px;
+  .cart-overlay {
     right: 48px; /* More space for mobile too */
     top: 12px;
   }

@@ -1,5 +1,6 @@
 import React from 'react';
 import FavoriteButton from './ui/FavoriteButton';
+import AddToCartButton from './ui/AddToCartButton';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -32,9 +33,12 @@ const ProductCard = ({ product }) => {
       />
 
       {/* Add to cart button */}
-      <button className="add-to-cart-btn">
-        <span>🛒</span>
-      </button>
+      <AddToCartButton 
+        productId={id}
+        variant="icon"
+        size="medium"
+        className="card-overlay cart-overlay"
+      />
 
       {/* Product image */}
       <div className="product-image">
