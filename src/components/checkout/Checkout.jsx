@@ -4,17 +4,20 @@ import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { checkoutAPI } from '../../services/checkoutAPI';
+import { paymentsAPI } from '../../services/paymentsAPI';
 import CheckoutForm from './CheckoutForm';
 import OrderSummary from './OrderSummary';
 import PaymentMethods from './PaymentMethods';
 import ShippingOptions from './ShippingOptions';
 import OrderConfirmation from './OrderConfirmation';
+import PaymentProcessing from './PaymentProcessing';
 import './Checkout.css';
 
 const CHECKOUT_STEPS = {
   SHIPPING: 'shipping',
   PAYMENT: 'payment',
   REVIEW: 'review',
+  PROCESSING: 'processing',
   CONFIRMATION: 'confirmation'
 };
 
@@ -43,7 +46,16 @@ const Checkout = () => {
       postal_code: '',
       country: 'Brasil'
     },
-    billing_address: null,
+    billing_address: {
+      street: '',
+      number: '',
+      complement: '',
+      neighborhood: '',
+      city: '',
+      state: '',
+      postal_code: '',
+      country: 'Brasil'
+    },
     same_as_shipping: true,
     payment_method: '',
     notes: '',
@@ -54,13 +66,16 @@ const Checkout = () => {
   const [shippingOptions, setShippingOptions] = useState([]);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedShipping, setSelectedShipping] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [paymentData, setPaymentData] = useState({});
   const [orderResult, setOrderResult] = useState(null);
+  const [paymentResult, setPaymentResult] = useState(null);
 
   // Verificar que hay items en el carrito
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
       showError('Tu carrito está vacío');
-      navigate('/cart');
+      navigate('/');
     }
   }, [cartItems, navigate, showError]);
 
@@ -133,12 +148,39 @@ const Checkout = () => {
   const validateCurrentStep = async () => {
     try {
       setLoading(true);
-      const response = await checkoutAPI.validateCheckout(formData);
+      
+      // Preparar datos para validación
+      const dataToValidate = { ...formData };
+      
+      // Si same_as_shipping es true, copiar shipping_address a billing_address
+      if (formData.same_as_shipping) {
+        dataToValidate.billing_address = { ...formData.shipping_address };
+      }
+      
+      // Validación específica por paso
+      if (currentStep === CHECKOUT_STEPS.PAYMENT) {
+        if (!selectedPaymentMethod) {
+          showError('Por favor selecciona un método de pago');
+          return false;
+        }
+        
+        // Validar datos del método de pago seleccionado
+        if ((selectedPaymentMethod === 'credit_card' || selectedPaymentMethod === 'debit_card')) {
+          if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvv || !paymentData.cardName) {
+            showError('Por favor completa todos los datos de la tarjeta');
+            return false;
+          }
+        }
+        
+        // Actualizar datos con el método de pago
+        dataToValidate.payment_method = selectedPaymentMethod;
+      }
+      
+      const response = await checkoutAPI.validateCheckout(dataToValidate);
       setValidationErrors({});
       return true;
     } catch (error) {
       if (error.message && error.message.includes('Datos de checkout inválidos')) {
-        // Manejar errores de validación específicos
         setValidationErrors(error.errors || {});
       } else {
         showError(error.message || 'Error en la validación');
@@ -184,17 +226,54 @@ const Checkout = () => {
   const handleCreateOrder = async () => {
     try {
       setLoading(true);
-      const response = await checkoutAPI.createOrder(formData);
+      setCurrentStep(CHECKOUT_STEPS.PROCESSING);
       
-      setOrderResult(response.data);
-      setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+      // Preparar datos para la orden
+      const orderData = { ...formData };
       
-      // Limpiar carrito después de crear la orden exitosamente
-      await clearCart();
+      // Si same_as_shipping es true, copiar shipping_address a billing_address
+      if (formData.same_as_shipping) {
+        orderData.billing_address = { ...formData.shipping_address };
+      }
       
-      showSuccess('¡Orden creada exitosamente!');
+      // Asegurar que el payment_method esté incluido
+      orderData.payment_method = selectedPaymentMethod;
+      
+      // Paso 1: Crear la orden
+      const response = await checkoutAPI.createOrder(orderData);
+      const order = response.data.order;
+      setOrderResult(order);
+      
+      // Paso 2: Procesar el pago
+      const paymentRequestData = {
+        order_id: order.id,
+        payment_method: selectedPaymentMethod,
+        payment_data: paymentData
+      };
+      
+      const paymentResponse = await paymentsAPI.processPayment(paymentRequestData);
+      setPaymentResult(paymentResponse.data);
+      
+      // Paso 3: Manejar el resultado del pago
+      if (paymentResponse.data.payment_result.status === 'approved') {
+        // Pago aprobado inmediatamente (tarjetas)
+        showSuccess('¡Pago procesado exitosamente! Tu pedido ha sido confirmado.');
+        await clearCart();
+        setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+      } else if (paymentResponse.data.payment_result.status === 'pending') {
+        // Pago pendiente (PIX, Boleto)
+        showSuccess('¡Orden creada exitosamente! Completa el pago para confirmar tu pedido.');
+        await clearCart();
+        setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+      } else {
+        throw new Error('Error en el procesamiento del pago');
+      }
+      
     } catch (error) {
-      showError(error.message || 'Error al crear la orden');
+      console.error('Error en el checkout:', error);
+      showError(error.message || 'Error al procesar el pedido');
+      // Volver al paso de revisión si hay error
+      setCurrentStep(CHECKOUT_STEPS.REVIEW);
     } finally {
       setLoading(false);
     }
@@ -234,8 +313,10 @@ const Checkout = () => {
     return (
       <OrderConfirmation 
         order={orderResult}
+        paymentResult={paymentResult}
         onContinueShopping={() => navigate('/')}
-        onViewOrder={() => navigate(`/orders/${orderResult.order_number}`)}
+        onViewOrder={() => navigate(`/orders`)}
+        onViewMyOrders={() => navigate('/orders')}
       />
     );
   }
@@ -288,10 +369,17 @@ const Checkout = () => {
 
             {currentStep === CHECKOUT_STEPS.PAYMENT && (
               <PaymentMethods
-                methods={paymentMethods}
-                selected={formData.payment_method}
-                onSelect={(method) => handleFormChange('payment_method', method)}
-                validationError={validationErrors.payment_method}
+                selectedMethod={selectedPaymentMethod}
+                onMethodChange={setSelectedPaymentMethod}
+                paymentData={paymentData}
+                onPaymentDataChange={setPaymentData}
+              />
+            )}
+
+            {currentStep === CHECKOUT_STEPS.PROCESSING && (
+              <PaymentProcessing 
+                paymentMethod={selectedPaymentMethod}
+                orderNumber={orderResult?.order_number}
               />
             )}
 

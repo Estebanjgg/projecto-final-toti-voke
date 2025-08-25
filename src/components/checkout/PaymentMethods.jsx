@@ -10,8 +10,9 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
     const fetchPaymentMethods = async () => {
       try {
         setLoading(true);
-        const methods = await checkoutAPI.getPaymentMethods();
-        setPaymentMethods(methods);
+        const response = await checkoutAPI.getPaymentMethods();
+        // La respuesta del backend viene en response.data
+        setPaymentMethods(response.data || []);
       } catch (err) {
         console.error('Error al cargar métodos de pago:', err);
         setError('Error al cargar métodos de pago');
@@ -87,7 +88,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
       
       {/* Selección de método de pago */}
       <div className="payment-options">
-        {paymentMethods.map((method) => (
+        {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
           <div 
             key={method.id} 
             className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`}

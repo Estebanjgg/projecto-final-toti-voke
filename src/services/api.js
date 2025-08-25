@@ -198,9 +198,11 @@ export const useApiState = () => {
 const api = {
   get: async (endpoint, config = {}) => {
     const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
     const headers = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(sessionId && { 'x-session-id': sessionId }),
       ...config.headers,
     };
     
@@ -226,9 +228,11 @@ const api = {
   
   post: async (endpoint, data = {}, config = {}) => {
     const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
     const headers = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(sessionId && { 'x-session-id': sessionId }),
       ...config.headers,
     };
     
@@ -252,9 +256,11 @@ const api = {
   
   put: async (endpoint, data = {}, config = {}) => {
     const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
     const headers = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(sessionId && { 'x-session-id': sessionId }),
       ...config.headers,
     };
     
@@ -278,9 +284,11 @@ const api = {
   
   delete: async (endpoint, config = {}) => {
     const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
     const headers = {
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(sessionId && { 'x-session-id': sessionId }),
       ...config.headers,
     };
     
@@ -303,3 +311,6 @@ const api = {
 };
 
 export default api;
+
+// También exportar como apiClient para compatibilidad
+export const apiClient = api;

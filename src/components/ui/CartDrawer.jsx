@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import AddToCartButton from './AddToCartButton';
 import './CartDrawer.css';
@@ -89,6 +90,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
 };
 
 const CartDrawer = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const { 
     cartItems, 
     totalItems, 
@@ -119,8 +121,17 @@ const CartDrawer = ({ isOpen, onClose }) => {
   };
 
   const handleCheckout = () => {
-    // TODO: Implementar checkout
-    console.log('Proceder al checkout');
+    // Verificar que hay items en el carrito
+    if (cartItems.length === 0) {
+      alert('Tu carrito está vacío');
+      return;
+    }
+    
+    // Cerrar el drawer del carrito
+    onClose();
+    
+    // Navegar a la página de checkout
+    navigate('/checkout');
   };
 
   if (!isOpen) return null;

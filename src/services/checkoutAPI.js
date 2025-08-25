@@ -2,8 +2,8 @@ import { API_BASE_URL } from '../config/api-config';
 
 // Función para obtener headers con autenticación
 const getHeaders = () => {
-  const token = localStorage.getItem('authToken');
-  const sessionId = localStorage.getItem('sessionId');
+  const token = localStorage.getItem('token'); // Cambiar de 'authToken' a 'token'
+  const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
   
   return {
     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const checkoutAPI = {
   // Crear orden
   createOrder: async (orderData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/checkout`, {
+      const response = await fetch(`${API_BASE_URL}/checkout/create-order`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(orderData)

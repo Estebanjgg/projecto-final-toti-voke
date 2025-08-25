@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const OrderConfirmation = ({ order, paymentMethod }) => {
+const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrder, onViewMyOrders }) => {
   if (!order) {
     return (
       <div className="order-confirmation">
@@ -126,21 +126,86 @@ const OrderConfirmation = ({ order, paymentMethod }) => {
               </span>
             </p>
             
-            {order.payment_method === 'pix' && order.payment_status === 'pending' && (
-              <div className="pix-instructions">
-                <p><strong>Instrucciones PIX:</strong></p>
-                <p>Usa el código QR o la clave PIX que enviamos a tu email para completar el pago.</p>
-                <div className="pix-code">
-                  <p>Clave PIX: <code>{order.pix_code || 'Enviada por email'}</code></p>
-                </div>
-              </div>
-            )}
-            
-            {order.payment_method === 'boleto' && order.payment_status === 'pending' && (
-              <div className="boleto-instructions">
-                <p><strong>Instrucciones Boleto:</strong></p>
-                <p>El boleto fue enviado a tu email. Puedes pagarlo en cualquier banco, lotérica o por internet banking.</p>
-                <p><strong>Vencimiento:</strong> {formatDate(order.boleto_due_date || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000))}</p>
+            {/* Mostrar información específica según el resultado del pago */}
+            {paymentResult && paymentResult.payment_result && (
+              <div className="payment-details">
+                {paymentResult.payment_result.transaction_id && (
+                  <p><strong>ID de Transacción:</strong> {paymentResult.payment_result.transaction_id}</p>
+                )}
+                
+                {/* PIX específico */}
+                {order.payment_method === 'pix' && paymentResult.payment_result.qr_code && (
+                  <div className="pix-instructions">
+                    <p><strong>Instrucciones PIX:</strong></p>
+                    <p>Usa el código QR o la clave PIX para completar el pago.</p>
+                    <div className="pix-details">
+                      <p><strong>Clave PIX:</strong> <code>{paymentResult.payment_result.pix_key}</code></p>
+                      <p><strong>Valor:</strong> R$ {paymentResult.payment_result.amount.toFixed(2)}</p>
+                      <p><strong>Vence en:</strong> 15 minutos</p>
+                    </div>
+                    <button 
+                      className="btn btn-outline"
+                      onClick={() => {
+                        // Simular confirmación de PIX después de 5 segundos
+                        setTimeout(() => {
+                          alert('PIX confirmado! (Simulación)');
+                          window.location.reload();
+                        }, 5000);
+                      }}
+                    >
+                      Simular Pago PIX
+                    </button>
+                  </div>
+                )}
+                
+                {/* Boleto específico */}
+                {order.payment_method === 'boleto' && paymentResult.payment_result.boleto_number && (
+                  <div className="boleto-instructions">
+                    <p><strong>Instrucciones Boleto:</strong></p>
+                    <div className="boleto-details">
+                      <p><strong>Número:</strong> {paymentResult.payment_result.boleto_number}</p>
+                      <p><strong>Código de barras:</strong></p>
+                      <code className="barcode">{paymentResult.payment_result.barcode}</code>
+                      <p><strong>Vencimiento:</strong> {formatDate(paymentResult.payment_result.due_date)}</p>
+                    </div>
+                    <div className="boleto-actions">
+                      <button 
+                        className="btn btn-primary"
+                        onClick={() => {
+                          if (paymentResult.payment_result.download_url) {
+                            window.open(paymentResult.payment_result.download_url, '_blank');
+                          }
+                        }}
+                      >
+                        Descargar Boleto
+                      </button>
+                      <button 
+                        className="btn btn-outline"
+                        onClick={() => {
+                          // Simular confirmación de boleto
+                          setTimeout(() => {
+                            alert('Boleto pago confirmado! (Simulación)');
+                            window.location.reload();
+                          }, 3000);
+                        }}
+                      >
+                        Simular Pago Boleto
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Tarjeta específico */}
+                {(order.payment_method === 'credit_card' || order.payment_method === 'debit_card') && (
+                  <div className="card-payment-details">
+                    {paymentResult.payment_result.authorization_code && (
+                      <p><strong>Código de autorización:</strong> {paymentResult.payment_result.authorization_code}</p>
+                    )}
+                    {paymentResult.payment_result.last_four_digits && (
+                      <p><strong>Tarjeta terminada en:</strong> ***{paymentResult.payment_result.last_four_digits}</p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -223,12 +288,18 @@ const OrderConfirmation = ({ order, paymentMethod }) => {
 
       {/* Acciones */}
       <div className="confirmation-actions">
-        <Link to="/orders" className="btn btn-primary">
+        <button onClick={onViewMyOrders} className="btn btn-primary">
           Ver Mis Pedidos
-        </Link>
-        <Link to="/" className="btn btn-secondary">
+        </button>
+        <button onClick={onContinueShopping} className="btn btn-secondary">
           Continuar Comprando
-        </Link>
+        </button>
+        <button 
+          onClick={onViewOrder}
+          className="btn btn-outline"
+        >
+          Ver Detalles del Pedido
+        </button>
         <button 
           className="btn btn-outline"
           onClick={() => window.print()}
