@@ -15,6 +15,9 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AlertContainer from './components/ui/AlertContainer';
+import Checkout from './components/checkout/Checkout';
+import Orders from './components/orders/Orders';
+import AdminPanel from './components/admin/AdminPanel';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
 
@@ -89,6 +92,19 @@ function App() {
                     <ResetPassword />
                   </Layout>
                 } />
+                <Route path="/checkout" element={
+                  <Layout>
+                    <Checkout />
+                  </Layout>
+                } />
+                <Route path="/orders" element={
+                  <ProtectedRoute requireAuth={true}>
+                    <Layout>
+                      <Orders />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/*" element={<AdminPanel />} />
               </Routes>
               <GlobalAlerts />
             </Router>

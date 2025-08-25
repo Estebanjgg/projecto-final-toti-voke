@@ -194,112 +194,11 @@ export const useApiState = () => {
   return { loading, error, execute };
 };
 
-// Crear instancia de API con métodos HTTP
-const api = {
-  get: async (endpoint, config = {}) => {
-    const token = localStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...config.headers,
-    };
-    
-    const url = `${API_BASE_URL}${endpoint}`;
-    const queryString = config.params ? '?' + new URLSearchParams(config.params).toString() : '';
-    
-    const response = await fetch(url + queryString, {
-      method: 'GET',
-      headers,
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
-    }
-    
-    return {
-      data: await response.json(),
-      status: response.status,
-      statusText: response.statusText
-    };
-  },
-  
-  post: async (endpoint, data = {}, config = {}) => {
-    const token = localStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...config.headers,
-    };
-    
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data),
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
-    }
-    
-    return {
-      data: await response.json(),
-      status: response.status,
-      statusText: response.statusText
-    };
-  },
-  
-  put: async (endpoint, data = {}, config = {}) => {
-    const token = localStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...config.headers,
-    };
-    
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data),
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
-    }
-    
-    return {
-      data: await response.json(),
-      status: response.status,
-      statusText: response.statusText
-    };
-  },
-  
-  delete: async (endpoint, config = {}) => {
-    const token = localStorage.getItem('token');
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-      ...config.headers,
-    };
-    
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'DELETE',
-      headers,
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
-    }
-    
-    return {
-      data: await response.json(),
-      status: response.status,
-      statusText: response.statusText
-    };
-  }
-};
+// Export individual functions for easier imports
+export const getCategoriesAPI = categoriesAPI.getAll;
 
-export default api;
+export default {
+  products: productsAPI,
+  categories: categoriesAPI,
+  health: healthAPI,
+};

@@ -9,13 +9,13 @@ const API_URLS = {
   development: 'http://localhost:3001/api'
 };
 
-// Configuración por defecto: usar producción
-export const API_BASE_URL = API_URLS.production;
+// Configuración por defecto: usar desarrollo local
+// export const API_BASE_URL = API_URLS.production;
 
 // Para desarrolladores que quieran usar backend local:
 // 1. Descomenta la línea siguiente
 // 2. Comenta la línea anterior
-// export const API_BASE_URL = API_URLS.development;
+export const API_BASE_URL = API_URLS.development;
 
 // Configuración adicional
 export const API_CONFIG = {
