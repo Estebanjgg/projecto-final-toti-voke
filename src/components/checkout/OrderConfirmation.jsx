@@ -49,6 +49,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Fecha no disponible';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -65,7 +66,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
       <div className="confirmation-header">
         <div className="success-icon">✅</div>
         <h1>¡Pedido Confirmado!</h1>
-        <p className="order-number">Número de pedido: <strong>#{order.order_number}</strong></p>
+        <p className="order-number">Número de pedido: <strong>#{order.order_number || 'No disponible'}</strong></p>
         <p className="confirmation-message">
           Gracias por tu compra. Hemos recibido tu pedido y lo estamos procesando.
         </p>
@@ -73,8 +74,8 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
 
       {/* Estado del pedido */}
       <div className="order-status">
-        <div className="status-badge" style={{ backgroundColor: getStatusColor(order.status) }}>
-          {getStatusText(order.status)}
+        <div className="status-badge" style={{ backgroundColor: getStatusColor(order.status || 'pending') }}>
+          {getStatusText(order.status || 'pending')}
         </div>
         <p className="status-date">
           Pedido realizado el {formatDate(order.created_at)}
@@ -88,27 +89,27 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           <div className="order-summary">
             <div className="summary-line">
               <span>Subtotal:</span>
-              <span>R$ {order.subtotal.toFixed(2)}</span>
+              <span>R$ {(order.subtotal || 0).toFixed(2)}</span>
             </div>
-            {order.discount > 0 && (
+            {(order.discount || 0) > 0 && (
               <div className="summary-line discount">
                 <span>Descuento:</span>
-                <span>-R$ {order.discount.toFixed(2)}</span>
+                <span>-R$ {(order.discount || 0).toFixed(2)}</span>
               </div>
             )}
             <div className="summary-line">
               <span>Envío:</span>
-              <span>R$ {order.shipping_cost.toFixed(2)}</span>
+              <span>R$ {(order.shipping || 0).toFixed(2)}</span>
             </div>
-            {order.tax > 0 && (
+            {(order.tax || 0) > 0 && (
               <div className="summary-line">
                 <span>Impuestos:</span>
-                <span>R$ {order.tax.toFixed(2)}</span>
+                <span>R$ {(order.tax || 0).toFixed(2)}</span>
               </div>
             )}
             <div className="summary-line total">
               <span>Total:</span>
-              <span>R$ {order.total.toFixed(2)}</span>
+              <span>R$ {(order.total || 0).toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -117,12 +118,12 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
         <div className="details-section">
           <h3>Información de Pago</h3>
           <div className="payment-info">
-            <p><strong>Método:</strong> {getPaymentMethodName(order.payment_method)}</p>
+            <p><strong>Método:</strong> {getPaymentMethodName(order.payment_method || 'N/A')}</p>
             <p><strong>Estado:</strong> 
-              <span className={`payment-status ${order.payment_status}`}>
-                {order.payment_status === 'pending' ? 'Pendiente' : 
-                 order.payment_status === 'paid' ? 'Pagado' : 
-                 order.payment_status === 'failed' ? 'Falló' : order.payment_status}
+              <span className={`payment-status ${order.payment_status || 'pending'}`}>
+                {(order.payment_status || 'pending') === 'pending' ? 'Pendiente' : 
+                 (order.payment_status || 'pending') === 'paid' ? 'Pagado' : 
+                 (order.payment_status || 'pending') === 'failed' ? 'Falló' : (order.payment_status || 'pending')}
               </span>
             </p>
             
@@ -140,7 +141,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
                     <p>Usa el código QR o la clave PIX para completar el pago.</p>
                     <div className="pix-details">
                       <p><strong>Clave PIX:</strong> <code>{paymentResult.payment_result.pix_key}</code></p>
-                      <p><strong>Valor:</strong> R$ {paymentResult.payment_result.amount.toFixed(2)}</p>
+                      <p><strong>Valor:</strong> R$ {(paymentResult.payment_result.amount || 0).toFixed(2)}</p>
                       <p><strong>Vence en:</strong> 15 minutos</p>
                     </div>
                     <button 
@@ -238,7 +239,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
         <div className="details-section">
           <h3>Información de Contacto</h3>
           <div className="contact-info">
-            <p><strong>Email:</strong> {order.customer_email}</p>
+            <p><strong>Email:</strong> {order.customer_email || 'No disponible'}</p>
             {order.customer_phone && (
               <p><strong>Teléfono:</strong> {order.customer_phone}</p>
             )}
@@ -258,7 +259,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
             </div>
           </div>
           
-          {order.payment_status === 'pending' && (
+          {(order.payment_status || 'pending') === 'pending' && (
             <div className="step">
               <span className="step-number">2</span>
               <div className="step-content">
@@ -269,7 +270,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           )}
           
           <div className="step">
-            <span className="step-number">{order.payment_status === 'pending' ? '3' : '2'}</span>
+            <span className="step-number">{(order.payment_status || 'pending') === 'pending' ? '3' : '2'}</span>
             <div className="step-content">
               <h4>Preparación del Pedido</h4>
               <p>Una vez confirmado el pago, prepararemos tu pedido para el envío.</p>
@@ -277,7 +278,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           </div>
           
           <div className="step">
-            <span className="step-number">{order.payment_status === 'pending' ? '4' : '3'}</span>
+            <span className="step-number">{(order.payment_status || 'pending') === 'pending' ? '4' : '3'}</span>
             <div className="step-content">
               <h4>Envío y Entrega</h4>
               <p>Te notificaremos cuando tu pedido sea enviado con el código de rastreo.</p>

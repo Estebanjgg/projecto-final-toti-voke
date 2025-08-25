@@ -1,17 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from '../../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useAlert } from '../../contexts/AlertContext';
 import { ordersAPI } from '../../services/ordersAPI';
-import OrderCard from './OrderCard';
-import OrderFilters from './OrderFilters';
-import OrderStats from './OrderStats';
 import { Link } from 'react-router-dom';
 import './Orders.css';
 
+// Componente Loading Spinner simple
+const LoadingSpinner = () => (
+  <div className="loading-spinner">
+    <div className="spinner"></div>
+  </div>
+);
+
 const Orders = () => {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated } = useAuth();
+  const { addAlert } = useAlert();
   
   const [orders, setOrders] = useState([]);
-  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
@@ -20,30 +25,16 @@ const Orders = () => {
     total: 0,
     totalPages: 0
   });
-  const [filters, setFilters] = useState({
-    status: '',
-    dateFrom: '',
-    dateTo: '',
-    minAmount: '',
-    maxAmount: ''
-  });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('created_at');
-  const [sortOrder, setSortOrder] = useState('desc');
 
   // Cargar órdenes del usuario
-  const loadOrders = async (page = 1, newFilters = filters) => {
+  const loadOrders = async (page = 1) => {
     if (!isAuthenticated) return;
     
     try {
       setLoading(true);
       setError(null);
       
-      const response = await ordersAPI.getUserOrders(
-        page,
-        pagination.limit,
-        newFilters.status || null
-      );
+      const response = await ordersAPI.getUserOrders(page, pagination.limit);
       
       setOrders(response.orders || []);
       setPagination({
@@ -60,97 +51,16 @@ const Orders = () => {
     }
   };
 
-  // Cargar estadísticas de órdenes
-  const loadStats = async () => {
-    if (!isAuthenticated) return;
-    
-    try {
-      const statsData = await ordersAPI.getOrderStats();
-      setStats(statsData);
-    } catch (err) {
-      console.error('Error al cargar estadísticas:', err);
-    }
-  };
-
-  // Buscar órdenes
-  const searchOrders = async (term = searchTerm) => {
-    if (!isAuthenticated || !term.trim()) {
-      loadOrders(1, filters);
-      return;
-    }
-    
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await ordersAPI.searchOrders(term, {
-        ...filters,
-        sortBy,
-        sortOrder
-      });
-      
-      setOrders(response.orders || []);
-      setPagination({
-        page: 1,
-        limit: pagination.limit,
-        total: response.total || 0,
-        totalPages: Math.ceil((response.total || 0) / pagination.limit)
-      });
-    } catch (err) {
-      console.error('Error al buscar órdenes:', err);
-      setError('Error al buscar pedidos');
-      addAlert('Error al buscar pedidos', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Manejar cambios en filtros
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-    setPagination(prev => ({ ...prev, page: 1 }));
-    loadOrders(1, newFilters);
-  };
-
   // Manejar cambio de página
   const handlePageChange = (newPage) => {
     setPagination(prev => ({ ...prev, page: newPage }));
-    if (searchTerm.trim()) {
-      searchOrders(searchTerm);
-    } else {
-      loadOrders(newPage, filters);
-    }
-  };
-
-  // Manejar cancelación de orden
-  const handleCancelOrder = async (orderId, reason) => {
-    try {
-      await ordersAPI.cancelOrder(orderId, reason);
-      addAlert('Pedido cancelado exitosamente', 'success');
-      loadOrders(pagination.page, filters);
-      loadStats();
-    } catch (err) {
-      console.error('Error al cancelar orden:', err);
-      addAlert('Error al cancelar el pedido', 'error');
-    }
-  };
-
-  // Manejar reorden
-  const handleReorder = async (orderId, items) => {
-    try {
-      await ordersAPI.reorderItems(orderId, items);
-      addAlert('Items agregados al carrito exitosamente', 'success');
-    } catch (err) {
-      console.error('Error al reordenar:', err);
-      addAlert('Error al agregar items al carrito', 'error');
-    }
+    loadOrders(newPage);
   };
 
   // Efectos
   useEffect(() => {
     if (isAuthenticated) {
       loadOrders();
-      loadStats();
     }
   }, [isAuthenticated]);
 
@@ -182,58 +92,8 @@ const Orders = () => {
       <div className="orders-header">
         <div className="header-content">
           <h1>Mis Pedidos</h1>
-          <p>Gestiona y rastrea todos tus pedidos</p>
+          <p>Historial completo de tus compras</p>
         </div>
-      </div>
-
-      {/* Estadísticas */}
-      {stats && <OrderStats stats={stats} />}
-
-      {/* Barra de búsqueda y filtros */}
-      <div className="orders-controls">
-        <div className="search-section">
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Buscar por número de pedido, producto..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchOrders()}
-            />
-            <button 
-              className="search-btn"
-              onClick={() => searchOrders()}
-            >
-              🔍
-            </button>
-          </div>
-          
-          {searchTerm && (
-            <button 
-              className="clear-search"
-              onClick={() => {
-                setSearchTerm('');
-                loadOrders(1, filters);
-              }}
-            >
-              Limpiar búsqueda
-            </button>
-          )}
-        </div>
-
-        <OrderFilters 
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          onSortChange={(field, order) => {
-            setSortBy(field);
-            setSortOrder(order);
-            loadOrders(pagination.page, filters);
-          }}
-        />
-        
-        {stats && <OrderStats stats={stats} />}
       </div>
 
       {/* Contenido principal */}
@@ -252,7 +112,7 @@ const Orders = () => {
               <p>{error}</p>
               <button 
                 className="retry-btn"
-                onClick={() => loadOrders(pagination.page, filters)}
+                onClick={() => loadOrders()}
               >
                 Reintentar
               </button>
@@ -264,35 +124,11 @@ const Orders = () => {
           <div className="empty-state">
             <div className="empty-icon">📦</div>
             <h3>No tienes pedidos aún</h3>
-            <p>
-              {searchTerm || Object.values(filters).some(f => f) 
-                ? 'No se encontraron pedidos con los criterios de búsqueda.'
-                : 'Cuando realices tu primera compra, aparecerá aquí.'
-              }
-            </p>
+            <p>Cuando realices tu primera compra, aparecerá aquí.</p>
             <div className="empty-actions">
-              {searchTerm || Object.values(filters).some(f => f) ? (
-                <button 
-                  className="btn btn-outline"
-                  onClick={() => {
-                    setSearchTerm('');
-                    setFilters({
-                      status: '',
-                      dateFrom: '',
-                      dateTo: '',
-                      minAmount: '',
-                      maxAmount: ''
-                    });
-                    loadOrders(1);
-                  }}
-                >
-                  Limpiar filtros
-                </button>
-              ) : (
-                <Link to="/" className="btn btn-primary">
-                  Explorar Productos
-                </Link>
-              )}
+              <Link to="/" className="btn btn-primary">
+                Explorar Productos
+              </Link>
             </div>
           </div>
         )}
@@ -302,12 +138,61 @@ const Orders = () => {
             {/* Lista de órdenes */}
             <div className="orders-list">
               {orders.map((order) => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  onCancel={handleCancelOrder}
-                  onReorder={handleReorder}
-                />
+                <div key={order.id} className="order-card">
+                  <div className="order-header">
+                    <div className="order-info">
+                      <h3>Pedido #{order.id}</h3>
+                      <p className="order-date">
+                        {new Date(order.created_at).toLocaleDateString('es-ES', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                    <div className="order-status">
+                      <span className={`status-badge status-${order.status}`}>
+                        {order.status === 'pending' && 'Pendiente'}
+                        {order.status === 'confirmed' && 'Confirmado'}
+                        {order.status === 'preparing' && 'Preparando'}
+                        {order.status === 'shipped' && 'Enviado'}
+                        {order.status === 'delivered' && 'Entregado'}
+                        {order.status === 'cancelled' && 'Cancelado'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="order-details">
+                    <div className="order-amount">
+                      <strong>Total: R$ {parseFloat(order.total_amount || 0).toFixed(2)}</strong>
+                    </div>
+                    
+                    {order.items && order.items.length > 0 && (
+                      <div className="order-items">
+                        <h4>Items ({order.items.length}):</h4>
+                        <ul>
+                          {order.items.slice(0, 3).map((item, index) => (
+                            <li key={index}>
+                              {item.quantity}x {item.product_name || item.name || 'Producto'}
+                              {item.price && ` - R$ ${parseFloat(item.price).toFixed(2)}`}
+                            </li>
+                          ))}
+                          {order.items.length > 3 && (
+                            <li>... y {order.items.length - 3} productos más</li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {order.payment_method && (
+                      <div className="payment-info">
+                        <p><strong>Método de pago:</strong> {order.payment_method}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
 

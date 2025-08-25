@@ -17,6 +17,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AlertContainer from './components/ui/AlertContainer';
 import Checkout from './components/checkout/Checkout';
 import Orders from './components/orders/Orders';
+import OrderDetails from './components/orders/OrderDetails';
 import AdminPanel from './components/admin/AdminPanel';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
@@ -101,6 +102,13 @@ function App() {
                   <ProtectedRoute requireAuth={true}>
                     <Layout>
                       <Orders />
+                    </Layout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/orders/:orderId" element={
+                  <ProtectedRoute requireAuth={true}>
+                    <Layout>
+                      <OrderDetails />
                     </Layout>
                   </ProtectedRoute>
                 } />

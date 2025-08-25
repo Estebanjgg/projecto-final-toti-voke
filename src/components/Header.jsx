@@ -142,9 +142,9 @@ const Header = () => {
         <div className="container">
           <div className="header-content">
             {/* Logo */}
-            <div className="logo">
+            <Link to="/" className="logo">
               <h1>voke</h1>
-            </div>
+            </Link>
 
             {/* Search bar */}
             <div className="search-container">

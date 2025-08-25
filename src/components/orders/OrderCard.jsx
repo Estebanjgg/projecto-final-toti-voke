@@ -80,7 +80,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
   const handleReorder = async () => {
     try {
       setLoading(true);
-      await onReorder(order.id, order.items || []);
+      await onReorder(order.id, order.order_items || order.items || []);
     } catch (error) {
       console.error('Error al reordenar:', error);
     } finally {
@@ -141,9 +141,9 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
         <div className="order-content">
           {/* Items de la orden */}
           <div className="order-items">
-            {order.items && order.items.length > 0 ? (
+            {(order.order_items || order.items) && (order.order_items || order.items).length > 0 ? (
               <>
-                {order.items.slice(0, 3).map((item, index) => (
+                {(order.order_items || order.items).slice(0, 3).map((item, index) => (
                   <div key={index} className="order-item">
                     <div className="item-image">
                       <img 
@@ -159,14 +159,14 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                       <div className="item-quantity">Cantidad: {item.quantity}</div>
                     </div>
                     <div className="item-price">
-                      R$ {item.total_price.toFixed(2)}
+                      R$ {(item.total_price || 0).toFixed(2)}
                     </div>
                   </div>
                 ))}
                 
-                {order.items.length > 3 && (
+                {(order.order_items || order.items).length > 3 && (
                   <div className="more-items">
-                    +{order.items.length - 3} productos más
+                    +{(order.order_items || order.items).length - 3} productos más
                   </div>
                 )}
               </>
@@ -210,7 +210,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
         <div className="order-footer">
           <div className="order-total">
             <span className="total-label">Total:</span>
-            <span className="total-amount">R$ {order.total.toFixed(2)}</span>
+            <span className="total-amount">R$ {(order.total || 0).toFixed(2)}</span>
           </div>
           
           <div className="order-actions">

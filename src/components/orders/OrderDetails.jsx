@@ -6,7 +6,7 @@ import { ordersAPI } from '../../services/ordersAPI';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
-  const { orderNumber } = useParams();
+  const { orderId } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { showError, showSuccess } = useAlert();
@@ -23,17 +23,17 @@ const OrderDetails = () => {
     }
     
     loadOrderDetails();
-  }, [orderNumber, isAuthenticated, navigate]);
+  }, [orderId, isAuthenticated, navigate]);
 
   const loadOrderDetails = async () => {
     try {
       setLoading(true);
-      const response = await ordersAPI.getOrderByNumber(orderNumber);
-      setOrder(response.data);
+      const response = await ordersAPI.getOrderById(orderId);
+      setOrder(response);
     } catch (error) {
       console.error('Error cargando detalles del pedido:', error);
       showError('Pedido no encontrado');
-      navigate('/my-orders');
+      navigate('/orders');
     } finally {
       setLoading(false);
     }
@@ -122,8 +122,8 @@ const OrderDetails = () => {
       <div className="order-details-page">
         <div className="error-container">
           <h2>Pedido no encontrado</h2>
-          <p>No pudimos encontrar el pedido #{orderNumber}</p>
-          <Link to="/my-orders" className="btn btn-primary">
+          <p>No pudimos encontrar el pedido #{orderId}</p>
+          <Link to="/orders" className="btn btn-primary">
             Volver a Mis Pedidos
           </Link>
         </div>
@@ -138,7 +138,7 @@ const OrderDetails = () => {
         <div className="page-header">
           <div className="header-content">
             <div className="breadcrumb">
-              <Link to="/my-orders">Mis Pedidos</Link>
+              <Link to="/orders">Mis Pedidos</Link>
               <span> / </span>
               <span>#{order.order_number}</span>
             </div>

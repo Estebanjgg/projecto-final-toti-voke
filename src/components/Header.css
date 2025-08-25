@@ -66,12 +66,27 @@
 }
 
 /* Logo */
+.logo {
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
 .logo h1 {
   color: #4A90E2;
   font-size: 32px;
   font-weight: bold;
   margin: 0;
   letter-spacing: -1px;
+  transition: color 0.2s ease;
+}
+
+.logo:hover h1 {
+  color: #357ABD;
 }
 
 /* Search */
