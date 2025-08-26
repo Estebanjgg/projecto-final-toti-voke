@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AlertContext from '../../contexts/AlertContext';
+import { useAlert } from '../../contexts/AlertContext';
 import AuthContext from '../../contexts/AuthContext';
 import adminAPI from '../../services/adminAPI';
 
 const AdminUsers = () => {
-  const { addAlert } = useContext(AlertContext);
+  const { showSuccess, showError } = useAlert();
   const { user: currentUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,11 +27,23 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await adminAPI.getUsers(filters);
-      setUsers(response.data);
-      setPagination(response.pagination);
+      console.log('API Response:', response);
+      
+      // Verificar se a resposta tem a estrutura correta
+      if (response && response.data && Array.isArray(response.data)) {
+        setUsers(response.data);
+        setPagination(response.pagination || {});
+        console.log('Users loaded successfully:', response.data.length, 'users');
+      } else {
+        console.error('Invalid response structure:', response);
+        setUsers([]);
+        setPagination({});
+      }
     } catch (error) {
       console.error('Error cargando usuarios:', error);
-      addAlert('Error cargando usuarios', 'error');
+      showError('Error cargando usuarios');
+      setUsers([]);
+      setPagination({});
     } finally {
       setLoading(false);
     }
@@ -47,7 +59,7 @@ const AdminUsers = () => {
 
   const handleRoleUpdate = async (userId, newRole) => {
     if (userId === currentUser.id && newRole !== 'admin') {
-      addAlert('No puedes cambiar tu propio rol de administrador', 'error');
+      showError('No puedes cambiar tu propio rol de administrador');
       return;
     }
 
@@ -57,14 +69,13 @@ const AdminUsers = () => {
 
     try {
       await adminAPI.updateUserRole(userId, newRole);
-      addAlert('Rol de usuario actualizado exitosamente', 'success');
+      showSuccess('Rol de usuario actualizado exitosamente');
       loadUsers();
       setShowUserModal(false);
     } catch (error) {
       console.error('Error actualizando rol:', error);
-      addAlert(
-        error.response?.data?.message || 'Error actualizando rol de usuario',
-        'error'
+      showError(
+        error.response?.data?.message || 'Error actualizando rol de usuario'
       );
     }
   };
@@ -158,6 +169,10 @@ const AdminUsers = () => {
         <div className="admin-loading">
           <div className="loading-spinner"></div>
           <p>Cargando usuarios...</p>
+        </div>
+      ) : users.length === 0 ? (
+        <div className="no-users">
+          <p>No se encontraron usuarios.</p>
         </div>
       ) : (
         <>

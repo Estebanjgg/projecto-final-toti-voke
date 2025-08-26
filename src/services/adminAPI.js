@@ -116,7 +116,7 @@ export const deleteProduct = async (productId) => {
 export const getUsers = async (params = {}) => {
   try {
     const response = await api.get('/admin/users', { params });
-    return response.data;
+    return response.data; // response.data já contém {success: true, data: [...], pagination: {...}}
   } catch (error) {
     console.error('Error obteniendo usuarios:', error);
     throw error;
@@ -153,10 +153,11 @@ export const checkAdminStatus = async () => {
     const response = await api.get('/admin/dashboard');
     return response.status === 200;
   } catch (error) {
-    if (error.response?.status === 403) {
+    console.error('Error verificando status admin:', error);
+    if (error.message && error.message.includes('403')) {
       return false; // No es admin
     }
-    throw error;
+    return false; // Error general
   }
 };
 

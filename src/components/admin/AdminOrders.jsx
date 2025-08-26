@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
-import AlertContext from '../../contexts/AlertContext';
+import React, { useState, useEffect } from 'react';
+import { useAlert } from '../../contexts/AlertContext';
 import adminAPI from '../../services/adminAPI';
 
 const AdminOrders = () => {
-  const { addAlert } = useContext(AlertContext);
+  const { showSuccess, showError } = useAlert();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({});
@@ -31,7 +31,7 @@ const AdminOrders = () => {
       setPagination(response.pagination);
     } catch (error) {
       console.error('Error cargando órdenes:', error);
-      addAlert('Error cargando órdenes', 'error');
+      showError('Error cargando órdenes');
     } finally {
       setLoading(false);
     }
@@ -48,23 +48,23 @@ const AdminOrders = () => {
   const handleStatusUpdate = async (orderId, newStatus, notes = '') => {
     try {
       await adminAPI.updateOrderStatus(orderId, newStatus, notes);
-      addAlert('Estado de orden actualizado exitosamente', 'success');
+      showSuccess('Estado de orden actualizado exitosamente');
       loadOrders();
       setShowOrderModal(false);
     } catch (error) {
       console.error('Error actualizando estado:', error);
-      addAlert('Error actualizando estado de orden', 'error');
+      showError('Error actualizando estado de orden');
     }
   };
 
   const handlePaymentStatusUpdate = async (orderId, paymentStatus) => {
     try {
       await adminAPI.updatePaymentStatus(orderId, paymentStatus);
-      addAlert('Estado de pago actualizado exitosamente', 'success');
+      showSuccess('Estado de pago actualizado exitosamente');
       loadOrders();
     } catch (error) {
       console.error('Error actualizando estado de pago:', error);
-      addAlert('Error actualizando estado de pago', 'error');
+      showError('Error actualizando estado de pago');
     }
   };
 
@@ -75,7 +75,7 @@ const AdminOrders = () => {
       setShowOrderModal(true);
     } catch (error) {
       console.error('Error obteniendo detalles de orden:', error);
-      addAlert('Error obteniendo detalles de orden', 'error');
+      showError('Error obteniendo detalles de orden');
     }
   };
 
