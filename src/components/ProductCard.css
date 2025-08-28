@@ -89,6 +89,28 @@
   font-weight: 500;
 }
 
+/* Stock information */
+.product-stock {
+  margin-bottom: 8px;
+}
+
+.stock-badge {
+  display: inline-block;
+  background: #F2994A;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.stock-badge:empty {
+  display: none;
+}
+
 /* Product title */
 .product-title {
   font-size: 14px;

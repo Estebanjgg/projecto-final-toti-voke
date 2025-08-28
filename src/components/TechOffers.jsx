@@ -10,8 +10,8 @@ const TechOffers = () => {
   
   // Categorías con nombres actualizados que coinciden con la base de datos
   const filters = [
-    { key: 'Notebooks', label: 'Notebook', dbValue: 'Notebook' },
-    { key: 'Smartphones', label: 'Smartphones', dbValue: 'Smartphone' },
+    { key: 'Notebooks', label: 'Notebook', dbValue: 'Notebooks' },
+    { key: 'Smartphones', label: 'Smartphones', dbValue: 'Smartphones' },
     { key: 'Desktops', label: 'Computador', dbValue: 'Desktops' },
     { key: 'Monitores', label: 'Monitor', dbValue: 'Monitores' }
   ];
@@ -42,8 +42,8 @@ const TechOffers = () => {
         
         console.log('Productos extraídos:', productsData);
         
-        // Limitar a 8 productos (4 por fila)
-        setProducts(productsData.slice(0, 8));
+        // Limitar a 4 productos (1 fila)
+        setProducts(productsData.slice(0, 4));
       } catch (error) {
         console.error('Error al cargar productos:', error);
         setProducts([]);
@@ -77,7 +77,7 @@ const TechOffers = () => {
         <div className="tech-products-grid">
           {loading ? (
             // Loading state
-            Array.from({ length: 8 }).map((_, index) => (
+            Array.from({ length: 4 }).map((_, index) => (
               <div key={index} className="product-skeleton">
                 <div className="skeleton-image"></div>
                 <div className="skeleton-title"></div>

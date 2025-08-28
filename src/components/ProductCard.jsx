@@ -13,16 +13,28 @@ const ProductCard = ({ product }) => {
     currentPrice,
     discount,
     installments,
+    stock,
     isOffer = false,
-    isBestSeller = false
+    isBestSeller = false,
+    // API fields with underscores
+    original_price,
+    current_price,
+    is_offer,
+    is_best_seller
   } = product;
+
+  // Use API fields if camelCase versions are not available
+  const finalOriginalPrice = originalPrice || original_price;
+  const finalCurrentPrice = currentPrice || current_price;
+  const finalIsOffer = isOffer || is_offer;
+  const finalIsBestSeller = isBestSeller || is_best_seller;
 
   return (
     <div className="product-card">
       {/* Product badges */}
       <div className="product-badges">
-        {isOffer && <span className="badge offer-badge">Oferta</span>}
-        {isBestSeller && <span className="badge bestseller-badge">Mais Bem</span>}
+        {finalIsOffer && <span className="badge offer-badge">Oferta</span>}
+        {finalIsBestSeller && <span className="badge bestseller-badge">Mais Bem</span>}
       </div>
 
       {/* Favorite button */}
@@ -53,24 +65,33 @@ const ProductCard = ({ product }) => {
         </div>
       )}
 
+      {/* Stock information */}
+      {stock !== undefined && stock !== null && (
+        <div className="product-stock">
+          <span className="stock-badge">
+            {stock > 0 ? `Restam ${stock}` : 'Esgotado'}
+          </span>
+        </div>
+      )}
+
       {/* Product title */}
       <h3 className="product-title">{title}</h3>
 
       {/* Pricing */}
       <div className="product-pricing">
-        {originalPrice && (
+        {finalOriginalPrice && (
           <span className="original-price">
-            R$ {typeof originalPrice === 'number' 
-              ? originalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : originalPrice
+            R$ {typeof finalOriginalPrice === 'number' 
+              ? finalOriginalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              : finalOriginalPrice
             }
           </span>
         )}
         <div className="current-price-container">
           <span className="current-price">
-            R$ {typeof currentPrice === 'number' 
-              ? currentPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : currentPrice
+            R$ {typeof finalCurrentPrice === 'number' 
+              ? finalCurrentPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              : finalCurrentPrice
             }
           </span>
           {discount && (
