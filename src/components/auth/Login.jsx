@@ -146,7 +146,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className={errors.password ? 'error' : ''}
-                placeholder="Tu contraseña"
+                placeholder="Sua senha"
                 disabled={loading}
                 autoComplete="current-password"
               />

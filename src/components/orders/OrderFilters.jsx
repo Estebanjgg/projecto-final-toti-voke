@@ -20,7 +20,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
     { value: 'created_at', label: 'Fecha de pedido' },
     { value: 'total', label: 'Monto total' },
     { value: 'status', label: 'Estado' },
-    { value: 'order_number', label: 'Número de pedido' }
+    { value: 'order_number', label: 'Número do pedido' }
   ];
 
   // Manejar cambios en filtros temporales
@@ -231,7 +231,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.dateFrom && (
             <div className="filter-chip">
-              <span>Desde: {new Date(filters.dateFrom).toLocaleDateString('es-ES')}</span>
+              <span>Desde: {new Date(filters.dateFrom).toLocaleDateString('pt-BR')}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, dateFrom: '' })}
                 className="remove-filter"
@@ -243,7 +243,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.dateTo && (
             <div className="filter-chip">
-              <span>Hasta: {new Date(filters.dateTo).toLocaleDateString('es-ES')}</span>
+              <span>Hasta: {new Date(filters.dateTo).toLocaleDateString('pt-BR')}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, dateTo: '' })}
                 className="remove-filter"

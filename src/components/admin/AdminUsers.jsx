@@ -408,7 +408,7 @@ const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
               </div>
               <div className="info-item">
                 <label>Email Verificado:</label>
-                <span>{user.email_verified ? 'Sí' : 'No'}</span>
+                <span>{user.email_verified ? 'Sim' : 'Não'}</span>
               </div>
             </div>
           </div>

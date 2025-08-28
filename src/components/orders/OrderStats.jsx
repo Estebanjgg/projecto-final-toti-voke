@@ -140,7 +140,7 @@ const OrderStats = ({ stats }) => {
                 <div className="stat-info">
                   <div className="stat-label">Último Pedido</div>
                   <div className="stat-value">
-                    {new Date(stats.lastOrderDate).toLocaleDateString('es-ES')}
+                    {new Date(stats.lastOrderDate).toLocaleDateString('pt-BR')}
                   </div>
                 </div>
               </div>

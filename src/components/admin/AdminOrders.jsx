@@ -132,7 +132,7 @@ const AdminOrders = () => {
             <label>Buscar:</label>
             <input
               type="text"
-              placeholder="Número de orden, email, nombre..."
+              placeholder="Número do pedido, email, nome..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               className="form-input"

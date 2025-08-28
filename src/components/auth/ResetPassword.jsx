@@ -242,7 +242,7 @@ const ResetPassword = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Repite tu nueva contraseña"
+                placeholder="Repita sua nova senha"
                 className={errors.confirmPassword ? 'error' : ''}
                 disabled={loading}
                 autoComplete="new-password"

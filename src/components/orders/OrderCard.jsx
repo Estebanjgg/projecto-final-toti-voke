@@ -12,7 +12,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
   // Formatear fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -285,7 +285,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                   id="cancelReason"
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
-                  placeholder="Por favor, explica por qué deseas cancelar este pedido..."
+                  placeholder="Por favor, explique por que deseja cancelar este pedido..."
                   rows="4"
                   required
                 />

@@ -91,7 +91,7 @@ const Orders = () => {
       {/* Header */}
       <div className="orders-header">
         <div className="header-content">
-          <h1>Mis Pedidos</h1>
+          <h1>Meus Pedidos</h1>
           <p>Historial completo de tus compras</p>
         </div>
       </div>
@@ -143,7 +143,7 @@ const Orders = () => {
                     <div className="order-info">
                       <h3>Pedido #{order.id}</h3>
                       <p className="order-date">
-                        {new Date(order.created_at).toLocaleDateString('es-ES', {
+                        {new Date(order.created_at).toLocaleDateString('pt-BR', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',

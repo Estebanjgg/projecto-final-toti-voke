@@ -86,9 +86,9 @@ const MyOrders = () => {
 
   const getPaymentStatusBadge = (paymentStatus) => {
     const statusConfig = {
-      pending: { text: 'Pendiente', class: 'payment-pending' },
-      paid: { text: 'Pagado', class: 'payment-paid' },
-      failed: { text: 'Falló', class: 'payment-failed' },
+      pending: { text: 'Pendente', class: 'payment-pending' },
+      paid: { text: 'Pago', class: 'payment-paid' },
+      failed: { text: 'Falhou', class: 'payment-failed' },
       refunded: { text: 'Reembolsado', class: 'payment-refunded' }
     };
 
@@ -97,7 +97,7 @@ const MyOrders = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
+    return new Date(dateString).toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -124,8 +124,8 @@ const MyOrders = () => {
       <div className="container">
         {/* Header */}
         <div className="page-header">
-          <h1>Mis Pedidos</h1>
-          <p>Gestiona y rastrea todos tus pedidos en un solo lugar</p>
+          <h1>Meus Pedidos</h1>
+          <p>Gerencie e rastreie todos os seus pedidos em um só lugar</p>
         </div>
 
         {/* Resumen de pedidos */}

@@ -143,7 +143,7 @@ const AdminProducts = () => {
             <label>Buscar:</label>
             <input
               type="text"
-              placeholder="Nombre, descripción, marca..."
+              placeholder="Nome, descrição, marca..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               className="form-input"
@@ -337,7 +337,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
     const newErrors = {};
     
     if (!formData.title?.trim()) {
-      newErrors.title = 'El título es requerido';
+      newErrors.title = 'O título é obrigatório';
     }
     
     if (!formData.description?.trim()) {
@@ -465,7 +465,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               className={`form-textarea ${errors.description ? 'error' : ''}`}
-              placeholder="Descripción del producto"
+              placeholder="Descrição do produto"
               rows="4"
             />
             {errors.description && <span className="error-text">{errors.description}</span>}

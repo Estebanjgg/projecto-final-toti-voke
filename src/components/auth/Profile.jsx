@@ -476,7 +476,7 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+    if (window.confirm('Tem certeza de que deseja encerrar a sessão?')) {
       await logout();
     }
   };
@@ -664,7 +664,7 @@ const Profile = () => {
               </>
             ) : (
               <div className="favorites-preview">
-                <p className="favorites-count">{favorites.length} {favorites.length === 1 ? 'producto favorito' : 'productos favoritos'}</p>
+                <p className="favorites-count">{favorites.length} {favorites.length === 1 ? 'produto favorito' : 'produtos favoritos'}</p>
                 <p className="subtitle-text">Ve a la página de favoritos para ver todos tus productos</p>
               </div>
             )}
@@ -910,9 +910,9 @@ const Profile = () => {
           setPendingPasswordData(null);
         }}
         onConfirm={confirmChangePassword}
-        title="Confirmar cambio de contraseña"
+        title="Confirmar mudança de senha"
         message="¿Estás seguro de que deseas cambiar tu contraseña? Esta acción no se puede deshacer."
-        confirmText="Cambiar contraseña"
+        confirmText="Alterar senha"
         cancelText="Cancelar"
         type="warning"
       />

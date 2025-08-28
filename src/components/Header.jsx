@@ -92,7 +92,7 @@ const SearchBar = () => {
       <form onSubmit={handleSearchSubmit}>
         <input 
           type="text" 
-          placeholder="Buscar productos... (ej: Samsung, iPhone, Notebook)"
+          placeholder="Buscar produtos... (ex: Samsung, iPhone, Notebook)"
           className="search-input"
           value={searchTerm}
           onChange={handleInputChange}
@@ -114,7 +114,7 @@ const SearchBar = () => {
           
           {!loading && suggestions.length === 0 && searchTerm.length >= 2 && (
             <div className="search-suggestion-item no-results">
-              <span>No se encontraron productos</span>
+              <span>Nenhum produto encontrado</span>
             </div>
           )}
           
@@ -155,7 +155,7 @@ const SearchBar = () => {
           {!loading && suggestions.length > 0 && (
             <div className="search-suggestion-item view-all" onClick={handleSearchSubmit}>
               <FiSearch size={16} />
-              <span>Ver todos los resultados para "{searchTerm}"</span>
+              <span>Ver todos os resultados para "{searchTerm}"</span>
             </div>
           )}
         </div>
@@ -199,15 +199,15 @@ const AuthButton = () => {
           <div className="dropdown-menu">
             <Link to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
               <FiUser size={16} />
-              <span>Mi Perfil</span>
+              <span>Meu Perfil</span>
             </Link>
             <Link to="/orders" className="dropdown-item" onClick={() => setShowDropdown(false)}>
               <FiPackage size={16} />
-              <span>Mis Pedidos</span>
+              <span>Meus Pedidos</span>
             </Link>
             <button className="dropdown-item logout" onClick={handleLogoutClick}>
               <FiLogOut size={16} />
-              <span>Cerrar Sesión</span>
+              <span>Encerrar Sessão</span>
             </button>
           </div>
         )}
@@ -216,9 +216,9 @@ const AuthButton = () => {
           isOpen={showLogoutModal}
           onClose={handleLogoutCancel}
           onConfirm={handleLogoutConfirm}
-          title="Cerrar Sesión"
-          message={`¿Estás seguro de que quieres cerrar sesión, ${user?.first_name}? Tendrás que volver a iniciar sesión para acceder a tu cuenta.`}
-          confirmText="Cerrar Sesión"
+          title="Encerrar Sessão"
+          message={`Tem certeza de que deseja encerrar a sessão, ${user?.first_name}? Você precisará fazer login novamente para acessar sua conta.`}
+          confirmText="Encerrar Sessão"
           cancelText="Cancelar"
           type="danger"
         />

@@ -82,9 +82,9 @@ const OrderDetails = () => {
 
   const getPaymentStatusBadge = (paymentStatus) => {
     const statusConfig = {
-      pending: { text: 'Pendiente', class: 'payment-pending' },
-      paid: { text: 'Pagado', class: 'payment-paid' },
-      failed: { text: 'Falló', class: 'payment-failed' },
+      pending: { text: 'Pendente', class: 'payment-pending' },
+      paid: { text: 'Pago', class: 'payment-paid' },
+      failed: { text: 'Falhou', class: 'payment-failed' },
       refunded: { text: 'Reembolsado', class: 'payment-refunded' }
     };
 
@@ -93,7 +93,7 @@ const OrderDetails = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('es-ES', {
+    return new Date(dateString).toLocaleString('pt-BR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -122,9 +122,9 @@ const OrderDetails = () => {
       <div className="order-details-page">
         <div className="error-container">
           <h2>Pedido no encontrado</h2>
-          <p>No pudimos encontrar el pedido #{orderId}</p>
+          <p>Não foi possível encontrar o pedido #{orderId}</p>
           <Link to="/orders" className="btn btn-primary">
-            Volver a Mis Pedidos
+            Voltar aos Meus Pedidos
           </Link>
         </div>
       </div>
@@ -138,7 +138,7 @@ const OrderDetails = () => {
         <div className="page-header">
           <div className="header-content">
             <div className="breadcrumb">
-              <Link to="/orders">Mis Pedidos</Link>
+              <Link to="/orders">Meus Pedidos</Link>
               <span> / </span>
               <span>#{order.order_number}</span>
             </div>
@@ -239,8 +239,8 @@ const OrderDetails = () => {
               <div className="info-grid">
                 <div className="info-item">
                   <label>Método de Pago:</label>
-                  <span>{order.payment_method === 'credit_card' ? 'Tarjeta de Crédito' :
-                         order.payment_method === 'debit_card' ? 'Tarjeta de Débito' :
+                  <span>{order.payment_method === 'credit_card' ? 'Cartão de Crédito' :
+                         order.payment_method === 'debit_card' ? 'Cartão de Débito' :
                          order.payment_method === 'pix' ? 'PIX' :
                          order.payment_method === 'boleto' ? 'Boleto Bancário' :
                          order.payment_method}</span>

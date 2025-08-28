@@ -73,7 +73,7 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
     maxDate.setDate(today.getDate() + maxDays);
     
     const formatDate = (date) => {
-      return date.toLocaleDateString('es-ES', {
+      return date.toLocaleDateString('pt-BR', {
         day: 'numeric',
         month: 'short'
       });

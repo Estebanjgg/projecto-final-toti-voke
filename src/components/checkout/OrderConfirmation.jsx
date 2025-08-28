@@ -51,7 +51,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
   const formatDate = (dateString) => {
     if (!dateString) return 'Fecha no disponible';
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -290,7 +290,7 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
       {/* Acciones */}
       <div className="confirmation-actions">
         <button onClick={onViewMyOrders} className="btn btn-primary">
-          Ver Mis Pedidos
+          Ver Meus Pedidos
         </button>
         <button onClick={onContinueShopping} className="btn btn-secondary">
           Continuar Comprando

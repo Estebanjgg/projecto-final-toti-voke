@@ -243,7 +243,7 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className={errors.confirmPassword ? 'error' : ''}
-              placeholder="Repite tu contraseña"
+              placeholder="Repita sua senha"
               disabled={loading}
             />
             {errors.confirmPassword && (

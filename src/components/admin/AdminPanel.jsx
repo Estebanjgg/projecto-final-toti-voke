@@ -91,7 +91,7 @@ const AdminPanel = () => {
 
   const navigationItems = [
     { path: '/admin', label: 'Dashboard', icon: '📊' },
-    { path: '/admin/orders', label: 'Órdenes', icon: '📦' },
+    { path: '/admin/orders', label: 'Pedidos', icon: '📦' },
     { path: '/admin/products', label: 'Productos', icon: '🛍️' },
     { path: '/admin/users', label: 'Usuarios', icon: '👥' }
   ];
