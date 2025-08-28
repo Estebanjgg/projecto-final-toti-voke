@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Banner from './Banner';
 import CategorySection from './CategorySection';
 import ProductSection from './ProductSection';
-import CategoryProducts from './CategoryProducts';
+import BestOffers from './BestOffers';
 import BrandOffers from './BrandOffers';
 import TechOffers from './TechOffers';
 import VideoSection from './VideoSection';
@@ -14,9 +14,6 @@ const Home = () => {
   const [offerProducts, setOfferProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Estado para navegación por categorías
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
   // Cargar productos al montar el componente
   useEffect(() => {
@@ -42,15 +39,6 @@ const Home = () => {
 
     loadProducts();
   }, []);
-  
-  // Manejar selección de categoría
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-  };
-  
-  const handleCloseCategoryView = () => {
-    setSelectedCategory(null);
-  };
 
   // Mostrar loading o error si es necesario
   if (loading) {
@@ -70,25 +58,13 @@ const Home = () => {
     );
   }
 
-  // Si hay una categoría seleccionada, mostrar solo esos productos
-  if (selectedCategory) {
-    return (
-      <main>
-        <CategoryProducts 
-          selectedCategory={selectedCategory}
-          onClose={handleCloseCategoryView}
-        />
-      </main>
-    );
-  }
-
   return (
     <main>
       <Banner />
-      <CategorySection 
-        onCategorySelect={handleCategorySelect}
-        selectedCategory={selectedCategory}
-      />
+      <CategorySection />
+      
+      {/* Sección de Mejores Ofertas */}
+      <BestOffers />
       
       {/* Solo mostrar productos destacados en la página principal */}
       <ProductSection 

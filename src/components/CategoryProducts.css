@@ -25,7 +25,7 @@
 }
 
 .close-btn {
-  background: #6c757d;
+  background: #4A90E2;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -37,10 +37,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 .close-btn:hover {
-  background: #5a6268;
+  background: #357ABD;
   transform: translateY(-2px);
 }
 
@@ -90,6 +91,7 @@
   color: #333;
   font-size: 14px;
   white-space: nowrap;
+  font-family: 'Pixelify Sans', sans-serif;
 }
 
 .sort-select {

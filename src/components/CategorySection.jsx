@@ -1,50 +1,51 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CategorySection.css';
 
-const CategorySection = ({ onCategorySelect, selectedCategory }) => {
+const CategorySection = () => {
+  const navigate = useNavigate();
+  
   const categories = [
     {
       icon: '/picture/Smartphones.png',
       name: 'Smartphones',
-      key: 'Smartphones',
+      key: 'smartphones',
       color: '#FF69B4'
     },
     {
       icon: '/picture/Tablets.png',
       name: 'Tablets',
-      key: 'Tablets',
+      key: 'tablets',
       color: '#4A90E2'
     },
     {
       icon: '/picture/Notebooks.png',
       name: 'Notebooks',
-      key: 'Notebooks',
+      key: 'notebooks',
       color: '#32CD32'
     },
     {
       icon: '/picture/Desktops.png',
       name: 'Desktops',
-      key: 'Desktops',
+      key: 'desktops',
       color: '#FF6347'
     },
     {
       icon: '/picture/Monitores.png',
       name: 'Monitores',
-      key: 'Monitores',
+      key: 'monitores',
       color: '#9370DB'
     },
     {
       icon: '/picture/Acessorios.png',
       name: 'Acessórios',
-      key: 'Acessórios',
+      key: 'acessorios',
       color: '#FFD700'
     }
   ];
 
   const handleCategoryClick = (category) => {
-    if (onCategorySelect) {
-      onCategorySelect(category.key === selectedCategory ? null : category.key);
-    }
+    navigate(`/categoria/${category.key}`);
   };
 
   return (
@@ -54,7 +55,7 @@ const CategorySection = ({ onCategorySelect, selectedCategory }) => {
           {categories.map((category, index) => (
             <div 
               key={index} 
-              className={`category-item ${selectedCategory === category.key ? 'active' : ''}`}
+              className="category-item"
               onClick={() => handleCategoryClick(category)}
             >
               <div className="category-icon">

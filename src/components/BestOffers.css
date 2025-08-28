@@ -1,0 +1,182 @@
+/* Best Offers Styles */
+.best-offers {
+  background-color: #F2BF4F;
+  padding: 60px 0;
+  margin: 40px 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  position: relative;
+}
+
+.best-offers-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.bolt-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.best-offers-header h2 {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Pixelify Sans', sans-serif;
+}
+
+.best-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.offer-card-wrapper {
+  background: white;
+  border-radius: 15px;
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.offer-card-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+  z-index: 1;
+}
+
+.offer-card-wrapper:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.loading-offers {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-offers p {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .best-offers-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 0 15px;
+  }
+  
+  .best-offers-header h2 {
+    font-size: 32px;
+  }
+  
+  .bolt-icon {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 768px) {
+  .best-offers {
+    padding: 40px 0;
+    margin: 30px 0;
+  }
+  
+  .best-offers-header {
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .best-offers-header h2 {
+    font-size: 28px;
+  }
+  
+  .bolt-icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .best-offers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px;
+  }
+  
+  .offer-card-wrapper {
+    padding: 10px;
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .best-offers {
+    padding: 30px 0;
+    margin: 20px 0;
+  }
+  
+  .best-offers-header {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 25px;
+  }
+  
+  .best-offers-header h2 {
+    font-size: 24px;
+  }
+  
+  .bolt-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .best-offers-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .offer-card-wrapper {
+    padding: 10px;
+  }
+}
+
+/* Animación para el icono bolt */
+@keyframes bolt-glow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 5px rgba(242, 191, 79, 0.5));
+  }
+  50% {
+    filter: brightness(1.2) drop-shadow(0 0 15px rgba(242, 191, 79, 0.8));
+  }
+}
+
+.bolt-icon {
+  animation: bolt-glow 2s ease-in-out infinite;
+}
+
+/* Efecto hover para las tarjetas de oferta */
+.offer-card-wrapper:hover .bolt-icon {
+  animation-duration: 0.5s;
+}

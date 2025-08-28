@@ -7,6 +7,7 @@ import { CartProvider } from './contexts/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
+import CategoryPage from './components/CategoryPage';
 import Favorites from './components/Favorites';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
@@ -55,6 +56,11 @@ function App() {
                 <Route path="/" element={
                   <Layout>
                     <Home />
+                  </Layout>
+                } />
+                <Route path="/categoria/:category" element={
+                  <Layout>
+                    <CategoryPage />
                   </Layout>
                 } />
                 <Route path="/favorites" element={
