@@ -19,10 +19,14 @@ const CategoryProducts = ({ selectedCategory, onClose }) => {
   });
 
   const categoryNames = {
-    'Smartphone': 'Smartphones 📱',
-    'Tablet': 'Tablets 📱',
-    'Notebook': 'Notebooks 💻',
-    'Electrónicos': 'Eletrônicos 🖥️'
+    'Smartphones': 'Smartphones 📱',
+    'Tablets': 'Tablets 📱',
+    'Notebooks': 'Notebooks 💻',
+    'Desktops': 'Desktops 🖥️',
+    'Monitores': 'Monitores 🖥️',
+    'Acessórios': 'Acessórios 🎮',
+    'Games': 'Games 🎮',
+    'Camaras': 'Câmeras �'
   };
 
   useEffect(() => {

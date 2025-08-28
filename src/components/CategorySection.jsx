@@ -6,37 +6,37 @@ const CategorySection = ({ onCategorySelect, selectedCategory }) => {
     {
       icon: '/picture/Smartphones.png',
       name: 'Smartphones',
-      key: 'Smartphone',
+      key: 'Smartphones',
       color: '#FF69B4'
     },
     {
       icon: '/picture/Tablets.png',
       name: 'Tablets',
-      key: 'Tablet',
+      key: 'Tablets',
       color: '#4A90E2'
     },
     {
       icon: '/picture/Notebooks.png',
       name: 'Notebooks',
-      key: 'Notebook',
+      key: 'Notebooks',
       color: '#32CD32'
     },
     {
       icon: '/picture/Desktops.png',
       name: 'Desktops',
-      key: 'Electrónicos',
+      key: 'Desktops',
       color: '#FF6347'
     },
     {
       icon: '/picture/Monitores.png',
       name: 'Monitores',
-      key: 'Electrónicos',
+      key: 'Monitores',
       color: '#9370DB'
     },
     {
       icon: '/picture/Acessorios.png',
       name: 'Acessórios',
-      key: 'Electrónicos',
+      key: 'Acessórios',
       color: '#FFD700'
     }
   ];
