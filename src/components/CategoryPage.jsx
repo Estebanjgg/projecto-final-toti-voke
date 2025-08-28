@@ -204,9 +204,6 @@ const CategoryPage = () => {
         </nav>
 
         <div className="category-header">
-          <h2 className="category-title">
-            {categoryNames[category] || category}
-          </h2>
           <button className="close-btn" onClick={handleBackToHome}>
             ← Voltar ao Home
           </button>

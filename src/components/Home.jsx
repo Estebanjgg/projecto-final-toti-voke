@@ -66,12 +66,7 @@ const Home = () => {
       {/* Sección de Mejores Ofertas */}
       <BestOffers />
       
-      {/* Solo mostrar productos destacados en la página principal */}
-      <ProductSection 
-        title="⚡ Produtos em Destaque" 
-        products={featuredProducts}
-        backgroundColor="#4A90E2"
-      />
+
       
       {/* Sección de Ofertas Tech con filtros por categoría - ARRIBA */}
       <TechOffers />
@@ -80,9 +75,9 @@ const Home = () => {
       <BrandOffers />
       
       <ProductSection 
-        title="🔥 Ofertas Imperdíveis" 
+        title="Ofertas do Dia" 
         products={offerProducts}
-        backgroundColor="#FF6B6B"
+        backgroundColor="#FE97C5"
       />
       
       <VideoSection />

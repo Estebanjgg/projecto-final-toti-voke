@@ -1,6 +1,6 @@
 /* Best Offers Styles */
 .best-offers {
-  background-color: #F2BF4F;
+  background-color: #FE97C5;
   padding: 60px 0;
   margin: 40px 0;
   width: 100vw;
@@ -11,7 +11,7 @@
 .best-offers-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 15px;
   margin-bottom: 40px;
 }

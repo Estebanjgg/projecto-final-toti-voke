@@ -149,9 +149,6 @@ const CategoryProducts = ({ selectedCategory, onClose }) => {
     <section className="category-products">
       <div className="container">
         <div className="category-header">
-          <h2 className="category-title">
-            {categoryNames[selectedCategory] || selectedCategory}
-          </h2>
           <button className="close-btn" onClick={onClose}>
             ✕ Voltar
           </button>

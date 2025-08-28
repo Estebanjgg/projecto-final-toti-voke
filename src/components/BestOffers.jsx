@@ -45,7 +45,7 @@ const BestOffers = ({ categoryFilter = null }) => {
         <div className="container">
           <div className="best-offers-header">
             <img src="/picture/logo gif/bolt.gif" alt="Bolt" className="bolt-icon" />
-            <h2>Melhores Ofertas</h2>
+            <h2>Imperdível</h2>
           </div>
           <div className="loading-offers">
             <p>Carregando ofertas...</p>
@@ -64,7 +64,7 @@ const BestOffers = ({ categoryFilter = null }) => {
       <div className="container">
         <div className="best-offers-header">
           <img src="/picture/logo gif/bolt.gif" alt="Bolt" className="bolt-icon" />
-          <h2>Melhores Ofertas</h2>
+          <h2>Imperdível</h2>
         </div>
         
         <div className="best-offers-grid">
