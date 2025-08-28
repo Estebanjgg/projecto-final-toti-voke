@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import CartIcon from './ui/CartIcon';
 import CartDrawer from './ui/CartDrawer';
 import Modal from './Modal';
+import { FiSearch, FiHeart, FiMenu, FiUser, FiPackage, FiLogOut } from 'react-icons/fi';
 import './Header.css';
 
 // Componente para el botón de autenticación
@@ -32,29 +33,26 @@ const AuthButton = () => {
     return (
       <div className="auth-dropdown">
         <button 
-          className="action-btn user-btn"
+          className="navbar-action-btn user-btn"
           onClick={() => setShowDropdown(!showDropdown)}
         >
-          <div className="user-avatar">
-            <span className="avatar-letter">
-              {user.first_name?.charAt(0)?.toUpperCase() || 'U'}
-            </span>
-            <div className="avatar-ring"></div>
-          </div>
-          <span className="user-name">{user.first_name}</span>
+          <FiUser size={20} />
           <span className="dropdown-arrow">{showDropdown ? '▲' : '▼'}</span>
         </button>
         
         {showDropdown && (
           <div className="dropdown-menu">
             <Link to="/profile" className="dropdown-item" onClick={() => setShowDropdown(false)}>
-              👤 Mi Perfil
+              <FiUser size={16} />
+              <span>Mi Perfil</span>
             </Link>
             <Link to="/orders" className="dropdown-item" onClick={() => setShowDropdown(false)}>
-              📦 Mis Pedidos
+              <FiPackage size={16} />
+              <span>Mis Pedidos</span>
             </Link>
             <button className="dropdown-item logout" onClick={handleLogoutClick}>
-              🚪 Cerrar Sesión
+              <FiLogOut size={16} />
+              <span>Cerrar Sesión</span>
             </button>
           </div>
         )}
@@ -75,8 +73,8 @@ const AuthButton = () => {
 
   return (
     <div className="auth-buttons">
-      <Link to="/login" className="action-btn login-btn">
-        <span>👤</span>
+      <Link to="/login" className="navbar-action-btn login-btn">
+        <FiUser size={20} />
       </Link>
     </div>
   );
@@ -157,20 +155,22 @@ const Header = () => {
                 placeholder="Encontre o que procura" 
                 className="search-input"
               />
-              <button className="search-btn">🔍</button>
+              <button className="search-btn">
+                <FiSearch size={20} />
+              </button>
             </div>
 
             {/* User actions */}
             <div className="user-actions">
-              <Link to="/favorites" className="action-btn">
-                <span>♡</span>
+              <Link to="/favorites" className="navbar-action-btn favorites-btn">
+                <FiHeart size={20} />
                 {favorites.length > 0 && (
                   <span className="favorites-count">{favorites.length}</span>
                 )}
               </Link>
               <AuthButton />
               <CartIcon 
-                className="action-btn cart"
+                className="navbar-action-btn cart-btn"
                 size="medium"
                 onClick={() => setIsCartOpen(true)}
               />
@@ -183,7 +183,10 @@ const Header = () => {
       <nav className="nav-menu">
         <div className="container">
           <div className="nav-content">
-            <button className="menu-toggle">☰ Menu</button>
+            <button className="menu-toggle">
+              <FiMenu size={20} />
+              <span>Menu</span>
+            </button>
             <div className="nav-links">
               <a href="#" className="nav-link">Lançada Tech</a>
               <a href="#" className="nav-link">Loja Imperdível</a>

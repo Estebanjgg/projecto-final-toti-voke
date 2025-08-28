@@ -31,6 +31,8 @@
 
 .cart-icon-container.medium .cart-icon {
   font-size: 1.5rem;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .cart-icon-container.large .cart-icon {
