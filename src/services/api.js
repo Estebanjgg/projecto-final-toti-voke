@@ -97,10 +97,24 @@ export const productsAPI = {
 
   // Buscar productos
   search: async (searchTerm, filters = {}) => {
-    return apiRequest('/products', {
-      ...filters,
-      search: searchTerm,
+    const queryParams = new URLSearchParams();
+    
+    // Agregar el término de búsqueda
+    if (searchTerm) {
+      queryParams.append('search', searchTerm);
+    }
+    
+    // Agregar otros filtros
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value);
+      }
     });
+    
+    const queryString = queryParams.toString();
+    const endpoint = `/products${queryString ? `?${queryString}` : ''}`;
+    
+    return apiRequest(endpoint);
   },
 
   // Obtener marcas disponibles

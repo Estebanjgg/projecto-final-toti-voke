@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { useCart } from '../contexts/CartContext';
@@ -7,7 +7,162 @@ import CartIcon from './ui/CartIcon';
 import CartDrawer from './ui/CartDrawer';
 import Modal from './Modal';
 import { FiSearch, FiHeart, FiMenu, FiUser, FiPackage, FiLogOut } from 'react-icons/fi';
+import { productsAPI } from '../services/api';
 import './Header.css';
+
+// Componente de búsqueda con sugerencias
+const SearchBar = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [suggestions, setSuggestions] = React.useState([]);
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+  const searchRef = React.useRef(null);
+
+  // Debounce para evitar demasiadas llamadas a la API
+  const debounceRef = React.useRef(null);
+
+  const searchProducts = async (term) => {
+    if (term.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await productsAPI.search(term, { limit: 8 });
+      const products = response.data || response || [];
+      setSuggestions(products);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error('Error buscando productos:', error);
+      setSuggestions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    // Limpiar el debounce anterior
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    // Crear nuevo debounce
+    debounceRef.current = setTimeout(() => {
+      searchProducts(value);
+    }, 300);
+  };
+
+  const handleProductClick = (product) => {
+    setSearchTerm('');
+    setSuggestions([]);
+    setShowSuggestions(false);
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      setShowSuggestions(false);
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
+  // Cerrar sugerencias al hacer clic fuera
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="search-container" ref={searchRef}>
+      <form onSubmit={handleSearchSubmit}>
+        <input 
+          type="text" 
+          placeholder="Buscar productos... (ej: Samsung, iPhone, Notebook)"
+          className="search-input"
+          value={searchTerm}
+          onChange={handleInputChange}
+          onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
+        />
+        <button type="submit" className="search-btn">
+          <FiSearch size={20} />
+        </button>
+      </form>
+      
+      {showSuggestions && (
+        <div className="search-suggestions">
+          {loading && (
+            <div className="search-suggestion-item loading">
+              <FiSearch size={16} />
+              <span>Buscando...</span>
+            </div>
+          )}
+          
+          {!loading && suggestions.length === 0 && searchTerm.length >= 2 && (
+            <div className="search-suggestion-item no-results">
+              <span>No se encontraron productos</span>
+            </div>
+          )}
+          
+          {!loading && suggestions.map((product) => (
+            <div 
+              key={product.id} 
+              className="search-suggestion-item"
+              onClick={() => handleProductClick(product)}
+            >
+              <div className="suggestion-image">
+                 {product.image_url || product.images?.[0] || product.image ? (
+                   <img 
+                     src={product.image_url || product.images?.[0] || product.image} 
+                     alt={product.title}
+                     onError={(e) => {
+                       e.target.style.display = 'none';
+                       e.target.nextSibling.style.display = 'flex';
+                     }}
+                   />
+                 ) : null}
+                 <div className="no-image" style={{ display: product.image_url || product.images?.[0] || product.image ? 'none' : 'flex' }}>
+                   {product.category === 'Smartphone' ? '📱' : 
+                    product.category === 'Notebook' ? '💻' : 
+                    product.category === 'Tablet' ? '📱' : 
+                    product.category === 'Electronics' ? '🔌' : '📦'}
+                 </div>
+               </div>
+              <div className="suggestion-content">
+                <div className="suggestion-title">{product.title}</div>
+                <div className="suggestion-details">
+                  <span className="suggestion-brand">{product.brand}</span>
+                  <span className="suggestion-price">R$ {product.current_price}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {!loading && suggestions.length > 0 && (
+            <div className="search-suggestion-item view-all" onClick={handleSearchSubmit}>
+              <FiSearch size={16} />
+              <span>Ver todos los resultados para "{searchTerm}"</span>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Componente para el botón de autenticación
 const AuthButton = () => {
@@ -149,16 +304,7 @@ const Header = () => {
             </Link>
 
             {/* Search bar */}
-            <div className="search-container">
-              <input 
-                type="text" 
-                placeholder="Encontre o que procura" 
-                className="search-input"
-              />
-              <button className="search-btn">
-                <FiSearch size={20} />
-              </button>
-            </div>
+            <SearchBar />
 
             {/* User actions */}
             <div className="user-actions">
