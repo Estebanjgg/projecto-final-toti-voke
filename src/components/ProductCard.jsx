@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import FavoriteButton from './ui/FavoriteButton';
 import AddToCartButton from './ui/AddToCartButton';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+  
   const {
     id,
     image,
@@ -29,28 +32,39 @@ const ProductCard = ({ product }) => {
   const finalIsOffer = isOffer || is_offer;
   const finalIsBestSeller = isBestSeller || is_best_seller;
 
+  const handleCardClick = (e) => {
+    // Evitar navegación si se hace clic en botones
+    if (e.target.closest('.card-overlay') || e.target.closest('button')) {
+      return;
+    }
+    navigate(`/product/${id}`);
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleCardClick}>
       {/* Product badges */}
       <div className="product-badges">
         {finalIsOffer && <span className="badge offer-badge">Oferta</span>}
         {finalIsBestSeller && <span className="badge bestseller-badge">Mais Bem</span>}
       </div>
 
-      {/* Favorite button */}
-      <FavoriteButton 
-        productId={id} 
-        className="card-overlay" 
-        size="medium"
-      />
-
-      {/* Add to cart button */}
-      <AddToCartButton 
-        productId={id}
-        variant="icon"
-        size="medium"
-        className="card-overlay cart-overlay"
-      />
+      {/* Action buttons container */}
+      <div className="action-buttons-container">
+        {/* Add to cart button */}
+        <AddToCartButton 
+          productId={id}
+          variant="icon"
+          size="medium"
+          className="action-button"
+        />
+        
+        {/* Favorite button */}
+        <FavoriteButton 
+          productId={id} 
+          className="action-button" 
+          size="medium"
+        />
+      </div>
 
       {/* Product image */}
       <div className="product-image">

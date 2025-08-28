@@ -114,6 +114,7 @@ const TechOffers = () => {
                     currentPrice: parseFloat(product.current_price),
                     discount: product.discount,
                     installments: installments,
+                    stock: product.stock,
                     isOffer: product.is_offer,
                     isBestSeller: product.is_best_seller
                   }}

@@ -154,10 +154,10 @@
   }
   
   .favorite-button.card-overlay {
-    top: 12px;
-    right: 12px;
-    width: 30px;
-    height: 30px;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
   }
   
   .favorite-button.card-overlay .favorite-icon {
