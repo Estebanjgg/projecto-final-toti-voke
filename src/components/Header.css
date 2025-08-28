@@ -76,17 +76,16 @@
   transform: scale(1.05);
 }
 
-.logo h1 {
-  color: #4A90E2;
-  font-size: 32px;
-  font-weight: bold;
-  margin: 0;
-  letter-spacing: -1px;
-  transition: color 0.2s ease;
+.logo-image {
+  height: 40px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  transition: opacity 0.2s ease;
 }
 
-.logo:hover h1 {
-  color: #357ABD;
+.logo:hover .logo-image {
+  opacity: 0.8;
 }
 
 /* Search */
@@ -428,8 +427,9 @@
     display: none;
   }
   
-  .logo h1 {
-    font-size: 28px;
+  .logo-image {
+    height: 32px;
+    max-width: 120px;
   }
   
   /* Auth buttons responsive */

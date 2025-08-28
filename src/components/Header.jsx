@@ -143,7 +143,11 @@ const Header = () => {
           <div className="header-content">
             {/* Logo */}
             <Link to="/" className="logo">
-              <h1>voke</h1>
+              <img 
+                src="/picture/logo empresa/logoWoke.png" 
+                alt="Logo de la empresa" 
+                className="logo-image"
+              />
             </Link>
 
             {/* Search bar */}
