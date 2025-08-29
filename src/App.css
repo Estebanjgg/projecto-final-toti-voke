@@ -6,6 +6,14 @@
 
 main {
   width: 100%;
+  /* Remove all spacing between sections */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove margins from all sections to eliminate white spaces */
+main > * {
+  margin: 0 !important;
 }
 
 /* Global container */

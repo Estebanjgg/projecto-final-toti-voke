@@ -2,9 +2,8 @@
 .best-offers {
   background-color: #FE97C5;
   padding: 60px 0;
-  margin: 40px 0;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  margin: 0;
+  width: 100%;
   position: relative;
 }
 
@@ -102,7 +101,7 @@
 @media (max-width: 768px) {
   .best-offers {
     padding: 40px 0;
-    margin: 30px 0;
+    margin: 0;
   }
   
   .best-offers-header {
@@ -134,7 +133,7 @@
 @media (max-width: 480px) {
   .best-offers {
     padding: 30px 0;
-    margin: 20px 0;
+    margin: 0;
   }
   
   .best-offers-header {

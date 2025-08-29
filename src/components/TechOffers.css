@@ -2,6 +2,8 @@
 .tech-offers {
   padding: 40px 20px;
   background-color: #f8f9fa;
+  margin: 0;
+  width: 100%;
 }
 
 .tech-offers .container {

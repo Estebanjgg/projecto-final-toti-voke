@@ -2,8 +2,9 @@
 .brand-section {
   background: #ffffff;
   padding: 40px 20px;
-  margin: 40px 0 0 0;
+  margin: 0;
   border-top: 1px solid #e0e0e0;
+  width: 100%;
 }
 
 .brand-container {
@@ -26,6 +27,7 @@
   margin: 0;
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .video-section-content {
@@ -184,6 +186,7 @@
 @media (max-width: 768px) {
   .brand-section {
     padding: 30px 15px;
+    margin: 0;
   }
   
   .brand-title {

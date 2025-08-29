@@ -1,11 +1,12 @@
 /* Product Section Styles */
 .product-section {
   padding: 40px 0;
-  margin: 20px 0;
-  border-radius: 15px;
+  margin: 0;
+  border-radius: 0;
   border: none;
   border-bottom: none;
   position: relative;
+  width: 100%;
 }
 
 .product-section::before,

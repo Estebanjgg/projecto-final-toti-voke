@@ -25,6 +25,20 @@ body {
   color: #333;
 }
 
+/* Remove spacing between sections globally */
+.banner,
+.category-section,
+.best-offers,
+.tech-offers,
+.brand-offers,
+.product-section,
+.video-section,
+.brand-section {
+  margin: 0 !important;
+  display: block;
+  width: 100%;
+}
+
 a {
   color: #4A90E2;
   text-decoration: none;

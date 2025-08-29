@@ -2,6 +2,8 @@
 .category-section {
   padding: 0 0 40px 0;
   background-color: #E6E6E6;
+  margin: 0;
+  width: 100%;
 }
 
 .category-section .container {
