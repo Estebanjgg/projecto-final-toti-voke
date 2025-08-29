@@ -19,7 +19,6 @@ const AdminDashboard = () => {
       const response = await adminAPI.getDashboardData();
       setDashboardData(response.data);
     } catch (error) {
-      console.error('Error cargando dashboard:', error);
       addAlert('Error cargando datos del dashboard', 'error');
     } finally {
       setLoading(false);

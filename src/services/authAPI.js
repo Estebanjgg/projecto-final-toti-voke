@@ -124,8 +124,6 @@ class AuthAPI {
   // Actualizar perfil del usuario
   async updateProfile(profileData) {
     try {
-      console.log('🌐 authAPI.updateProfile - Datos originales recibidos:', profileData);
-      
       // Enviar solo los campos que realmente se quieren actualizar
       const cleanData = {};
       
@@ -142,9 +140,6 @@ class AuthAPI {
       if (profileData.hasOwnProperty('phone')) {
         cleanData.phone = profileData.phone ? profileData.phone.trim() : '';
       }
-      
-      console.log('🌐 authAPI.updateProfile - Datos limpiados a enviar:', cleanData);
-      console.log('🌐 authAPI.updateProfile - JSON que se enviará:', JSON.stringify(cleanData));
       
       const response = await this.makeRequest('/profile', {
         method: 'PUT',

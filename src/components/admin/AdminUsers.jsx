@@ -27,13 +27,11 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await adminAPI.getUsers(filters);
-      console.log('API Response:', response);
       
       // Verificar se a resposta tem a estrutura correta
       if (response && response.data && Array.isArray(response.data)) {
         setUsers(response.data);
         setPagination(response.pagination || {});
-        console.log('Users loaded successfully:', response.data.length, 'users');
       } else {
         console.error('Invalid response structure:', response);
         setUsers([]);

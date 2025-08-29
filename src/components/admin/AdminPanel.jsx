@@ -41,7 +41,6 @@ const AdminPanel = () => {
         showError('No tienes permisos de administrador');
       }
     } catch (error) {
-      console.error('Error verificando acceso de admin:', error);
       setIsAdmin(false);
       showError('Error verificando permisos de administrador');
     } finally {

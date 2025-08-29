@@ -26,14 +26,6 @@ const CartDebug = () => {
     const token = localStorage.getItem('authToken');
     const sessionId = localStorage.getItem('sessionId');
     
-    console.log('🔍 Debug Cart Request:');
-    console.log('Token existe:', !!token);
-    console.log('Token completo:', token);
-    console.log('Session ID:', sessionId);
-    console.log('User desde contexto:', user);
-    console.log('Is Authenticated:', isAuthenticated);
-    
-    // Hacer una petición de prueba para obtener el carrito
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -41,15 +33,12 @@ const CartDebug = () => {
         ...(sessionId && !token && { 'x-session-id': sessionId }),
       };
       
-      console.log('Headers enviados:', headers);
-      
       const response = await fetch('https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api/cart', {
         method: 'GET',
         headers
       });
       
       const data = await response.json();
-      console.log('Respuesta del servidor:', data);
       
     } catch (error) {
       console.error('Error en petición de debug:', error);

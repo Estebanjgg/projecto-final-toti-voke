@@ -8,7 +8,6 @@ const Footer = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle newsletter subscription
-    console.log('Newsletter subscription:', { name, email });
     // Reset form
     setName('');
     setEmail('');

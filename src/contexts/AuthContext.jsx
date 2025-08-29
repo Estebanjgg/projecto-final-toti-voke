@@ -89,22 +89,15 @@ export const AuthProvider = ({ children }) => {
 
   const initializeAuth = async () => {
     try {
-      console.log('🔄 Iniciando inicialización de auth...');
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
       
       // Verificar si hay token guardado
       const savedToken = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
       
-      console.log('🔍 Token guardado:', savedToken ? 'SÍ' : 'NO');
-      console.log('🔍 Usuario guardado:', savedUser ? 'SÍ' : 'NO');
-      
       if (savedToken && savedUser) {
-        console.log('🔐 Verificando token...');
         // Verificar si el token sigue siendo válido
         const isValid = await authAPI.verifyToken(savedToken);
-        
-        console.log('✅ Token válido:', isValid ? 'SÍ' : 'NO');
         
         if (isValid) {
           dispatch({
@@ -114,23 +107,19 @@ export const AuthProvider = ({ children }) => {
               user: JSON.parse(savedUser)
             }
           });
-          console.log('✅ Usuario autenticado exitosamente');
         } else {
           // Token inválido, limpiar storage
-          console.log('❌ Token inválido, limpiando storage...');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           initializeSession();
         }
       } else {
-        console.log('📝 No hay credenciales guardadas, inicializando sesión...');
         initializeSession();
       }
     } catch (error) {
       console.error('❌ Error inicializando autenticación:', error);
       initializeSession();
     } finally {
-      console.log('🏁 Finalizando inicialización de auth');
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
   };

@@ -6,19 +6,25 @@ const Banner = () => {
   
   const bannerMessages = [
     {
-      image: "/picture/image-propaganda/Screenshot_81.png"
+      image: "/picture/image-propaganda/propaganda1.png"
     },
     {
-      image: "/picture/image-propaganda/Screenshot_82.png"
+      image: "/picture/image-propaganda/propaganda2.png"
     },
     {
-      image: "/picture/image-propaganda/Screenshot_83.png"
+      image: "/picture/image-propaganda/propaganda3.png"
     },
     {
-      image: "/picture/image-propaganda/Screenshot_84.png"
+      image: "/picture/image-propaganda/propaganda4.png"
     },    
     {
-      image: "/picture/image-propaganda/Screenshot_86.png"
+      image: "/picture/image-propaganda/propaganda5.png"
+    },
+    {
+      image: "/picture/image-propaganda/propaganda6.png"
+    },
+    {
+      image: "/picture/image-propaganda/propaganda7.png"
     }
   ];
   

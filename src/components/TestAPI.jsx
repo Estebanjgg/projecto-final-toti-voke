@@ -13,7 +13,6 @@ const TestAPI = () => {
     const loadCategories = async () => {
       try {
         const data = await categoriesAPI.getAll();
-        console.log('Categorías desde API:', data);
         setCategories(data.data || []);
       } catch (error) {
         console.error('Error cargando categorías:', error);
@@ -27,9 +26,7 @@ const TestAPI = () => {
     setLoading(true);
     setSelectedCategory(categoryName);
     try {
-      console.log('Probando categoría:', categoryName);
       const response = await getProductsByCategory(categoryName);
-      console.log('Respuesta completa de API:', response);
       setApiResponse(response);
       
       // Intentar extraer productos de diferentes estructuras posibles

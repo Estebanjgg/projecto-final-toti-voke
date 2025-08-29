@@ -85,7 +85,6 @@ export const ordersAPI = {
   cancelOrder: async (orderId, reason = '') => {
     try {
       // Esta funcionalidad necesitaría ser implementada en el backend
-      console.log('Cancelando orden:', orderId, 'Razón:', reason);
       throw new Error('Funcionalidad de cancelación no implementada aún');
     } catch (error) {
       console.error('Error cancelando pedido:', error);
@@ -97,7 +96,6 @@ export const ordersAPI = {
   reorderItems: async (orderId, items) => {
     try {
       // Esta funcionalidad necesitaría ser implementada
-      console.log('Reordenando items de la orden:', orderId, items);
       throw new Error('Funcionalidad de reorden no implementada aún');
     } catch (error) {
       console.error('Error reordenando:', error);

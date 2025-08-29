@@ -25,10 +25,7 @@ const TechOffers = () => {
         const activeFilterObj = filters.find(f => f.key === activeFilter);
         const categoryToQuery = activeFilterObj ? activeFilterObj.dbValue : activeFilter;
         
-        console.log('Buscando productos para categoría:', categoryToQuery);
-        
         const response = await getProductsByCategory(categoryToQuery);
-        console.log('Respuesta de API:', response);
         
         // Manejar diferentes estructuras de respuesta
         let productsData = [];
@@ -39,8 +36,6 @@ const TechOffers = () => {
         } else if (response && Array.isArray(response.products)) {
           productsData = response.products;
         }
-        
-        console.log('Productos extraídos:', productsData);
         
         // Limitar a 4 productos (1 fila)
         setProducts(productsData.slice(0, 4));

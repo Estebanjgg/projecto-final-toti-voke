@@ -142,8 +142,6 @@ export const FavoritesProvider = ({ children }) => {
     }
 
     try {
-      console.log('🎯 Agregando producto a favoritos:', productId);
-      
       const response = await fetch(`${API_URL}/api/favorites/${productId}`, {
         method: 'POST',
         headers: getAuthHeaders()
@@ -199,8 +197,6 @@ export const FavoritesProvider = ({ children }) => {
     }
 
     try {
-      console.log('💔 Removiendo producto de favoritos:', productId);
-      
       const response = await fetch(`${API_URL}/api/favorites/${productId}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
