@@ -9,7 +9,7 @@ import CheckoutForm from './CheckoutForm';
 import OrderSummary from './OrderSummary';
 import PaymentMethods from './PaymentMethods';
 import ShippingOptions from './ShippingOptions';
-import OrderConfirmation from './OrderConfirmation';
+import OrderConfirmation from './OrderConfirmationNew';
 import PaymentProcessing from './PaymentProcessing';
 import StockErrorModal from './StockErrorModal';
 import './Checkout.css';
@@ -78,13 +78,16 @@ const Checkout = () => {
   const [orderResult, setOrderResult] = useState(null);
   const [paymentResult, setPaymentResult] = useState(null);
 
-  // Verificar que há itens no carrinho
+  // Verificar que há itens no carrinho - SOLO si no estamos en confirmación
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
-      showError('Seu carrinho está vazio');
-      navigate('/');
+      // NO mostrar error si estamos en paso de confirmación o processing
+      if (currentStep !== CHECKOUT_STEPS.CONFIRMATION && currentStep !== CHECKOUT_STEPS.PROCESSING) {
+        showError('Seu carrinho está vazio');
+        navigate('/');
+      }
     }
-  }, [cartItems, navigate, showError]);
+  }, [cartItems, navigate, showError, currentStep]);
 
   // Carregar métodos de pagamento ao montar o componente
   useEffect(() => {
@@ -96,7 +99,7 @@ const Checkout = () => {
       const response = await checkoutAPI.getPaymentMethods();
       setPaymentMethods(response.data);
     } catch (error) {
-      console.error('Erro carregando métodos de pagamento:', error);
+      showError('Erro ao carregar métodos de pagamento');
     }
   };
 
@@ -106,7 +109,6 @@ const Checkout = () => {
       const response = await checkoutAPI.getShippingOptions(postalCode);
       setShippingOptions(response.data);
     } catch (error) {
-      console.error('Erro carregando opções de envio:', error);
       showError('Erro ao carregar opções de envio');
     } finally {
       setLoading(false);
@@ -186,9 +188,7 @@ const Checkout = () => {
       const response = await checkoutAPI.validateCheckout(dataToValidate);
       setValidationErrors({});
       return true;
-    } catch (error) {
-      console.error('Erro na validação:', error);
-      
+    } catch (error) {      
       // Tratar erros de estoque especificamente
       if (error.isStockError) {
         setStockErrorModal({
@@ -274,6 +274,7 @@ const Checkout = () => {
       
       // Passo 1: Criar o pedido
       const response = await checkoutAPI.createOrder(orderData);
+      
       const order = response.data.order;
       setOrderResult(order);
       
@@ -288,24 +289,33 @@ const Checkout = () => {
       setPaymentResult(paymentResponse.data);
       
       // Passo 3: Tratar o resultado do pagamento
-      if (paymentResponse.data.payment_result.status === 'approved') {
+      const paymentStatus = paymentResponse.data.payment_result?.status;
+      
+      if (paymentStatus === 'approved') {
         // Pagamento aprovado imediatamente (cartões)
         showSuccess('Pagamento processado com sucesso! Seu pedido foi confirmado.');
         // Refresh do carrito para sincronizar com o backend
         await refreshCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
-      } else if (paymentResponse.data.payment_result.status === 'pending') {
+      } else if (paymentStatus === 'pending') {
         // Pagamento pendente (PIX, Boleto)
         showSuccess('Pedido criado com sucesso! Complete o pagamento para confirmar seu pedido.');
         // Refresh do carrito para sincronizar com o backend
         await refreshCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
       } else {
-        throw new Error('Erro no processamento do pagamento');
+        throw new Error(`Erro no processamento do pagamento - Status: ${paymentStatus}`);
       }
       
     } catch (error) {
-      console.error('Erro no checkout:', error);
+      
+      // Verificar si el pedido fue creado a pesar del error
+      if (orderResult) {
+        await refreshCart();
+        showSuccess('Seu pedido foi processado com sucesso!');
+        setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+        return;
+      }
       
       // Tratar erros de estoque durante a criação da ordem
       if (error.isStockError) {
@@ -317,13 +327,24 @@ const Checkout = () => {
         return;
       }
       
-      // Tratar erro de carrinho vazio (quando o backend já processou a ordem)
-      if (error.isEmptyCartError) {
-        // Se chegou até aqui, provavelmente a ordem foi criada com sucesso
-        // Refresh do carrito e mostrar confirmação
-        await refreshCart();
-        showSuccess('Seu pedido foi processado com sucesso!');
-        setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+      // Tratar erro de carrinho vazio - PERO esto no debería bloquear si el pedido se creó
+      if (error.message && error.message.includes('carrito') && error.message.includes('vazio')) {
+        // Intentar refresh del carrito
+        try {
+          await refreshCart();
+          // Si tenemos orderResult, significaba que la orden se creó correctamente
+          if (orderResult) {
+            showSuccess('Seu pedido foi processado com sucesso!');
+            setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+            return;
+          }
+        } catch (refreshError) {
+          // Error al actualizar carrito, continuar
+        }
+        
+        // Si llegamos aquí, mostrar error pero no bloquear flujo
+        showError('El carrito parece estar vacío. Si acabas de crear un pedido, verifica en "Mis Pedidos".');
+        setCurrentStep(CHECKOUT_STEPS.REVIEW);
         return;
       }
       
@@ -349,7 +370,7 @@ const Checkout = () => {
       case CHECKOUT_STEPS.PAYMENT:
         return 'Método de Pagamento';
       case CHECKOUT_STEPS.REVIEW:
-        return 'Revisar Pedido';
+        return 'Revisão do Pedido';
       case CHECKOUT_STEPS.CONFIRMATION:
         return 'Confirmação';
       default:
@@ -396,6 +417,8 @@ const Checkout = () => {
     }, 1000);
   };
 
+  // Renderização condicional baseada no step atual
+
   if (currentStep === CHECKOUT_STEPS.CONFIRMATION && orderResult) {
     return (
       <OrderConfirmation 
@@ -425,7 +448,7 @@ const Checkout = () => {
           </div>
           <div className={`step ${currentStep === CHECKOUT_STEPS.REVIEW ? 'active' : ''}`}>
             <span className="step-number">3</span>
-            <span className="step-label">Revisar</span>
+            <span className="step-label">Revisão</span>
           </div>
         </div>
       </div>
@@ -596,14 +619,16 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* Order summary sidebar */}
-        <div className="checkout-sidebar">
-          <OrderSummary
-            cartItems={cartItems}
-            totals={calculateTotal()}
-            selectedShipping={selectedShipping}
-          />
-        </div>
+        {/* Order summary sidebar - SOLO mostrar si NO estamos en confirmación */}
+        {currentStep !== CHECKOUT_STEPS.CONFIRMATION && (
+          <div className="checkout-sidebar">
+            <OrderSummary
+              cartItems={cartItems}
+              totals={calculateTotal()}
+              selectedShipping={selectedShipping}
+            />
+          </div>
+        )}
       </div>
 
       {/* Modal de erro de estoque */}

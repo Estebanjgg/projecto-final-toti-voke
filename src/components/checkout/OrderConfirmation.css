@@ -1,0 +1,461 @@
+/* Confirmación de pedido */
+.order-confirmation {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header de confirmación */
+.confirmation-header {
+  text-align: center;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.confirmation-header h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.order-number {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  display: inline-block;
+}
+
+.confirmation-message {
+  font-size: 1.1rem;
+  margin: 1rem 0 0 0;
+  opacity: 0.9;
+}
+
+/* Estado del pedido */
+.order-status {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-date {
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Detalles del pedido */
+.order-details {
+  display: grid;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.details-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.details-section h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+/* Resumen del pedido */
+.order-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.summary-line:last-child {
+  border-bottom: none;
+}
+
+.summary-line.total {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #28a745;
+  border-top: 2px solid #e9ecef;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.summary-line.discount {
+  color: #dc3545;
+}
+
+/* Información de pago */
+.payment-info p {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.payment-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.payment-status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.payment-status.paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.payment-status.failed {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Detalles de pago específicos */
+.payment-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.pix-instructions, .boleto-instructions {
+  margin-top: 1rem;
+}
+
+.pix-details, .boleto-details {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #e0e0e0;
+}
+
+.barcode {
+  display: block;
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+  word-break: break-all;
+}
+
+/* Acciones de boleto */
+.boleto-actions, .pix-details {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.boleto-actions button {
+  flex: 1;
+}
+
+/* Información de dirección */
+.address {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.address p {
+  margin: 0.25rem 0;
+}
+
+/* Próximos pasos */
+.next-steps {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.next-steps h3 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #007bff;
+}
+
+.step-number {
+  background: #007bff;
+  color: white;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.step-content p {
+  margin: 0;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* Acciones de confirmación */
+.confirmation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.confirmation-actions .btn {
+  flex: 1;
+  min-width: 200px;
+  max-width: 250px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #28a745;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+}
+
+.btn-outline:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Información de soporte */
+.support-info {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.support-info h4 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.support-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.support-contacts p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+/* Estado de error */
+.error-state {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.error-state h2 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.error-state p {
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .order-confirmation {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .confirmation-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .confirmation-header h1 {
+    font-size: 2rem;
+  }
+  
+  .success-icon {
+    font-size: 3rem;
+  }
+  
+  .confirmation-actions {
+    flex-direction: column;
+  }
+  
+  .confirmation-actions .btn {
+    min-width: auto;
+    max-width: none;
+  }
+  
+  .steps-list {
+    gap: 1rem;
+  }
+  
+  .step {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .boleto-actions {
+    flex-direction: column;
+  }
+  
+  .support-contacts {
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-confirmation {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .details-section {
+    padding: 1rem;
+  }
+  
+  .summary-line {
+    font-size: 0.9rem;
+  }
+  
+  .order-number {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

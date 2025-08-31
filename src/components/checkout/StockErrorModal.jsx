@@ -27,8 +27,6 @@ const StockErrorModal = ({
 
   const handleRemoveUnavailableItems = async () => {
     try {
-      console.log('Removendo items sem estoque...');
-      
       // Analisar os erros de estoque para identificar produtos esgotados
       const unavailableProductNames = stockErrors
         .filter(error => error.includes('esgotado'))
@@ -38,8 +36,6 @@ const StockErrorModal = ({
           return match ? match[1] : null;
         })
         .filter(Boolean);
-      
-      console.log('Produtos a remover:', unavailableProductNames);
       
       // Aqui você pode implementar a lógica para remover produtos específicos
       // Por exemplo, buscar no carrinho pelos nomes dos produtos e removê-los
