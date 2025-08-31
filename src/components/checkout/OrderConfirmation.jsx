@@ -6,9 +6,9 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
     return (
       <div className="order-confirmation">
         <div className="error-state">
-          <h2>Error</h2>
-          <p>No se pudo cargar la información del pedido.</p>
-          <Link to="/" className="btn btn-primary">Volver al inicio</Link>
+          <h2>Erro</h2>
+          <p>Não foi possível carregar as informações do pedido.</p>
+          <Link to="/" className="btn btn-primary">Voltar ao início</Link>
         </div>
       </div>
     );
@@ -16,8 +16,8 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
 
   const getPaymentMethodName = (method) => {
     const methods = {
-      'credit_card': 'Tarjeta de Crédito',
-      'debit_card': 'Tarjeta de Débito',
+      'credit_card': 'Cartão de Crédito',
+      'debit_card': 'Cartão de Débito',
       'pix': 'PIX',
       'boleto': 'Boleto Bancário'
     };
@@ -38,18 +38,18 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
 
   const getStatusText = (status) => {
     const statuses = {
-      'pending': 'Pendiente',
+      'pending': 'Pendente',
       'confirmed': 'Confirmado',
-      'processing': 'Procesando',
+      'processing': 'Processando',
       'shipped': 'Enviado',
-      'delivered': 'Entregado',
+      'delivered': 'Entregue',
       'cancelled': 'Cancelado'
     };
     return statuses[status] || status;
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Fecha no disponible';
+    if (!dateString) return 'Data não disponível';
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {
       year: 'numeric',
@@ -62,30 +62,30 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
 
   return (
     <div className="order-confirmation">
-      {/* Header de confirmación */}
+      {/* Header de confirmação */}
       <div className="confirmation-header">
         <div className="success-icon">✅</div>
-        <h1>¡Pedido Confirmado!</h1>
-        <p className="order-number">Número de pedido: <strong>#{order.order_number || 'No disponible'}</strong></p>
+        <h1>Pedido Confirmado!</h1>
+        <p className="order-number">Número do pedido: <strong>#{order.order_number || 'Não disponível'}</strong></p>
         <p className="confirmation-message">
-          Gracias por tu compra. Hemos recibido tu pedido y lo estamos procesando.
+          Obrigado por sua compra. Recebemos seu pedido e estamos processando.
         </p>
       </div>
 
-      {/* Estado del pedido */}
+      {/* Estado do pedido */}
       <div className="order-status">
         <div className="status-badge" style={{ backgroundColor: getStatusColor(order.status || 'pending') }}>
           {getStatusText(order.status || 'pending')}
         </div>
         <p className="status-date">
-          Pedido realizado el {formatDate(order.created_at)}
+          Pedido realizado em {formatDate(order.created_at)}
         </p>
       </div>
 
-      {/* Información del pedido */}
+      {/* Informações do pedido */}
       <div className="order-details">
         <div className="details-section">
-          <h3>Resumen del Pedido</h3>
+          <h3>Resumo do Pedido</h3>
           <div className="order-summary">
             <div className="summary-line">
               <span>Subtotal:</span>
@@ -93,17 +93,17 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
             </div>
             {(order.discount || 0) > 0 && (
               <div className="summary-line discount">
-                <span>Descuento:</span>
+                <span>Desconto:</span>
                 <span>-R$ {(order.discount || 0).toFixed(2)}</span>
               </div>
             )}
             <div className="summary-line">
-              <span>Envío:</span>
+              <span>Entrega:</span>
               <span>R$ {(order.shipping || 0).toFixed(2)}</span>
             </div>
             {(order.tax || 0) > 0 && (
               <div className="summary-line">
-                <span>Impuestos:</span>
+                <span>Impostos:</span>
                 <span>R$ {(order.tax || 0).toFixed(2)}</span>
               </div>
             )}
@@ -114,47 +114,47 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           </div>
         </div>
 
-        {/* Información de pago */}
+        {/* Informações de pagamento */}
         <div className="details-section">
-          <h3>Información de Pago</h3>
+          <h3>Informações de Pagamento</h3>
           <div className="payment-info">
             <p><strong>Método:</strong> {getPaymentMethodName(order.payment_method || 'N/A')}</p>
-            <p><strong>Estado:</strong> 
+            <p><strong>Status:</strong> 
               <span className={`payment-status ${order.payment_status || 'pending'}`}>
-                {(order.payment_status || 'pending') === 'pending' ? 'Pendiente' : 
-                 (order.payment_status || 'pending') === 'paid' ? 'Pagado' : 
-                 (order.payment_status || 'pending') === 'failed' ? 'Falló' : (order.payment_status || 'pending')}
+                {(order.payment_status || 'pending') === 'pending' ? 'Pendente' : 
+                 (order.payment_status || 'pending') === 'paid' ? 'Pago' : 
+                 (order.payment_status || 'pending') === 'failed' ? 'Falhou' : (order.payment_status || 'pending')}
               </span>
             </p>
             
-            {/* Mostrar información específica según el resultado del pago */}
+            {/* Mostrar informações específicas conforme o resultado do pagamento */}
             {paymentResult && paymentResult.payment_result && (
               <div className="payment-details">
                 {paymentResult.payment_result.transaction_id && (
-                  <p><strong>ID de Transacción:</strong> {paymentResult.payment_result.transaction_id}</p>
+                  <p><strong>ID da Transação:</strong> {paymentResult.payment_result.transaction_id}</p>
                 )}
                 
                 {/* PIX específico */}
                 {order.payment_method === 'pix' && paymentResult.payment_result.qr_code && (
                   <div className="pix-instructions">
-                    <p><strong>Instrucciones PIX:</strong></p>
-                    <p>Usa el código QR o la clave PIX para completar el pago.</p>
+                    <p><strong>Instruções PIX:</strong></p>
+                    <p>Use o código QR ou a chave PIX para completar o pagamento.</p>
                     <div className="pix-details">
-                      <p><strong>Clave PIX:</strong> <code>{paymentResult.payment_result.pix_key}</code></p>
+                      <p><strong>Chave PIX:</strong> <code>{paymentResult.payment_result.pix_key}</code></p>
                       <p><strong>Valor:</strong> R$ {(paymentResult.payment_result.amount || 0).toFixed(2)}</p>
-                      <p><strong>Vence en:</strong> 15 minutos</p>
+                      <p><strong>Vence em:</strong> 15 minutos</p>
                     </div>
                     <button 
                       className="btn btn-outline"
                       onClick={() => {
-                        // Simular confirmación de PIX después de 5 segundos
+                        // Simular confirmação de PIX depois de 5 segundos
                         setTimeout(() => {
-                          alert('PIX confirmado! (Simulación)');
+                          alert('PIX confirmado! (Simulação)');
                           window.location.reload();
                         }, 5000);
                       }}
                     >
-                      Simular Pago PIX
+                      Simular Pagamento PIX
                     </button>
                   </div>
                 )}
@@ -162,12 +162,12 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
                 {/* Boleto específico */}
                 {order.payment_method === 'boleto' && paymentResult.payment_result.boleto_number && (
                   <div className="boleto-instructions">
-                    <p><strong>Instrucciones Boleto:</strong></p>
+                    <p><strong>Instruções Boleto:</strong></p>
                     <div className="boleto-details">
                       <p><strong>Número:</strong> {paymentResult.payment_result.boleto_number}</p>
                       <p><strong>Código de barras:</strong></p>
                       <code className="barcode">{paymentResult.payment_result.barcode}</code>
-                      <p><strong>Vencimiento:</strong> {formatDate(paymentResult.payment_result.due_date)}</p>
+                      <p><strong>Vencimento:</strong> {formatDate(paymentResult.payment_result.due_date)}</p>
                     </div>
                     <div className="boleto-actions">
                       <button 
@@ -178,19 +178,19 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
                           }
                         }}
                       >
-                        Descargar Boleto
+                        Baixar Boleto
                       </button>
                       <button 
                         className="btn btn-outline"
                         onClick={() => {
-                          // Simular confirmación de boleto
+                          // Simular confirmação de boleto
                           setTimeout(() => {
-                            alert('Boleto pago confirmado! (Simulación)');
+                            alert('Pagamento do boleto confirmado! (Simulação)');
                             window.location.reload();
                           }, 3000);
                         }}
                       >
-                        Simular Pago Boleto
+                        Simular Pagamento Boleto
                       </button>
                     </div>
                   </div>
@@ -200,10 +200,10 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
                 {(order.payment_method === 'credit_card' || order.payment_method === 'debit_card') && (
                   <div className="card-payment-details">
                     {paymentResult.payment_result.authorization_code && (
-                      <p><strong>Código de autorización:</strong> {paymentResult.payment_result.authorization_code}</p>
+                      <p><strong>Código de autorização:</strong> {paymentResult.payment_result.authorization_code}</p>
                     )}
                     {paymentResult.payment_result.last_four_digits && (
-                      <p><strong>Tarjeta terminada en:</strong> ***{paymentResult.payment_result.last_four_digits}</p>
+                      <p><strong>Cartão terminado em:</strong> ***{paymentResult.payment_result.last_four_digits}</p>
                     )}
                   </div>
                 )}
@@ -212,13 +212,13 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           </div>
         </div>
 
-        {/* Información de envío */}
+        {/* Informações de entrega */}
         <div className="details-section">
-          <h3>Información de Envío</h3>
+          <h3>Informações de Entrega</h3>
           <div className="shipping-info">
             {order.shipping_address && (
               <div className="address">
-                <p><strong>Dirección:</strong></p>
+                <p><strong>Endereço:</strong></p>
                 <p>{order.shipping_address.street}, {order.shipping_address.number}</p>
                 {order.shipping_address.complement && (
                   <p>{order.shipping_address.complement}</p>
@@ -235,27 +235,27 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           </div>
         </div>
 
-        {/* Información de contacto */}
+        {/* Informações de contato */}
         <div className="details-section">
-          <h3>Información de Contacto</h3>
+          <h3>Informações de Contato</h3>
           <div className="contact-info">
-            <p><strong>Email:</strong> {order.customer_email || 'No disponible'}</p>
+            <p><strong>Email:</strong> {order.customer_email || 'Não disponível'}</p>
             {order.customer_phone && (
-              <p><strong>Teléfono:</strong> {order.customer_phone}</p>
+              <p><strong>Telefone:</strong> {order.customer_phone}</p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Próximos pasos */}
+      {/* Próximos passos */}
       <div className="next-steps">
-        <h3>Próximos Pasos</h3>
+        <h3>Próximos Passos</h3>
         <div className="steps-list">
           <div className="step">
             <span className="step-number">1</span>
             <div className="step-content">
-              <h4>Confirmación por Email</h4>
-              <p>Recibirás un email de confirmación con todos los detalles de tu pedido.</p>
+              <h4>Confirmação por Email</h4>
+              <p>Você receberá um email de confirmação com todos os detalhes do seu pedido.</p>
             </div>
           </div>
           
@@ -263,8 +263,8 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
             <div className="step">
               <span className="step-number">2</span>
               <div className="step-content">
-                <h4>Completar Pago</h4>
-                <p>Completa el pago siguiendo las instrucciones enviadas a tu email.</p>
+                <h4>Completar Pagamento</h4>
+                <p>Complete o pagamento seguindo as instruções enviadas para seu email.</p>
               </div>
             </div>
           )}
@@ -272,22 +272,22 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           <div className="step">
             <span className="step-number">{(order.payment_status || 'pending') === 'pending' ? '3' : '2'}</span>
             <div className="step-content">
-              <h4>Preparación del Pedido</h4>
-              <p>Una vez confirmado el pago, prepararemos tu pedido para el envío.</p>
+              <h4>Preparação do Pedido</h4>
+              <p>Assim que o pagamento for confirmado, prepararemos seu pedido para o envio.</p>
             </div>
           </div>
           
           <div className="step">
             <span className="step-number">{(order.payment_status || 'pending') === 'pending' ? '4' : '3'}</span>
             <div className="step-content">
-              <h4>Envío y Entrega</h4>
-              <p>Te notificaremos cuando tu pedido sea enviado con el código de rastreo.</p>
+              <h4>Envio e Entrega</h4>
+              <p>Notificaremos você quando seu pedido for enviado com o código de rastreamento.</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Acciones */}
+      {/* Ações */}
       <div className="confirmation-actions">
         <button onClick={onViewMyOrders} className="btn btn-primary">
           Ver Meus Pedidos
@@ -299,26 +299,26 @@ const OrderConfirmation = ({ order, paymentResult, onContinueShopping, onViewOrd
           onClick={onViewOrder}
           className="btn btn-outline"
         >
-          Ver Detalles del Pedido
+          Ver Detalhes do Pedido
         </button>
         <button 
           className="btn btn-outline"
           onClick={() => window.print()}
         >
-          Imprimir Confirmación
+          Imprimir Confirmação
         </button>
       </div>
 
-      {/* Información de soporte */}
+      {/* Informações de suporte */}
       <div className="support-info">
-        <h4>¿Necesitas Ayuda?</h4>
+        <h4>Precisa de Ajuda?</h4>
         <p>
-          Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos:
+          Se você tiver alguma dúvida sobre seu pedido, não hesite em nos contatar:
         </p>
         <div className="support-contacts">
-          <p>📧 Email: soporte@tienda.com</p>
-          <p>📞 Teléfono: (11) 1234-5678</p>
-          <p>💬 Chat en vivo disponible 24/7</p>
+          <p>📧 Email: suporte@loja.com</p>
+          <p>📞 Telefone: (11) 1234-5678</p>
+          <p>💬 Chat ao vivo disponível 24/7</p>
         </div>
       </div>
     </div>

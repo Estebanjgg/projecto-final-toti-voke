@@ -39,8 +39,8 @@ const MyOrders = () => {
       setOrders(response.data);
       setTotalPages(response.pagination.pages);
     } catch (error) {
-      console.error('Error cargando pedidos:', error);
-      showError('Error al cargar los pedidos');
+      console.error('Erro carregando pedidos:', error);
+      showError('Erro ao carregar os pedidos');
     } finally {
       setLoading(false);
     }
@@ -51,32 +51,32 @@ const MyOrders = () => {
       const response = await ordersAPI.getOrdersSummary();
       setOrdersSummary(response.data);
     } catch (error) {
-      console.error('Error cargando resumen:', error);
+      console.error('Erro carregando resumo:', error);
     }
   };
 
   const handleCancelOrder = async (orderId) => {
-    if (!window.confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
+    if (!window.confirm('Tem certeza de que deseja cancelar este pedido?')) {
       return;
     }
 
     try {
-      const reason = prompt('Por favor ingresa una razón para la cancelación (opcional):') || '';
+      const reason = prompt('Por favor, informe um motivo para o cancelamento (opcional):') || '';
       await ordersAPI.cancelOrder(orderId, reason);
-      showSuccess('Pedido cancelado exitosamente');
+      showSuccess('Pedido cancelado com sucesso');
       loadOrders();
     } catch (error) {
-      showError(error.message || 'Error al cancelar el pedido');
+      showError(error.message || 'Erro ao cancelar o pedido');
     }
   };
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      pending: { text: 'Pendiente', class: 'status-pending' },
+      pending: { text: 'Pendente', class: 'status-pending' },
       confirmed: { text: 'Confirmado', class: 'status-confirmed' },
-      processing: { text: 'Procesando', class: 'status-processing' },
+      processing: { text: 'Processando', class: 'status-processing' },
       shipped: { text: 'Enviado', class: 'status-shipped' },
-      delivered: { text: 'Entregado', class: 'status-delivered' },
+      delivered: { text: 'Entregue', class: 'status-delivered' },
       cancelled: { text: 'Cancelado', class: 'status-cancelled' }
     };
 
@@ -113,7 +113,7 @@ const MyOrders = () => {
       <div className="my-orders-page">
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>Cargando tus pedidos...</p>
+          <p>Carregando seus pedidos...</p>
         </div>
       </div>
     );
@@ -128,7 +128,7 @@ const MyOrders = () => {
           <p>Gerencie e rastreie todos os seus pedidos em um só lugar</p>
         </div>
 
-        {/* Resumen de pedidos */}
+        {/* Resumo de pedidos */}
         {ordersSummary && (
           <div className="orders-summary">
             <div className="summary-card">
@@ -136,11 +136,11 @@ const MyOrders = () => {
               <p className="summary-number">{ordersSummary.total_orders}</p>
             </div>
             <div className="summary-card">
-              <h3>Total Gastado</h3>
+              <h3>Total Gasto</h3>
               <p className="summary-number">R$ {ordersSummary.total_spent.toFixed(2)}</p>
             </div>
             <div className="summary-card">
-              <h3>Por Estado</h3>
+              <h3>Por Status</h3>
               <div className="status-breakdown">
                 {Object.entries(ordersSummary.orders_by_status).map(([status, count]) => (
                   <div key={status} className="status-item">
@@ -155,7 +155,7 @@ const MyOrders = () => {
         {/* Filtros */}
         <div className="orders-filters">
           <div className="filter-group">
-            <label htmlFor="statusFilter">Filtrar por estado:</label>
+            <label htmlFor="statusFilter">Filtrar por status:</label>
             <select
               id="statusFilter"
               value={selectedStatus}
@@ -164,12 +164,12 @@ const MyOrders = () => {
                 setCurrentPage(1);
               }}
             >
-              <option value="">Todos los estados</option>
-              <option value="pending">Pendiente</option>
+              <option value="">Todos os status</option>
+              <option value="pending">Pendente</option>
               <option value="confirmed">Confirmado</option>
-              <option value="processing">Procesando</option>
+              <option value="processing">Processando</option>
               <option value="shipped">Enviado</option>
-              <option value="delivered">Entregado</option>
+              <option value="delivered">Entregue</option>
               <option value="cancelled">Cancelado</option>
             </select>
           </div>
@@ -180,10 +180,10 @@ const MyOrders = () => {
           {orders.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📦</div>
-              <h3>No tienes pedidos aún</h3>
-              <p>Cuando realices tu primera compra, aparecerá aquí.</p>
+              <h3>Você ainda não tem pedidos</h3>
+              <p>Quando fizer sua primeira compra, aparecerá aqui.</p>
               <Link to="/" className="btn btn-primary">
-                Explorar Productos
+                Explorar Produtos
               </Link>
             </div>
           ) : (
@@ -203,10 +203,10 @@ const MyOrders = () => {
                 <div className="order-body">
                   <div className="order-items">
                     <p className="items-count">
-                      {order.items_count} {order.items_count === 1 ? 'producto' : 'productos'}
+                      {order.items_count} {order.items_count === 1 ? 'produto' : 'produtos'}
                     </p>
                     
-                    {/* Mostrar algunos productos */}
+                    {/* Mostrar alguns produtos */}
                     {order.order_items && order.order_items.slice(0, 3).map((item) => (
                       <div key={item.id} className="order-item-preview">
                         {item.product_image && (
@@ -218,14 +218,14 @@ const MyOrders = () => {
                         )}
                         <div className="item-info">
                           <p className="item-title">{item.product_title}</p>
-                          <p className="item-quantity">Cantidad: {item.quantity}</p>
+                          <p className="item-quantity">Quantidade: {item.quantity}</p>
                         </div>
                       </div>
                     ))}
                     
                     {order.order_items && order.order_items.length > 3 && (
                       <p className="more-items">
-                        +{order.order_items.length - 3} productos más
+                        +{order.order_items.length - 3} produtos a mais
                       </p>
                     )}
                   </div>
@@ -240,7 +240,7 @@ const MyOrders = () => {
                     to={`/orders/${order.order_number}`}
                     className="btn btn-primary"
                   >
-                    Ver Detalles
+                    Ver Detalhes
                   </Link>
                   
                   {order.status === 'shipped' && (
@@ -265,11 +265,11 @@ const MyOrders = () => {
                     <button 
                       className="btn btn-outline"
                       onClick={() => {
-                        // Funcionalidad para reordenar
-                        showSuccess('Funcionalidad de reordenar próximamente');
+                        // Funcionalidade para refazer pedido
+                        showSuccess('Funcionalidade de refazer pedido em breve');
                       }}
                     >
-                      Reordenar
+                      Refazer Pedido
                     </button>
                   )}
                 </div>
@@ -306,7 +306,7 @@ const MyOrders = () => {
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
             >
-              Siguiente
+              Próxima
             </button>
           </div>
         )}

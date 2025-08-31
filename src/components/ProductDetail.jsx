@@ -28,19 +28,19 @@ const ProductDetail = () => {
       setLoading(true);
       setError(null);
       
-      // Obtener producto por ID
+      // Obter produto por ID
       const response = await productsAPI.getById(id);
       setProduct(response.data);
       
-      // Establecer valores por defecto
+      // Estabelecer valores padrão
       if (response.data) {
         setSelectedColor(response.data.color || 'Rosa');
         setSelectedStorage(response.data.storage || '512 GB');
         setSelectedCondition(response.data.condition || 'Muito Bom');
       }
     } catch (err) {
-      console.error('Error cargando producto:', err);
-      setError('Error al cargar el producto');
+      console.error('Erro carregando produto:', err);
+      setError('Erro ao carregar o produto');
     } finally {
       setLoading(false);
     }
@@ -49,20 +49,20 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     if (!product) return;
     
-    // Validar stock disponible
+    // Validar estoque disponível
     if (product.stock !== undefined && product.stock < quantity) {
-      showError(`Stock insuficiente. Disponível: ${product.stock}`);
+      showError(`Estoque insuficiente. Disponível: ${product.stock}`);
       return;
     }
     
     try {
       setAddingToCart(true);
       
-      // Agregar al carrito usando el contexto
+      // Adicionar ao carrinho usando o contexto
       const success = await addToCart(id, quantity);
       
       if (success) {
-        // Opcional: mostrar las opciones seleccionadas en el mensaje
+        // Opcional: mostrar as opções selecionadas na mensagem
         const options = [];
         if (selectedColor) options.push(`Cor: ${selectedColor}`);
         if (selectedStorage) options.push(`Armazenamento: ${selectedStorage}`);
@@ -72,7 +72,7 @@ const ProductDetail = () => {
         showSuccess(`${product.title}${optionsText} adicionado ao carrinho!`);
       }
     } catch (error) {
-      console.error('Error agregando al carrito:', error);
+      console.error('Erro adicionando ao carrinho:', error);
       showError('Erro ao adicionar produto ao carrinho');
     } finally {
       setAddingToCart(false);
@@ -82,24 +82,24 @@ const ProductDetail = () => {
   const handleBuyNow = async () => {
     if (!product) return;
     
-    // Validar stock disponible
+    // Validar estoque disponível
     if (product.stock !== undefined && product.stock < quantity) {
-      showError(`Stock insuficiente. Disponível: ${product.stock}`);
+      showError(`Estoque insuficiente. Disponível: ${product.stock}`);
       return;
     }
     
     try {
       setAddingToCart(true);
       
-      // Primero agregar al carrito
+      // Primeiro adicionar ao carrinhom 
       const success = await addToCart(id, quantity);
       
       if (success) {
-        // Redirigir al checkout
+        // Redirecionar ao checkout
         navigate('/checkout');
       }
     } catch (error) {
-      console.error('Error en compra directa:', error);
+      console.error('Erro na compra direta:', error);
       showError('Erro ao processar compra');
     } finally {
       setAddingToCart(false);
@@ -153,7 +153,7 @@ const ProductDetail = () => {
       </nav>
 
       <div className="product-detail-container">
-        {/* Imagen del producto */}
+        {/* Imagem do produto */}
         <div className="product-image-section">
           <div className="product-image-main">
             <img src={product.image} alt={product.title} />
@@ -166,7 +166,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Información del producto */}
+        {/* Informações do produto */}
         <div className="product-info-section">
           {/* Rating */}
           <div className="product-rating">
@@ -179,11 +179,11 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Título y SKU */}
+          {/* Título e SKU */}
           <h1 className="product-title">{product.title}</h1>
           <p className="product-sku">SKU: {product.id}</p>
 
-          {/* Precios */}
+          {/* Preços */}
           <div className="product-pricing">
             {product.original_price && (
               <span className="original-price">R$ {product.original_price.toFixed(2)}</span>
@@ -204,7 +204,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Especificaciones del producto */}
+          {/* Especificações do produto */}
           {product.category === 'Smartphones' && (
             <div className="product-specifications">
               <h3>Especificações</h3>
@@ -249,7 +249,7 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* Opciones de producto */}
+          {/* Opções de produto */}
           <div className="product-options">
             {/* Color */}
             <div className="option-group">
@@ -264,7 +264,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Almacenamiento */}
+            {/* Armazenamento */}
             {product.category === 'Smartphones' && (
               <div className="option-group">
                 <label>Armazenamento</label>
@@ -279,7 +279,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {/* Estado del producto */}
+            {/* Estado do produto */}
             <div className="option-group">
               <label>Estado do produto</label>
               <div className="condition-options">
@@ -293,12 +293,12 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Descripción */}
+          {/* Descrição */}
           <div className="product-description">
             <p>{product.description || 'Tela pode conter riscos mínimos, invisíveis a uma distância de um braço ou quando a tela está ligada. Traseira e laterais podem ter riscos aparentes, mas leves.'}</p>
           </div>
 
-          {/* Selector de cantidad */}
+          {/* Seletor de quantidade */}
           <div className="quantity-selector">
             <label>Quantidade:</label>
             <div className="quantity-controls">
@@ -325,7 +325,7 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Botones de acción */}
+          {/* Botões de ação */}
           <div className="product-actions">
             <button 
               className="add-to-cart-btn" 

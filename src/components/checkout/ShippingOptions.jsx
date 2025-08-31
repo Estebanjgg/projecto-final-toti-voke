@@ -19,27 +19,27 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
         const options = await checkoutAPI.getShippingOptions(shippingAddress.postalCode);
         setShippingOptions(options);
         
-        // Si no hay opción seleccionada, seleccionar la primera por defecto
+        // Se não há opção selecionada, selecionar a primeira por padrão
         if (!selectedOption && options.length > 0) {
           onOptionChange(options[0]);
         }
       } catch (err) {
-        console.error('Error al cargar opciones de envío:', err);
-        setError('Error al calcular opciones de envío');
-        // Opciones de envío por defecto en caso de error
+        console.error('Erro ao carregar opções de frete:', err);
+        setError('Erro ao calcular opções de frete');
+        // Opções de frete padrão em caso de erro
         const defaultOptions = [
           {
             id: 'standard',
-            name: 'Envío Estándar',
-            description: 'Entrega en 5-7 días hábiles',
+            name: 'Frete Padrão',
+            description: 'Entrega em 5-7 dias úteis',
             price: 15.00,
             estimatedDays: '5-7',
             icon: '📦'
           },
           {
             id: 'express',
-            name: 'Envío Express',
-            description: 'Entrega en 2-3 días hábiles',
+            name: 'Frete Expresso',
+            description: 'Entrega em 2-3 dias úteis',
             price: 25.00,
             estimatedDays: '2-3',
             icon: '🚀'
@@ -89,9 +89,9 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
   if (!shippingAddress || !shippingAddress.postalCode) {
     return (
       <div className="shipping-options">
-        <h3>Opciones de Envío</h3>
+        <h3>Opções de Frete</h3>
         <div className="no-address">
-          <p>Por favor, completa la dirección de envío para ver las opciones disponibles.</p>
+          <p>Por favor, complete o endereço de entrega para ver as opções disponíveis.</p>
         </div>
       </div>
     );
@@ -99,10 +99,10 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
 
   return (
     <div className="shipping-options">
-      <h3>Opciones de Envío</h3>
+      <h3>Opções de Frete</h3>
       
       <div className="shipping-address-summary">
-        <p><strong>Enviar a:</strong></p>
+        <p><strong>Enviar para:</strong></p>
         <p>
           {shippingAddress.street}, {shippingAddress.number}
           {shippingAddress.complement && `, ${shippingAddress.complement}`}
@@ -116,7 +116,7 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
       {loading && (
         <div className="loading">
           <span className="loading-spinner">⏳</span>
-          Calculando opciones de envío...
+          Calculando opções de frete...
         </div>
       )}
       
@@ -170,24 +170,24 @@ const ShippingOptions = ({ selectedOption, onOptionChange, shippingAddress }) =>
       
       {!loading && shippingOptions.length === 0 && !error && (
         <div className="no-options">
-          <p>No hay opciones de envío disponibles para esta dirección.</p>
-          <p>Por favor, verifica la dirección o contacta con soporte.</p>
+          <p>Não há opções de frete disponíveis para este endereço.</p>
+          <p>Por favor, verifique o endereço ou entre em contato com o suporte.</p>
         </div>
       )}
       
-      {/* Información adicional */}
+      {/* Informações adicionais */}
       <div className="shipping-info">
         <div className="info-item">
           <span className="icon">📍</span>
-          <span>Rastreo incluido en todos los envíos</span>
+          <span>Rastreamento incluído em todos os fretes</span>
         </div>
         <div className="info-item">
           <span className="icon">📦</span>
-          <span>Embalaje seguro y protegido</span>
+          <span>Embalagem segura e protegida</span>
         </div>
         <div className="info-item">
           <span className="icon">🔄</span>
-          <span>Cambios y devoluciones fáciles</span>
+          <span>Trocas e devoluções fáceis</span>
         </div>
       </div>
     </div>

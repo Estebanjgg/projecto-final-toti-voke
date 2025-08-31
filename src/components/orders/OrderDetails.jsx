@@ -31,8 +31,8 @@ const OrderDetails = () => {
       const response = await ordersAPI.getOrderById(orderId);
       setOrder(response);
     } catch (error) {
-      console.error('Error cargando detalles del pedido:', error);
-      showError('Pedido no encontrado');
+      console.error('Erro carregando detalhes do pedido:', error);
+      showError('Pedido não encontrado');
       navigate('/orders');
     } finally {
       setLoading(false);
@@ -47,32 +47,32 @@ const OrderDetails = () => {
       setTracking(response.data);
       setShowTrackingModal(true);
     } catch (error) {
-      showError('Error al cargar información de seguimiento');
+      showError('Erro ao carregar informações de rastreamento');
     }
   };
 
   const handleCancelOrder = async () => {
-    if (!window.confirm('¿Estás seguro de que quieres cancelar este pedido?')) {
+    if (!window.confirm('Tem certeza de que deseja cancelar este pedido?')) {
       return;
     }
 
     try {
-      const reason = prompt('Por favor ingresa una razón para la cancelación (opcional):') || '';
+      const reason = prompt('Por favor, informe um motivo para o cancelamento (opcional):') || '';
       await ordersAPI.cancelOrder(order.id, reason);
-      showSuccess('Pedido cancelado exitosamente');
-      loadOrderDetails(); // Recargar datos
+      showSuccess('Pedido cancelado com sucesso');
+      loadOrderDetails(); // Recarregar dados
     } catch (error) {
-      showError(error.message || 'Error al cancelar el pedido');
+      showError(error.message || 'Erro ao cancelar o pedido');
     }
   };
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      pending: { text: 'Pendiente', class: 'status-pending' },
+      pending: { text: 'Pendente', class: 'status-pending' },
       confirmed: { text: 'Confirmado', class: 'status-confirmed' },
-      processing: { text: 'Procesando', class: 'status-processing' },
+      processing: { text: 'Processando', class: 'status-processing' },
       shipped: { text: 'Enviado', class: 'status-shipped' },
-      delivered: { text: 'Entregado', class: 'status-delivered' },
+      delivered: { text: 'Entregue', class: 'status-delivered' },
       cancelled: { text: 'Cancelado', class: 'status-cancelled' }
     };
 
@@ -111,7 +111,7 @@ const OrderDetails = () => {
       <div className="order-details-page">
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>Cargando detalles del pedido...</p>
+          <p>Carregando detalhes do pedido...</p>
         </div>
       </div>
     );
@@ -121,7 +121,7 @@ const OrderDetails = () => {
     return (
       <div className="order-details-page">
         <div className="error-container">
-          <h2>Pedido no encontrado</h2>
+          <h2>Pedido não encontrado</h2>
           <p>Não foi possível encontrar o pedido #{orderId}</p>
           <Link to="/orders" className="btn btn-primary">
             Voltar aos Meus Pedidos
@@ -144,7 +144,7 @@ const OrderDetails = () => {
             </div>
             <h1>Pedido #{order.order_number}</h1>
             <div className="order-meta">
-              <p>Realizado el {formatDate(order.created_at)}</p>
+              <p>Realizado em {formatDate(order.created_at)}</p>
               <div className="status-badges">
                 {getStatusBadge(order.status)}
                 {getPaymentStatusBadge(order.payment_status)}
@@ -170,9 +170,9 @@ const OrderDetails = () => {
         </div>
 
         <div className="order-content">
-          {/* Items del pedido */}
+          {/* Itens do pedido */}
           <div className="order-section">
-            <h2>Productos Pedidos</h2>
+            <h2>Produtos Pedidos</h2>
             <div className="order-items">
               {order.order_items && order.order_items.map((item) => (
                 <div key={item.id} className="order-item">
@@ -189,7 +189,7 @@ const OrderDetails = () => {
                     {item.product_brand && (
                       <p className="item-brand">Marca: {item.product_brand}</p>
                     )}
-                    <p className="item-quantity">Cantidad: {item.quantity}</p>
+                    <p className="item-quantity">Quantidade: {item.quantity}</p>
                   </div>
                   
                   <div className="item-pricing">
@@ -201,9 +201,9 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          {/* Resumen de costos */}
+          {/* Resumo de custos */}
           <div className="order-section">
-            <h2>Resumen de Costos</h2>
+            <h2>Resumo de Custos</h2>
             <div className="cost-summary">
               <div className="cost-line">
                 <span>Subtotal:</span>
@@ -211,17 +211,17 @@ const OrderDetails = () => {
               </div>
               {order.discount > 0 && (
                 <div className="cost-line discount">
-                  <span>Descuento:</span>
+                  <span>Desconto:</span>
                   <span>-R$ {order.discount.toFixed(2)}</span>
                 </div>
               )}
               <div className="cost-line">
-                <span>Envío:</span>
+                <span>Frete:</span>
                 <span>R$ {order.shipping.toFixed(2)}</span>
               </div>
               {order.tax > 0 && (
                 <div className="cost-line">
-                  <span>Impuestos:</span>
+                  <span>Impostos:</span>
                   <span>R$ {order.tax.toFixed(2)}</span>
                 </div>
               )}
@@ -232,13 +232,13 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          {/* Información de pago */}
+          {/* Informações de pagamento */}
           <div className="order-section">
-            <h2>Información de Pago</h2>
+            <h2>Informações de Pagamento</h2>
             <div className="payment-info">
               <div className="info-grid">
                 <div className="info-item">
-                  <label>Método de Pago:</label>
+                  <label>Método de Pagamento:</label>
                   <span>{order.payment_method === 'credit_card' ? 'Cartão de Crédito' :
                          order.payment_method === 'debit_card' ? 'Cartão de Débito' :
                          order.payment_method === 'pix' ? 'PIX' :
@@ -246,20 +246,20 @@ const OrderDetails = () => {
                          order.payment_method}</span>
                 </div>
                 <div className="info-item">
-                  <label>Estado del Pago:</label>
+                  <label>Status do Pagamento:</label>
                   {getPaymentStatusBadge(order.payment_status)}
                 </div>
                 
                 {order.payment_details && (
                   <>
                     <div className="info-item">
-                      <label>ID de Transacción:</label>
+                      <label>ID da Transação:</label>
                       <span>{order.payment_details.transaction_id}</span>
                     </div>
                     
                     {order.payment_details.payment_data && order.payment_details.payment_data.authorization_code && (
                       <div className="info-item">
-                        <label>Código de Autorización:</label>
+                        <label>Código de Autorização:</label>
                         <span>{order.payment_details.payment_data.authorization_code}</span>
                       </div>
                     )}
@@ -267,30 +267,30 @@ const OrderDetails = () => {
                 )}
               </div>
               
-              {/* Información específica de métodos de pago */}
+              {/* Informações específicas de métodos de pagamento */}
               {order.payment_status === 'pending' && order.payment_method === 'pix' && (
                 <div className="payment-instructions">
-                  <h4>Instrucciones PIX</h4>
-                  <p>Tu pago está pendiente. Usa el código QR o clave PIX enviado a tu email.</p>
+                  <h4>Instruções PIX</h4>
+                  <p>Seu pagamento está pendente. Use o código QR ou chave PIX enviado ao seu email.</p>
                 </div>
               )}
               
               {order.payment_status === 'pending' && order.payment_method === 'boleto' && (
                 <div className="payment-instructions">
-                  <h4>Instrucciones Boleto</h4>
-                  <p>El boleto fue enviado a tu email. Puedes pagarlo en cualquier banco o lotérica.</p>
+                  <h4>Instruções Boleto</h4>
+                  <p>O boleto foi enviado ao seu email. Você pode pagá-lo em qualquer banco ou lotérica.</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Información de envío */}
+          {/* Informações de envio */}
           <div className="order-section">
-            <h2>Información de Envío</h2>
+            <h2>Informações de Envio</h2>
             <div className="shipping-info">
               <div className="info-grid">
                 <div className="info-item">
-                  <label>Nombre:</label>
+                  <label>Nome:</label>
                   <span>{order.customer_name}</span>
                 </div>
                 <div className="info-item">
@@ -299,7 +299,7 @@ const OrderDetails = () => {
                 </div>
                 {order.customer_phone && (
                   <div className="info-item">
-                    <label>Teléfono:</label>
+                    <label>Telefone:</label>
                     <span>{order.customer_phone}</span>
                   </div>
                 )}
@@ -307,7 +307,7 @@ const OrderDetails = () => {
               
               {order.shipping_address && (
                 <div className="address-info">
-                  <h4>Dirección de Envío</h4>
+                  <h4>Endereço de Entrega</h4>
                   <address>
                     {order.shipping_address.street}, {order.shipping_address.number}<br/>
                     {order.shipping_address.complement && (
@@ -322,8 +322,8 @@ const OrderDetails = () => {
               
               {order.tracking_number && (
                 <div className="tracking-info">
-                  <h4>Información de Envío</h4>
-                  <p><strong>Código de Rastreo:</strong> {order.tracking_number}</p>
+                  <h4>Informações de Envio</h4>
+                  <p><strong>Código de Rastreamento:</strong> {order.tracking_number}</p>
                   {order.shipping_company && (
                     <p><strong>Transportadora:</strong> {order.shipping_company}</p>
                   )}
@@ -332,20 +332,20 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          {/* Notas adicionales */}
+          {/* Notas adicionais */}
           {(order.notes || order.admin_notes) && (
             <div className="order-section">
-              <h2>Notas</h2>
+              <h2>Observações</h2>
               <div className="notes-info">
                 {order.notes && (
                   <div className="note-item">
-                    <h4>Notas del Cliente:</h4>
+                    <h4>Observações do Cliente:</h4>
                     <p>{order.notes}</p>
                   </div>
                 )}
                 {order.admin_notes && (
                   <div className="note-item">
-                    <h4>Notas Administrativas:</h4>
+                    <h4>Observações Administrativas:</h4>
                     <p>{order.admin_notes}</p>
                   </div>
                 )}
@@ -354,12 +354,12 @@ const OrderDetails = () => {
           )}
         </div>
 
-        {/* Modal de seguimiento */}
+        {/* Modal de rastreamento */}
         {showTrackingModal && tracking && (
           <div className="modal-overlay" onClick={() => setShowTrackingModal(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>Seguimiento del Pedido</h3>
+                <h3>Rastreamento do Pedido</h3>
                 <button 
                   className="close-btn"
                   onClick={() => setShowTrackingModal(false)}

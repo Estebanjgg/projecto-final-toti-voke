@@ -57,13 +57,13 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
 
   return (
     <div className="checkout-form">
-      {/* Información de contacto */}
+      {/* Informações de contato */}
       <div className="form-section">
-        <h3>Información de Contacto</h3>
+        <h3>Informações de Contato</h3>
         
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="customer_name">Nombre Completo *</label>
+            <label htmlFor="customer_name">Nome Completo *</label>
             <input
               type="text"
               id="customer_name"
@@ -71,7 +71,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               value={formData.customer_name}
               onChange={handleInputChange}
               className={validationErrors.customer_name ? 'error' : ''}
-              placeholder="Tu nombre completo"
+              placeholder="Seu nome completo"
               required
             />
             {validationErrors.customer_name && (
@@ -90,7 +90,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               value={formData.customer_email}
               onChange={handleInputChange}
               className={validationErrors.customer_email ? 'error' : ''}
-              placeholder="tu@email.com"
+              placeholder="seu@email.com"
               required
             />
             {validationErrors.customer_email && (
@@ -99,7 +99,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
           </div>
           
           <div className="form-group">
-            <label htmlFor="customer_phone">Teléfono *</label>
+            <label htmlFor="customer_phone">Telefone *</label>
             <input
               type="tel"
               id="customer_phone"
@@ -118,9 +118,9 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
         </div>
       </div>
 
-      {/* Dirección de envío */}
+      {/* Endereço de entrega */}
       <div className="form-section">
-        <h3>Dirección de Envío</h3>
+        <h3>Endereço de Entrega</h3>
         
         <div className="form-row">
           <div className="form-group">
@@ -144,7 +144,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
 
         <div className="form-row">
           <div className="form-group flex-2">
-            <label htmlFor="shipping_street">Calle *</label>
+            <label htmlFor="shipping_street">Rua *</label>
             <input
               type="text"
               id="shipping_street"
@@ -152,7 +152,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               value={formData.shipping_address.street}
               onChange={handleAddressInputChange('shipping_address')}
               className={validationErrors['shipping_address.street'] ? 'error' : ''}
-              placeholder="Nombre de la calle"
+              placeholder="Nome da rua"
               required
             />
             {validationErrors['shipping_address.street'] && (
@@ -187,12 +187,12 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               name="complement"
               value={formData.shipping_address.complement}
               onChange={handleAddressInputChange('shipping_address')}
-              placeholder="Apto, bloque, etc."
+              placeholder="Apto, bloco, etc."
             />
           </div>
           
           <div className="form-group">
-            <label htmlFor="shipping_neighborhood">Barrio *</label>
+            <label htmlFor="shipping_neighborhood">Bairro *</label>
             <input
               type="text"
               id="shipping_neighborhood"
@@ -200,7 +200,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               value={formData.shipping_address.neighborhood}
               onChange={handleAddressInputChange('shipping_address')}
               className={validationErrors['shipping_address.neighborhood'] ? 'error' : ''}
-              placeholder="Nombre del barrio"
+              placeholder="Nome do bairro"
               required
             />
             {validationErrors['shipping_address.neighborhood'] && (
@@ -211,7 +211,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
 
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="shipping_city">Ciudad *</label>
+            <label htmlFor="shipping_city">Cidade *</label>
             <input
               type="text"
               id="shipping_city"
@@ -219,7 +219,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               value={formData.shipping_address.city}
               onChange={handleAddressInputChange('shipping_address')}
               className={validationErrors['shipping_address.city'] ? 'error' : ''}
-              placeholder="Nombre de la ciudad"
+              placeholder="Nome da cidade"
               required
             />
             {validationErrors['shipping_address.city'] && (
@@ -237,7 +237,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               className={validationErrors['shipping_address.state'] ? 'error' : ''}
               required
             >
-              <option value="">Seleccionar estado</option>
+              <option value="">Selecionar estado</option>
               <option value="AC">Acre</option>
               <option value="AL">Alagoas</option>
               <option value="AP">Amapá</option>
@@ -273,7 +273,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
         </div>
       </div>
 
-      {/* Dirección de facturación */}
+      {/* Endereço de cobrança */}
       <div className="form-section">
         <div className="form-group checkbox-group">
           <label className="checkbox-label">
@@ -283,13 +283,13 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
               onChange={handleSameAsShippingChange}
             />
             <span className="checkmark"></span>
-            La dirección de facturación es la misma que la de envío
+            O endereço de cobrança é o mesmo do endereço de entrega
           </label>
         </div>
 
         {!formData.same_as_shipping && formData.billing_address && (
           <>
-            <h3>Dirección de Facturación</h3>
+            <h3>Endereço de Cobrança</h3>
             
             <div className="form-row">
               <div className="form-group">
@@ -313,7 +313,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
 
             <div className="form-row">
               <div className="form-group flex-2">
-                <label htmlFor="billing_street">Calle *</label>
+                <label htmlFor="billing_street">Rua *</label>
                 <input
                   type="text"
                   id="billing_street"
@@ -321,7 +321,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
                   value={formData.billing_address.street}
                   onChange={handleAddressInputChange('billing_address')}
                   className={validationErrors['billing_address.street'] ? 'error' : ''}
-                  placeholder="Nombre de la calle"
+                  placeholder="Nome da rua"
                   required
                 />
                 {validationErrors['billing_address.street'] && (
@@ -356,12 +356,12 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
                   name="complement"
                   value={formData.billing_address.complement}
                   onChange={handleAddressInputChange('billing_address')}
-                  placeholder="Apto, bloque, etc."
+                  placeholder="Apto, bloco, etc."
                 />
               </div>
               
               <div className="form-group">
-                <label htmlFor="billing_neighborhood">Barrio *</label>
+                <label htmlFor="billing_neighborhood">Bairro *</label>
                 <input
                   type="text"
                   id="billing_neighborhood"
@@ -369,7 +369,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
                   value={formData.billing_address.neighborhood}
                   onChange={handleAddressInputChange('billing_address')}
                   className={validationErrors['billing_address.neighborhood'] ? 'error' : ''}
-                  placeholder="Nombre del barrio"
+                  placeholder="Nome do bairro"
                   required
                 />
                 {validationErrors['billing_address.neighborhood'] && (
@@ -380,7 +380,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="billing_city">Ciudad *</label>
+                <label htmlFor="billing_city">Cidade *</label>
                 <input
                   type="text"
                   id="billing_city"
@@ -388,7 +388,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
                   value={formData.billing_address.city}
                   onChange={handleAddressInputChange('billing_address')}
                   className={validationErrors['billing_address.city'] ? 'error' : ''}
-                  placeholder="Nombre de la ciudad"
+                  placeholder="Nome da cidade"
                   required
                 />
                 {validationErrors['billing_address.city'] && (
@@ -406,7 +406,7 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
                   className={validationErrors['billing_address.state'] ? 'error' : ''}
                   required
                 >
-                  <option value="">Seleccionar estado</option>
+                  <option value="">Selecionar estado</option>
                   <option value="AC">Acre</option>
                   <option value="AL">Alagoas</option>
                   <option value="AP">Amapá</option>
@@ -444,16 +444,16 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
         )}
       </div>
 
-      {/* Notas adicionales */}
+      {/* Notas adicionais */}
       <div className="form-section">
         <div className="form-group">
-          <label htmlFor="notes">Notas adicionales (opcional)</label>
+          <label htmlFor="notes">Notas adicionais (opcional)</label>
           <textarea
             id="notes"
             name="notes"
             value={formData.notes}
             onChange={handleInputChange}
-            placeholder="Instrucciones especiales para la entrega..."
+            placeholder="Instruções especiais para a entrega..."
             rows="3"
             maxLength="500"
           />

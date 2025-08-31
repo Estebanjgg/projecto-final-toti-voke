@@ -5,7 +5,7 @@ class AuthAPI {
     this.baseURL = `${API_BASE_URL}/auth`;
   }
 
-  // Método auxiliar para hacer requests
+  // Método auxiliar para fazer requisições
   async makeRequest(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     
@@ -26,22 +26,22 @@ class AuthAPI {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `Error ${response.status}`);
+        throw new Error(data.message || `Erro ${response.status}`);
       }
 
       return data.data || data;
     } catch (error) {
-      console.error(`Error en ${endpoint}:`, error);
+      console.error(`Erro em ${endpoint}:`, error);
       throw error;
     }
   }
 
-  // Obtener token del localStorage
+  // Obter token do localStorage
   getToken() {
     return localStorage.getItem('token');
   }
 
-  // Obtener headers de autenticación
+  // Obter headers de autenticação
   getAuthHeaders() {
     const token = this.getToken();
     const headers = {
@@ -55,7 +55,7 @@ class AuthAPI {
     return headers;
   }
 
-  // Registro de usuario
+  // Registro de usuário
   async register(userData) {
     try {
       const response = await this.makeRequest('/register', {
@@ -65,15 +65,15 @@ class AuthAPI {
 
       return response;
     } catch (error) {
-      // Manejar errores específicos
+      // Tratar erros específicos
       if (error.message.includes('ya está registrado')) {
-        throw new Error('Este email ya está registrado. Intenta iniciar sesión.');
+        throw new Error('Este email já está registrado. Tente fazer login.');
       }
       throw error;
     }
   }
 
-  // Login de usuario
+  // Login de usuário
   async login(credentials) {
     try {
       const response = await this.makeRequest('/login', {
@@ -83,18 +83,18 @@ class AuthAPI {
 
       return response;
     } catch (error) {
-      // Manejar errores específicos
+      // Tratar erros específicos
       if (error.message.includes('Credenciales inválidas')) {
-        throw new Error('Email o contraseña incorrectos.');
+        throw new Error('Email ou senha incorretos.');
       }
       if (error.message.includes('Demasiados intentos')) {
-        throw new Error('Demasiados intentos de login. Intenta de nuevo en 15 minutos.');
+        throw new Error('Muitas tentativas de login. Tente novamente em 15 minutos.');
       }
       throw error;
     }
   }
 
-  // Logout de usuario
+  // Logout de usuário
   async logout() {
     try {
       await this.makeRequest('/logout', {
@@ -102,12 +102,12 @@ class AuthAPI {
         headers: this.getAuthHeaders()
       });
     } catch (error) {
-      // No fallar el logout por errores de red
-      console.warn('Error en logout:', error);
+      // Não falhar o logout por erros de rede
+      console.warn('Erro no logout:', error);
     }
   }
 
-  // Obtener perfil del usuario actual
+  // Obter perfil do usuário atual
   async getProfile() {
     try {
       const response = await this.makeRequest('/me', {
@@ -121,13 +121,13 @@ class AuthAPI {
     }
   }
 
-  // Actualizar perfil del usuario
+  // Atualizar perfil do usuário
   async updateProfile(profileData) {
     try {
-      // Enviar solo los campos que realmente se quieren actualizar
+      // Enviar apenas os campos que realmente se quer atualizar
       const cleanData = {};
       
-      // Solo incluir campos que tienen valores válidos
+      // Incluir apenas campos que têm valores válidos
       if (profileData.first_name && profileData.first_name.trim().length > 0) {
         cleanData.first_name = profileData.first_name.trim();
       }
@@ -136,7 +136,7 @@ class AuthAPI {
         cleanData.last_name = profileData.last_name.trim();
       }
       
-      // Para phone, siempre incluir (puede ser string vacío para eliminarlo)
+      // Para phone, sempre incluir (pode ser string vazia para removê-lo)
       if (profileData.hasOwnProperty('phone')) {
         cleanData.phone = profileData.phone ? profileData.phone.trim() : '';
       }
@@ -149,12 +149,12 @@ class AuthAPI {
 
       return response;
     } catch (error) {
-      console.error('Error en authAPI.updateProfile:', error);
+      console.error('Erro em authAPI.updateProfile:', error);
       throw error;
     }
   }
 
-  // Cambiar contraseña
+  // Alterar senha
   async changePassword(passwordData) {
     try {
       const response = await this.makeRequest('/change-password', {
@@ -166,13 +166,13 @@ class AuthAPI {
       return response;
     } catch (error) {
       if (error.message.includes('Contraseña actual incorrecta')) {
-        throw new Error('La contraseña actual es incorrecta.');
+        throw new Error('A senha atual está incorreta.');
       }
       throw error;
     }
   }
 
-  // Desactivar cuenta
+  // Desativar conta
   async deactivateAccount(password) {
     try {
       const response = await this.makeRequest('/account', {
@@ -184,13 +184,13 @@ class AuthAPI {
       return response;
     } catch (error) {
       if (error.message.includes('Contraseña incorrecta')) {
-        throw new Error('Contraseña incorrecta.');
+        throw new Error('Senha incorreta.');
       }
       throw error;
     }
   }
 
-  // Solicitar recuperación de contraseña
+  // Solicitar recuperação de senha
   async forgotPassword(email) {
     try {
       const response = await this.makeRequest('/forgot-password', {
@@ -201,13 +201,13 @@ class AuthAPI {
       return response;
     } catch (error) {
       if (error.message.includes('Usuario no encontrado')) {
-        throw new Error('No existe una cuenta con este email.');
+        throw new Error('Não existe uma conta com este email.');
       }
       throw error;
     }
   }
 
-  // Verificar token de recuperación
+  // Verificar token de recuperação
   async verifyResetToken(token) {
     try {
       const response = await this.makeRequest(`/verify-reset-token/${token}`, {
@@ -217,13 +217,13 @@ class AuthAPI {
       return response;
     } catch (error) {
       if (error.message.includes('Token inválido') || error.message.includes('expirado')) {
-        throw new Error('El enlace de recuperación es inválido o ha expirado.');
+        throw new Error('O link de recuperação é inválido ou expirou.');
       }
       throw error;
     }
   }
 
-  // Restablecer contraseña con token
+  // Redefinir senha com token
   async resetPassword(data) {
     try {
       const response = await this.makeRequest('/reset-password', {
@@ -234,13 +234,13 @@ class AuthAPI {
       return response;
     } catch (error) {
       if (error.message.includes('Token inválido') || error.message.includes('expirado')) {
-        throw new Error('El enlace de recuperación es inválido o ha expirado.');
+        throw new Error('O link de recuperação é inválido ou expirou.');
       }
       throw error;
     }
   }
 
-  // Verificar si un token es válido
+  // Verificar se um token é válido
   async verifyToken(token = null) {
     try {
       const tokenToVerify = token || this.getToken();
@@ -261,7 +261,7 @@ class AuthAPI {
     }
   }
 
-  // Migrar carrito de sesión a usuario (usado internamente)
+  // Migrar carrinho de sessão para usuário (usado internamente)
   async migrateCart(sessionId) {
     try {
       const response = await fetch(`${API_BASE_URL}/cart/migrate`, {
@@ -276,13 +276,13 @@ class AuthAPI {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error migrando carrito');
+        throw new Error(data.message || 'Erro migrando carrinho');
       }
 
       return data;
     } catch (error) {
-      console.warn('Error migrando carrito:', error);
-      // No fallar por esto
+      console.warn('Erro migrando carrinho:', error);
+      // Não falhar por isso
       return null;
     }
   }
@@ -293,20 +293,20 @@ class AuthAPI {
     return emailRegex.test(email);
   }
 
-  // Validar fortaleza de contraseña
+  // Validar força da senha
   static validatePassword(password) {
     const errors = [];
     
     if (password.length < 6) {
-      errors.push('La contraseña debe tener al menos 6 caracteres');
+      errors.push('A senha deve ter pelo menos 6 caracteres');
     }
     
     if (!/[A-Za-z]/.test(password)) {
-      errors.push('La contraseña debe contener al menos una letra');
+      errors.push('A senha deve conter pelo menos uma letra');
     }
     
     if (!/[0-9]/.test(password)) {
-      errors.push('La contraseña debe contener al menos un número');
+      errors.push('A senha deve conter pelo menos um número');
     }
     
     return {
@@ -315,7 +315,7 @@ class AuthAPI {
     };
   }
 
-  // Obtener información de usuario desde token (sin hacer request)
+  // Obter informações de usuário do token (sem fazer requisição)
   static getUserFromToken(token) {
     try {
       if (!token) return null;
@@ -323,7 +323,7 @@ class AuthAPI {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
       
-      // Verificar si el token no ha expirado
+      // Verificar se o token não expirou
       if (decoded.exp && decoded.exp < Date.now() / 1000) {
         return null;
       }
@@ -335,12 +335,12 @@ class AuthAPI {
         last_name: decoded.last_name
       };
     } catch (error) {
-      console.warn('Error decodificando token:', error);
+      console.warn('Erro decodificando token:', error);
       return null;
     }
   }
 }
 
-// Crear instancia singleton
+// Criar instância singleton
 export const authAPI = new AuthAPI();
 export default authAPI;

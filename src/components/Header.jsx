@@ -10,7 +10,7 @@ import { FiSearch, FiHeart, FiMenu, FiUser, FiPackage, FiLogOut } from 'react-ic
 import { productsAPI } from '../services/api';
 import './Header.css';
 
-// Componente de búsqueda con sugerencias
+// Componente de busca com sugestões
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [suggestions, setSuggestions] = React.useState([]);
@@ -19,7 +19,7 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const searchRef = React.useRef(null);
 
-  // Debounce para evitar demasiadas llamadas a la API
+  // Debounce para evitar muitas chamadas à API
   const debounceRef = React.useRef(null);
 
   const searchProducts = async (term) => {
@@ -36,7 +36,7 @@ const SearchBar = () => {
       setSuggestions(products);
       setShowSuggestions(true);
     } catch (error) {
-      console.error('Error buscando productos:', error);
+      console.error('Erro buscando produtos:', error);
       setSuggestions([]);
     } finally {
       setLoading(false);
@@ -47,12 +47,12 @@ const SearchBar = () => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    // Limpiar el debounce anterior
+    // Limpar o debounce anterior
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
-    // Crear nuevo debounce
+    // Criar novo debounce
     debounceRef.current = setTimeout(() => {
       searchProducts(value);
     }, 300);
@@ -73,7 +73,7 @@ const SearchBar = () => {
     }
   };
 
-  // Cerrar sugerencias al hacer clic fuera
+  // Fechar sugestões ao clicar fora
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -92,7 +92,7 @@ const SearchBar = () => {
       <form onSubmit={handleSearchSubmit}>
         <input 
           type="text" 
-          placeholder="Buscar produtos... (ex: Samsung, iPhone, Notebook)"
+          placeholder="Pesquisar produtos... (ex: Samsung, iPhone, Notebook)"
           className="search-input"
           value={searchTerm}
           onChange={handleInputChange}
@@ -164,7 +164,7 @@ const SearchBar = () => {
   );
 };
 
-// Componente para el botón de autenticación
+// Componente para o botão de autenticação
 const AuthButton = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [showDropdown, setShowDropdown] = React.useState(false);
@@ -252,7 +252,7 @@ const Header = () => {
       setCurrentMessageIndex((prevIndex) => 
         (prevIndex + 1) % messages.length
       );
-    }, 3000); // Cambia cada 3 segundos
+    }, 3000); // Muda a cada 3 segundos
 
     return () => clearInterval(interval);
   }, [messages.length]);
@@ -298,7 +298,7 @@ const Header = () => {
             <Link to="/" className="logo">
               <img 
                 src="/picture/logo empresa/logoWoke.png" 
-                alt="Logo de la empresa" 
+                alt="Logo da empresa" 
                 className="logo-image"
               />
             </Link>
@@ -334,7 +334,7 @@ const Header = () => {
               <span>Menu</span>
             </button>
             <div className="nav-links">
-              <a href="#" className="nav-link">Lançada Tech</a>
+              <a href="#" className="nav-link">Lançamentos Tech</a>
               <a href="#" className="nav-link">Loja Imperdível</a>
               <a href="#" className="nav-link">Loja Samsung</a>
               <a href="#" className="nav-link">Loja Lenovo</a>

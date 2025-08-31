@@ -3,7 +3,7 @@ import React from 'react';
 const OrderStats = ({ stats }) => {
   if (!stats) return null;
 
-  // Formatear números grandes
+  // Formatar números grandes
   const formatNumber = (num) => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
@@ -13,17 +13,17 @@ const OrderStats = ({ stats }) => {
     return num.toString();
   };
 
-  // Formatear moneda
+  // Formatar moeda
   const formatCurrency = (amount) => {
     return `R$ ${amount.toFixed(2)}`;
   };
 
-  // Calcular porcentaje de órdenes completadas
+  // Calcular porcentagem de pedidos completados
   const completionRate = stats.totalOrders > 0 
     ? ((stats.deliveredOrders || 0) / stats.totalOrders * 100).toFixed(1)
     : 0;
 
-  // Calcular ticket promedio
+  // Calcular ticket médio
   const averageTicket = stats.totalOrders > 0 
     ? (stats.totalSpent || 0) / stats.totalOrders
     : 0;
@@ -31,12 +31,12 @@ const OrderStats = ({ stats }) => {
   return (
     <div className="order-stats">
       <div className="stats-header">
-        <h3>Resumen de Pedidos</h3>
-        <p>Estadísticas de tu historial de compras</p>
+        <h3>Resumo de Pedidos</h3>
+        <p>Estatísticas do seu histórico de compras</p>
       </div>
       
       <div className="stats-grid">
-        {/* Total de órdenes */}
+        {/* Total de pedidos */}
         <div className="stat-card">
           <div className="stat-icon">📦</div>
           <div className="stat-content">
@@ -45,45 +45,45 @@ const OrderStats = ({ stats }) => {
           </div>
         </div>
 
-        {/* Total gastado */}
+        {/* Total gasto */}
         <div className="stat-card">
           <div className="stat-icon">💰</div>
           <div className="stat-content">
             <div className="stat-value">{formatCurrency(stats.totalSpent || 0)}</div>
-            <div className="stat-label">Total Gastado</div>
+            <div className="stat-label">Total Gasto</div>
           </div>
         </div>
 
-        {/* Ticket promedio */}
+        {/* Ticket médio */}
         <div className="stat-card">
           <div className="stat-icon">📊</div>
           <div className="stat-content">
             <div className="stat-value">{formatCurrency(averageTicket)}</div>
-            <div className="stat-label">Ticket Promedio</div>
+            <div className="stat-label">Ticket Médio</div>
           </div>
         </div>
 
-        {/* Tasa de finalización */}
+        {/* Taxa de finalização */}
         <div className="stat-card">
           <div className="stat-icon">✅</div>
           <div className="stat-content">
             <div className="stat-value">{completionRate}%</div>
-            <div className="stat-label">Pedidos Entregados</div>
+            <div className="stat-label">Pedidos Entregues</div>
           </div>
         </div>
       </div>
 
-      {/* Estadísticas detalladas por estado */}
+      {/* Estatísticas detalhadas por status */}
       <div className="detailed-stats">
-        <h4>Distribución por Estado</h4>
+        <h4>Distribuição por Status</h4>
         <div className="status-stats">
           {stats.ordersByStatus && Object.entries(stats.ordersByStatus).map(([status, count]) => {
             const statusLabels = {
-              'pending': 'Pendientes',
+              'pending': 'Pendentes',
               'confirmed': 'Confirmados',
-              'processing': 'Procesando',
+              'processing': 'Processando',
               'shipped': 'Enviados',
-              'delivered': 'Entregados',
+              'delivered': 'Entregues',
               'cancelled': 'Cancelados'
             };
             
@@ -119,16 +119,16 @@ const OrderStats = ({ stats }) => {
         </div>
       </div>
 
-      {/* Estadísticas adicionales */}
+      {/* Estatísticas adicionais */}
       {(stats.favoriteCategory || stats.lastOrderDate || stats.averageDeliveryTime) && (
         <div className="additional-stats">
-          <h4>Información Adicional</h4>
+          <h4>Informações Adicionais</h4>
           <div className="additional-stats-grid">
             {stats.favoriteCategory && (
               <div className="additional-stat">
                 <span className="stat-icon">🏷️</span>
                 <div className="stat-info">
-                  <div className="stat-label">Categoría Favorita</div>
+                  <div className="stat-label">Categoria Favorita</div>
                   <div className="stat-value">{stats.favoriteCategory}</div>
                 </div>
               </div>
@@ -150,8 +150,8 @@ const OrderStats = ({ stats }) => {
               <div className="additional-stat">
                 <span className="stat-icon">🚚</span>
                 <div className="stat-info">
-                  <div className="stat-label">Tiempo Promedio de Entrega</div>
-                  <div className="stat-value">{stats.averageDeliveryTime} días</div>
+                  <div className="stat-label">Tempo Médio de Entrega</div>
+                  <div className="stat-value">{stats.averageDeliveryTime} dias</div>
                 </div>
               </div>
             )}
@@ -159,15 +159,15 @@ const OrderStats = ({ stats }) => {
         </div>
       )}
 
-      {/* Progreso hacia beneficios */}
+      {/* Progresso para benefícios */}
       {stats.loyaltyPoints !== undefined && (
         <div className="loyalty-progress">
-          <h4>Programa de Fidelidad</h4>
+          <h4>Programa de Fidelidade</h4>
           <div className="loyalty-info">
             <div className="points-info">
               <span className="points-icon">⭐</span>
               <span className="points-text">
-                Tienes <strong>{stats.loyaltyPoints}</strong> puntos de fidelidad
+                Você tem <strong>{stats.loyaltyPoints}</strong> pontos de fidelidade
               </span>
             </div>
             
@@ -183,8 +183,8 @@ const OrderStats = ({ stats }) => {
                 </div>
                 <p className="progress-text">
                   {stats.nextRewardThreshold - stats.loyaltyPoints > 0 
-                    ? `${stats.nextRewardThreshold - stats.loyaltyPoints} puntos para tu próxima recompensa`
-                    : '¡Felicidades! Has alcanzado el siguiente nivel'
+                    ? `${stats.nextRewardThreshold - stats.loyaltyPoints} pontos para sua próxima recompensa`
+                    : 'Parabéns! Você alcançou o próximo nível'
                   }
                 </p>
               </div>

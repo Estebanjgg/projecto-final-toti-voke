@@ -1,9 +1,9 @@
 import { API_BASE_URL } from '../config/api-config';
 
-// Función para obtener headers con autenticación
+// Função para obter headers com autenticação
 const getHeaders = () => {
-  const token = localStorage.getItem('token'); // Cambiar de 'authToken' a 'token'
-  const sessionId = localStorage.getItem('session_id'); // Cambiar de 'sessionId' a 'session_id'
+  const token = localStorage.getItem('token'); // Mudança de 'authToken' para 'token'
+  const sessionId = localStorage.getItem('session_id'); // Mudança de 'sessionId' para 'session_id'
   
   return {
     'Content-Type': 'application/json',
@@ -12,19 +12,19 @@ const getHeaders = () => {
   };
 };
 
-// Función para manejar respuestas de la API
+// Função para tratar respostas da API
 const handleResponse = async (response) => {
   const data = await response.json();
   
   if (!response.ok) {
-    throw new Error(data.message || 'Error en la solicitud');
+    throw new Error(data.message || 'Erro na solicitação');
   }
   
   return data;
 };
 
 export const checkoutAPI = {
-  // Validar datos de checkout
+  // Validar dados de checkout
   validateCheckout: async (checkoutData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/validate`, {
@@ -35,12 +35,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error validando checkout:', error);
+      console.error('Erro validando checkout:', error);
       throw error;
     }
   },
 
-  // Crear orden
+  // Criar pedido
   createOrder: async (orderData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/create-order`, {
@@ -51,12 +51,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error creando orden:', error);
+      console.error('Erro criando pedido:', error);
       throw error;
     }
   },
 
-  // Obtener orden por número
+  // Obter pedido por número
   getOrderByNumber: async (orderNumber) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/order/${orderNumber}`, {
@@ -66,12 +66,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error obteniendo orden:', error);
+      console.error('Erro obtendo pedido:', error);
       throw error;
     }
   },
 
-  // Obtener órdenes del usuario
+  // Obter pedidos do usuário
   getUserOrders: async (page = 1, limit = 10) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/orders?page=${page}&limit=${limit}`, {
@@ -81,12 +81,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error obteniendo órdenes:', error);
+      console.error('Erro obtendo pedidos:', error);
       throw error;
     }
   },
 
-  // Actualizar estado de pago
+  // Atualizar status de pagamento
   updatePaymentStatus: async (orderId, paymentStatus, paymentId = null) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/order/${orderId}/payment`, {
@@ -97,12 +97,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error actualizando pago:', error);
+      console.error('Erro atualizando pagamento:', error);
       throw error;
     }
   },
 
-  // Obtener opciones de envío
+  // Obter opções de envio
   getShippingOptions: async (postalCode, totalWeight = 1) => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/shipping-options?postal_code=${postalCode}&total_weight=${totalWeight}`, {
@@ -112,12 +112,12 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error obteniendo opciones de envío:', error);
+      console.error('Erro obtendo opções de envio:', error);
       throw error;
     }
   },
 
-  // Obtener métodos de pago
+  // Obter métodos de pagamento
   getPaymentMethods: async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/checkout/payment-methods`, {
@@ -127,7 +127,7 @@ export const checkoutAPI = {
       
       return await handleResponse(response);
     } catch (error) {
-      console.error('Error obteniendo métodos de pago:', error);
+      console.error('Erro obtendo métodos de pagamento:', error);
       throw error;
     }
   }

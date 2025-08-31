@@ -14,12 +14,12 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
         // La respuesta del backend viene en response.data
         setPaymentMethods(response.data || []);
       } catch (err) {
-        console.error('Error al cargar métodos de pago:', err);
-        setError('Error al cargar métodos de pago');
-        // Métodos de pago por defecto en caso de error
+        console.error('Erro ao carregar métodos de pagamento:', err);
+        setError('Erro ao carregar métodos de pagamento');
+        // Métodos de pagamento padrão em caso de erro
         setPaymentMethods([
-          { id: 'credit_card', name: 'Tarjeta de Crédito', icon: '💳' },
-          { id: 'debit_card', name: 'Tarjeta de Débito', icon: '💳' },
+          { id: 'credit_card', name: 'Cartão de Crédito', icon: '💳' },
+          { id: 'debit_card', name: 'Cartão de Débito', icon: '💳' },
           { id: 'pix', name: 'PIX', icon: '📱' },
           { id: 'boleto', name: 'Boleto Bancário', icon: '🧾' }
         ]);
@@ -33,7 +33,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
 
   const handleMethodSelect = (methodId) => {
     onMethodChange(methodId);
-    // Limpiar datos de pago cuando se cambia el método
+    // Limpar dados de pagamento quando mudar o método
     onPaymentDataChange({});
   };
 
@@ -70,15 +70,15 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
   if (loading) {
     return (
       <div className="payment-methods">
-        <h3>Método de Pago</h3>
-        <div className="loading">Cargando métodos de pago...</div>
+        <h3>Método de Pagamento</h3>
+        <div className="loading">Carregando métodos de pagamento...</div>
       </div>
     );
   }
 
   return (
     <div className="payment-methods">
-      <h3>Método de Pago</h3>
+      <h3>Método de Pagamento</h3>
       
       {error && (
         <div className="error-message">
@@ -86,7 +86,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
         </div>
       )}
       
-      {/* Selección de método de pago */}
+      {/* Seleção de método de pagamento */}
       <div className="payment-options">
         {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
           <div 
@@ -109,13 +109,13 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
         ))}
       </div>
       
-      {/* Formulario específico según el método seleccionado */}
+      {/* Formulário específico conforme o método selecionado */}
       {selectedMethod && (
         <div className="payment-form">
           {(selectedMethod === 'credit_card' || selectedMethod === 'debit_card') && (
             <div className="card-form">
               <div className="form-group">
-                <label htmlFor="cardNumber">Número de la Tarjeta</label>
+                <label htmlFor="cardNumber">Número do Cartão</label>
                 <input
                   type="text"
                   id="cardNumber"
@@ -129,7 +129,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
               
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="expiryDate">Fecha de Vencimiento</label>
+                  <label htmlFor="expiryDate">Data de Vencimento</label>
                   <input
                     type="text"
                     id="expiryDate"
@@ -156,11 +156,11 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
               </div>
               
               <div className="form-group">
-                <label htmlFor="cardName">Nombre en la Tarjeta</label>
+                <label htmlFor="cardName">Nome no Cartão</label>
                 <input
                   type="text"
                   id="cardName"
-                  placeholder="Nombre completo"
+                  placeholder="Nome completo"
                   value={paymentData.cardName || ''}
                   onChange={(e) => handlePaymentDataChange('cardName', e.target.value)}
                   required
@@ -169,17 +169,17 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
               
               {selectedMethod === 'credit_card' && (
                 <div className="form-group">
-                  <label htmlFor="installments">Cuotas</label>
+                  <label htmlFor="installments">Parcelas</label>
                   <select
                     id="installments"
                     value={paymentData.installments || '1'}
                     onChange={(e) => handlePaymentDataChange('installments', e.target.value)}
                   >
-                    <option value="1">1x sin interés</option>
-                    <option value="2">2x sin interés</option>
-                    <option value="3">3x sin interés</option>
-                    <option value="6">6x con interés</option>
-                    <option value="12">12x con interés</option>
+                    <option value="1">1x sem juros</option>
+                    <option value="2">2x sem juros</option>
+                    <option value="3">3x sem juros</option>
+                    <option value="6">6x com juros</option>
+                    <option value="12">12x com juros</option>
                   </select>
                 </div>
               )}
@@ -189,12 +189,12 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
           {selectedMethod === 'pix' && (
             <div className="pix-form">
               <div className="pix-info">
-                <p>🔹 Pago instantáneo</p>
-                <p>🔹 Disponible 24/7</p>
-                <p>🔹 Sin tarifas adicionales</p>
+                <p>🔹 Pagamento instantâneo</p>
+                <p>🔹 Disponível 24/7</p>
+                <p>🔹 Sem taxas adicionais</p>
               </div>
               <p className="pix-instructions">
-                Después de confirmar el pedido, recibirás un código QR para realizar el pago vía PIX.
+                Após confirmar o pedido, você receberá um código QR para realizar o pagamento via PIX.
               </p>
             </div>
           )}
@@ -202,27 +202,27 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
           {selectedMethod === 'boleto' && (
             <div className="boleto-form">
               <div className="boleto-info">
-                <p>🔹 Vencimiento en 3 días hábiles</p>
-                <p>🔹 Pago en bancos, lotéricas o internet banking</p>
-                <p>🔹 Sin tarifas adicionales</p>
+                <p>🔹 Vencimento em 3 dias úteis</p>
+                <p>🔹 Pagamento em bancos, lotéricas ou internet banking</p>
+                <p>🔹 Sem taxas adicionais</p>
               </div>
               <p className="boleto-instructions">
-                El boleto será enviado por email después de confirmar el pedido.
+                O boleto será enviado por email após confirmar o pedido.
               </p>
             </div>
           )}
         </div>
       )}
       
-      {/* Información de seguridad */}
+      {/* Informações de segurança */}
       <div className="security-info">
         <div className="security-item">
           <span className="icon">🔒</span>
-          <span>Transacción 100% segura</span>
+          <span>Transação 100% segura</span>
         </div>
         <div className="security-item">
           <span className="icon">🛡️</span>
-          <span>Datos protegidos con SSL</span>
+          <span>Dados protegidos com SSL</span>
         </div>
       </div>
     </div>

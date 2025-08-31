@@ -4,17 +4,17 @@ const OrderSummary = ({ cartItems, totals, selectedShipping }) => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="order-summary">
-        <h3>Resumen del Pedido</h3>
-        <p>Tu carrito está vacío</p>
+        <h3>Resumo do Pedido</h3>
+        <p>Seu carrinho está vazio</p>
       </div>
     );
   }
 
   return (
     <div className="order-summary">
-      <h3>Resumen del Pedido</h3>
+      <h3>Resumo do Pedido</h3>
       
-      {/* Items del carrito */}
+      {/* Itens do carrinho */}
       <div className="order-items">
         {cartItems.map((item) => {
           const product = item.products || item.product || item;
@@ -26,16 +26,16 @@ const OrderSummary = ({ cartItems, totals, selectedShipping }) => {
               <div className="item-image">
                 <img 
                   src={product.image || product.image_url || '/placeholder.jpg'} 
-                  alt={product.title || product.name || 'Producto'}
+                  alt={product.title || product.name || 'Produto'}
                 />
               </div>
               
               <div className="item-details">
-                <h4 className="item-title">{product.title || product.name || 'Producto'}</h4>
+                <h4 className="item-title">{product.title || product.name || 'Produto'}</h4>
                 {product.brand && (
                   <span className="item-brand">{product.brand}</span>
                 )}
-                <div className="item-quantity">Cantidad: {quantity}</div>
+                <div className="item-quantity">Quantidade: {quantity}</div>
               </div>
               
               <div className="item-price">
@@ -47,30 +47,30 @@ const OrderSummary = ({ cartItems, totals, selectedShipping }) => {
         })}
       </div>
       
-      {/* Totales */}
+      {/* Totais */}
       <div className="order-totals">
         <div className="total-line">
-          <span>Subtotal ({cartItems.length} items)</span>
+          <span>Subtotal ({cartItems.length} itens)</span>
           <span>R$ {totals.subtotal.toFixed(2)}</span>
         </div>
         
         {totals.discount > 0 && (
           <div className="total-line discount">
-            <span>Descuento</span>
+            <span>Desconto</span>
             <span>-R$ {totals.discount.toFixed(2)}</span>
           </div>
         )}
         
         {selectedShipping && (
           <div className="total-line">
-            <span>Envío ({selectedShipping.name})</span>
+            <span>Entrega ({selectedShipping.name})</span>
             <span>R$ {selectedShipping.price.toFixed(2)}</span>
           </div>
         )}
         
         {totals.tax > 0 && (
           <div className="total-line">
-            <span>Impuestos</span>
+            <span>Impostos</span>
             <span>R$ {totals.tax.toFixed(2)}</span>
           </div>
         )}
@@ -81,19 +81,19 @@ const OrderSummary = ({ cartItems, totals, selectedShipping }) => {
         </div>
       </div>
       
-      {/* Información adicional */}
+      {/* Informações adicionais */}
       <div className="order-info">
         <div className="info-item">
           <span className="icon">🔒</span>
-          <span>Pago seguro</span>
+          <span>Pagamento seguro</span>
         </div>
         <div className="info-item">
           <span className="icon">🚚</span>
-          <span>Envío rápido</span>
+          <span>Entrega rápida</span>
         </div>
         <div className="info-item">
           <span className="icon">↩️</span>
-          <span>Devolución fácil</span>
+          <span>Devolução fácil</span>
         </div>
       </div>
     </div>

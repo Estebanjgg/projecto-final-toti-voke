@@ -70,14 +70,14 @@ const Orders = () => {
       <div className="orders-container">
         <div className="auth-required">
           <div className="auth-message">
-            <h2>Inicia Sesión para Ver tus Pedidos</h2>
-            <p>Para acceder a tu historial de pedidos, necesitas iniciar sesión en tu cuenta.</p>
+            <h2>Faça Login para Ver seus Pedidos</h2>
+            <p>Para acessar seu histórico de pedidos, você precisa fazer login em sua conta.</p>
             <div className="auth-actions">
               <Link to="/login" className="btn btn-primary">
-                Iniciar Sesión
+                Fazer Login
               </Link>
               <Link to="/register" className="btn btn-outline">
-                Crear Cuenta
+                Criar Conta
               </Link>
             </div>
           </div>
@@ -92,16 +92,16 @@ const Orders = () => {
       <div className="orders-header">
         <div className="header-content">
           <h1>Meus Pedidos</h1>
-          <p>Historial completo de tus compras</p>
+          <p>Histórico completo de suas compras</p>
         </div>
       </div>
 
-      {/* Contenido principal */}
+      {/* Conteúdo principal */}
       <div className="orders-content">
         {loading && (
           <div className="loading-container">
             <LoadingSpinner />
-            <p>Cargando pedidos...</p>
+            <p>Carregando pedidos...</p>
           </div>
         )}
 
@@ -114,7 +114,7 @@ const Orders = () => {
                 className="retry-btn"
                 onClick={() => loadOrders()}
               >
-                Reintentar
+                Tentar Novamente
               </button>
             </div>
           </div>
@@ -123,11 +123,11 @@ const Orders = () => {
         {!loading && !error && orders.length === 0 && (
           <div className="empty-state">
             <div className="empty-icon">📦</div>
-            <h3>No tienes pedidos aún</h3>
-            <p>Cuando realices tu primera compra, aparecerá aquí.</p>
+            <h3>Você ainda não tem pedidos</h3>
+            <p>Quando fizer sua primeira compra, aparecerá aqui.</p>
             <div className="empty-actions">
               <Link to="/" className="btn btn-primary">
-                Explorar Productos
+                Explorar Produtos
               </Link>
             </div>
           </div>
@@ -135,7 +135,7 @@ const Orders = () => {
 
         {!loading && !error && orders.length > 0 && (
           <>
-            {/* Lista de órdenes */}
+            {/* Lista de pedidos */}
             <div className="orders-list">
               {orders.map((order) => (
                 <div key={order.id} className="order-card">
@@ -154,11 +154,11 @@ const Orders = () => {
                     </div>
                     <div className="order-status">
                       <span className={`status-badge status-${order.status}`}>
-                        {order.status === 'pending' && 'Pendiente'}
+                        {order.status === 'pending' && 'Pendente'}
                         {order.status === 'confirmed' && 'Confirmado'}
                         {order.status === 'preparing' && 'Preparando'}
                         {order.status === 'shipped' && 'Enviado'}
-                        {order.status === 'delivered' && 'Entregado'}
+                        {order.status === 'delivered' && 'Entregue'}
                         {order.status === 'cancelled' && 'Cancelado'}
                       </span>
                     </div>
@@ -171,16 +171,16 @@ const Orders = () => {
                     
                     {order.items && order.items.length > 0 && (
                       <div className="order-items">
-                        <h4>Items ({order.items.length}):</h4>
+                        <h4>Itens ({order.items.length}):</h4>
                         <ul>
                           {order.items.slice(0, 3).map((item, index) => (
                             <li key={index}>
-                              {item.quantity}x {item.product_name || item.name || 'Producto'}
+                              {item.quantity}x {item.product_name || item.name || 'Produto'}
                               {item.price && ` - R$ ${parseFloat(item.price).toFixed(2)}`}
                             </li>
                           ))}
                           {order.items.length > 3 && (
-                            <li>... y {order.items.length - 3} productos más</li>
+                            <li>... e {order.items.length - 3} produtos a mais</li>
                           )}
                         </ul>
                       </div>
@@ -188,7 +188,7 @@ const Orders = () => {
                     
                     {order.payment_method && (
                       <div className="payment-info">
-                        <p><strong>Método de pago:</strong> {order.payment_method}</p>
+                        <p><strong>Método de pagamento:</strong> {order.payment_method}</p>
                       </div>
                     )}
                   </div>
@@ -196,7 +196,7 @@ const Orders = () => {
               ))}
             </div>
 
-            {/* Paginación */}
+            {/* Paginação */}
             {pagination.totalPages > 1 && (
               <div className="pagination">
                 <button
@@ -212,7 +212,7 @@ const Orders = () => {
                     Página {pagination.page} de {pagination.totalPages}
                   </span>
                   <span className="total-items">
-                    ({pagination.total} pedidos en total)
+                    ({pagination.total} pedidos no total)
                   </span>
                 </div>
                 
@@ -221,7 +221,7 @@ const Orders = () => {
                   disabled={pagination.page === pagination.totalPages}
                   onClick={() => handlePageChange(pagination.page + 1)}
                 >
-                  Siguiente →
+                  Próxima →
                 </button>
               </div>
             )}

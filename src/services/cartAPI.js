@@ -1,22 +1,22 @@
 import { API_BASE_URL } from './api';
 
-// Función auxiliar para manejar respuestas de la API
+// Função auxiliar para tratar respostas da API
 const handleResponse = async (response) => {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+    throw new Error(errorData.message || `Erro ${response.status}: ${response.statusText}`);
   }
   return response.json();
 };
 
-// Función auxiliar para hacer peticiones
+// Função auxiliar para fazer requisições
 const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
-  // Obtener token de autenticación si existe (usando la misma clave que AuthContext)
+  // Obter token de autenticação se existir (usando a mesma chave que AuthContext)
   const token = localStorage.getItem('token');
   
-  // Obtener o generar session_id para usuarios no autenticados
+  // Obter ou gerar session_id para usuários não autenticados
   let sessionId = localStorage.getItem('sessionId');
   if (!token && !sessionId) {
     sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -36,7 +36,7 @@ const apiRequest = async (endpoint, options = {}) => {
   try {
     const response = await fetch(url, config);
     
-    // Si el servidor devuelve un nuevo session_id, guardarlo
+    // Se o servidor retornar um novo session_id, salvá-lo
     const newSessionId = response.headers.get('x-session-id');
     if (newSessionId && !token) {
       localStorage.setItem('sessionId', newSessionId);
@@ -44,24 +44,24 @@ const apiRequest = async (endpoint, options = {}) => {
     
     return await handleResponse(response);
   } catch (error) {
-    console.error(`Error en petición a ${url}:`, error);
+    console.error(`Erro na requisição para ${url}:`, error);
     throw error;
   }
 };
 
-// API del carrito de compras
+// API do carrinho de compras
 export const cartAPI = {
-  // Obtener carrito actual
+  // Obter carrinho atual
   getCart: async () => {
     return apiRequest('/cart');
   },
 
-  // Obtener resumen del carrito
+  // Obter resumo do carrinho
   getSummary: async () => {
     return apiRequest('/cart/summary');
   },
 
-  // Agregar producto al carrito
+  // Adicionar produto ao carrinho
   addToCart: async (productId, quantity = 1) => {
     return apiRequest('/cart/add', {
       method: 'POST',
@@ -72,7 +72,7 @@ export const cartAPI = {
     });
   },
 
-  // Actualizar cantidad de un producto
+  // Atualizar quantidade de um produto
   updateQuantity: async (cartItemId, quantity) => {
     return apiRequest(`/cart/update/${cartItemId}`, {
       method: 'PUT',
@@ -82,21 +82,21 @@ export const cartAPI = {
     });
   },
 
-  // Eliminar producto del carrito
+  // Remover produto do carrinho
   removeFromCart: async (cartItemId) => {
     return apiRequest(`/cart/remove/${cartItemId}`, {
       method: 'DELETE',
     });
   },
 
-  // Limpiar todo el carrito
+  // Limpar todo o carrinho
   clearCart: async () => {
     return apiRequest('/cart/clear', {
       method: 'DELETE',
     });
   },
 
-  // Migrar carrito de sesión a usuario (cuando se autentica)
+  // Migrar carrinho de sessão para usuário (quando se autentica)
   migrateCart: async (sessionId) => {
     return apiRequest('/cart/migrate', {
       method: 'POST',
@@ -107,7 +107,7 @@ export const cartAPI = {
   },
 };
 
-// Hook para calcular totales del carrito
+// Hook para calcular totais do carrinho
 export const calculateCartTotals = (cartItems = []) => {
   const subtotal = cartItems.reduce((sum, item) => {
     const price = parseFloat(item.products?.current_price || item.price || 0);
@@ -117,7 +117,7 @@ export const calculateCartTotals = (cartItems = []) => {
 
   const itemCount = cartItems.reduce((sum, item) => sum + parseInt(item.quantity || 0), 0);
 
-  // Calculamos descuentos si hay productos con precio original
+  // Calculamos descontos se houver produtos com preço original
   const totalDiscount = cartItems.reduce((sum, item) => {
     const currentPrice = parseFloat(item.products?.current_price || item.price || 0);
     const originalPrice = parseFloat(item.products?.original_price || currentPrice);
@@ -136,7 +136,7 @@ export const calculateCartTotals = (cartItems = []) => {
   };
 };
 
-// Función para formatear precios
+// Função para formatar preços
 export const formatPrice = (price) => {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',

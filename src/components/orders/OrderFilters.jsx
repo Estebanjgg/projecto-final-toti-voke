@@ -4,26 +4,26 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
   const [showFilters, setShowFilters] = useState(false);
   const [tempFilters, setTempFilters] = useState(filters);
 
-  // Opciones de estado
+  // Opções de status
   const statusOptions = [
-    { value: '', label: 'Todos los estados' },
-    { value: 'pending', label: 'Pendiente' },
+    { value: '', label: 'Todos os status' },
+    { value: 'pending', label: 'Pendente' },
     { value: 'confirmed', label: 'Confirmado' },
-    { value: 'processing', label: 'Procesando' },
+    { value: 'processing', label: 'Processando' },
     { value: 'shipped', label: 'Enviado' },
-    { value: 'delivered', label: 'Entregado' },
+    { value: 'delivered', label: 'Entregue' },
     { value: 'cancelled', label: 'Cancelado' }
   ];
 
-  // Opciones de ordenamiento
+  // Opções de ordenação
   const sortOptions = [
-    { value: 'created_at', label: 'Fecha de pedido' },
-    { value: 'total', label: 'Monto total' },
-    { value: 'status', label: 'Estado' },
+    { value: 'created_at', label: 'Data do pedido' },
+    { value: 'total', label: 'Valor total' },
+    { value: 'status', label: 'Status' },
     { value: 'order_number', label: 'Número do pedido' }
   ];
 
-  // Manejar cambios en filtros temporales
+  // Gerenciar mudanças em filtros temporários
   const handleTempFilterChange = (field, value) => {
     setTempFilters(prev => ({
       ...prev,
@@ -37,7 +37,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
     setShowFilters(false);
   };
 
-  // Limpiar filtros
+  // Limpar filtros
   const clearFilters = () => {
     const emptyFilters = {
       status: '',
@@ -51,7 +51,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
     setShowFilters(false);
   };
 
-  // Cancelar cambios
+  // Cancelar mudanças
   const cancelChanges = () => {
     setTempFilters(filters);
     setShowFilters(false);
@@ -100,19 +100,19 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           <button
             className={`sort-order ${sortOrder === 'desc' ? 'desc' : 'asc'}`}
             onClick={() => onSortChange(sortBy, sortOrder === 'asc' ? 'desc' : 'asc')}
-            title={sortOrder === 'asc' ? 'Orden ascendente' : 'Orden descendente'}
+            title={sortOrder === 'asc' ? 'Ordem crescente' : 'Ordem decrescente'}
           >
             {sortOrder === 'asc' ? '↑' : '↓'}
           </button>
         </div>
 
-        {/* Limpiar filtros activos */}
+        {/* Limpar filtros ativos */}
         {activeFiltersCount > 0 && (
           <button 
             className="clear-filters"
             onClick={clearFilters}
           >
-            Limpiar filtros
+            Limpar filtros
           </button>
         )}
       </div>
@@ -121,9 +121,9 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
       {showFilters && (
         <div className="filters-panel">
           <div className="filters-grid">
-            {/* Filtro por estado */}
+            {/* Filtro por status */}
             <div className="filter-group">
-              <label htmlFor="statusFilter">Estado del Pedido</label>
+              <label htmlFor="statusFilter">Status do Pedido</label>
               <select
                 id="statusFilter"
                 value={tempFilters.status}
@@ -137,9 +137,9 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
               </select>
             </div>
 
-            {/* Filtro por rango de fechas */}
+            {/* Filtro por faixa de datas */}
             <div className="filter-group">
-              <label htmlFor="dateFromFilter">Fecha Desde</label>
+              <label htmlFor="dateFromFilter">Data De</label>
               <input
                 type="date"
                 id="dateFromFilter"
@@ -149,7 +149,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
             </div>
 
             <div className="filter-group">
-              <label htmlFor="dateToFilter">Fecha Hasta</label>
+              <label htmlFor="dateToFilter">Data Até</label>
               <input
                 type="date"
                 id="dateToFilter"
@@ -158,9 +158,9 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
               />
             </div>
 
-            {/* Filtro por rango de montos */}
+            {/* Filtro por faixa de valores */}
             <div className="filter-group">
-              <label htmlFor="minAmountFilter">Monto Mínimo (R$)</label>
+              <label htmlFor="minAmountFilter">Valor Mínimo (R$)</label>
               <input
                 type="number"
                 id="minAmountFilter"
@@ -173,7 +173,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
             </div>
 
             <div className="filter-group">
-              <label htmlFor="maxAmountFilter">Monto Máximo (R$)</label>
+              <label htmlFor="maxAmountFilter">Valor Máximo (R$)</label>
               <input
                 type="number"
                 id="maxAmountFilter"
@@ -186,7 +186,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
             </div>
           </div>
 
-          {/* Acciones del panel de filtros */}
+          {/* Ações do painel de filtros */}
           <div className="filters-actions">
             <button 
               className="btn btn-outline"
@@ -199,7 +199,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
               className="btn btn-secondary"
               onClick={clearFilters}
             >
-              Limpiar Todo
+              Limpar Tudo
             </button>
             
             <button 
@@ -212,14 +212,14 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
         </div>
       )}
 
-      {/* Filtros activos (chips) */}
+      {/* Filtros ativos (chips) */}
       {activeFiltersCount > 0 && (
         <div className="active-filters">
-          <span className="active-filters-label">Filtros activos:</span>
+          <span className="active-filters-label">Filtros ativos:</span>
           
           {filters.status && (
             <div className="filter-chip">
-              <span>Estado: {statusOptions.find(opt => opt.value === filters.status)?.label}</span>
+              <span>Status: {statusOptions.find(opt => opt.value === filters.status)?.label}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, status: '' })}
                 className="remove-filter"
@@ -231,7 +231,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.dateFrom && (
             <div className="filter-chip">
-              <span>Desde: {new Date(filters.dateFrom).toLocaleDateString('pt-BR')}</span>
+              <span>De: {new Date(filters.dateFrom).toLocaleDateString('pt-BR')}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, dateFrom: '' })}
                 className="remove-filter"
@@ -243,7 +243,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.dateTo && (
             <div className="filter-chip">
-              <span>Hasta: {new Date(filters.dateTo).toLocaleDateString('pt-BR')}</span>
+              <span>Até: {new Date(filters.dateTo).toLocaleDateString('pt-BR')}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, dateTo: '' })}
                 className="remove-filter"
@@ -255,7 +255,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.minAmount && (
             <div className="filter-chip">
-              <span>Min: R$ {parseFloat(filters.minAmount).toFixed(2)}</span>
+              <span>Mín: R$ {parseFloat(filters.minAmount).toFixed(2)}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, minAmount: '' })}
                 className="remove-filter"
@@ -267,7 +267,7 @@ const OrderFilters = ({ filters, onFilterChange, sortBy, sortOrder, onSortChange
           
           {filters.maxAmount && (
             <div className="filter-chip">
-              <span>Max: R$ {parseFloat(filters.maxAmount).toFixed(2)}</span>
+              <span>Máx: R$ {parseFloat(filters.maxAmount).toFixed(2)}</span>
               <button 
                 onClick={() => onFilterChange({ ...filters, maxAmount: '' })}
                 className="remove-filter"

@@ -71,15 +71,15 @@ const Checkout = () => {
   const [orderResult, setOrderResult] = useState(null);
   const [paymentResult, setPaymentResult] = useState(null);
 
-  // Verificar que hay items en el carrito
+  // Verificar que há itens no carrinho
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
-      showError('Tu carrito está vacío');
+      showError('Seu carrinho está vazio');
       navigate('/');
     }
   }, [cartItems, navigate, showError]);
 
-  // Cargar métodos de pago al montar el componente
+  // Carregar métodos de pagamento ao montar o componente
   useEffect(() => {
     loadPaymentMethods();
   }, []);
@@ -89,7 +89,7 @@ const Checkout = () => {
       const response = await checkoutAPI.getPaymentMethods();
       setPaymentMethods(response.data);
     } catch (error) {
-      console.error('Error cargando métodos de pago:', error);
+      console.error('Erro carregando métodos de pagamento:', error);
     }
   };
 
@@ -99,8 +99,8 @@ const Checkout = () => {
       const response = await checkoutAPI.getShippingOptions(postalCode);
       setShippingOptions(response.data);
     } catch (error) {
-      console.error('Error cargando opciones de envío:', error);
-      showError('Error al cargar opciones de envío');
+      console.error('Erro carregando opções de envio:', error);
+      showError('Erro ao carregar opções de envio');
     } finally {
       setLoading(false);
     }
@@ -112,7 +112,7 @@ const Checkout = () => {
       [field]: value
     }));
 
-    // Limpiar errores de validación para este campo
+    // Limpar erros de validação para este campo
     if (validationErrors[field]) {
       setValidationErrors(prev => {
         const newErrors = { ...prev };
@@ -131,7 +131,7 @@ const Checkout = () => {
       }
     }));
 
-    // Cargar opciones de envío cuando se complete el código postal
+    // Carregar opções de envio quando completar o código postal
     if (addressType === 'shipping_address' && field === 'postal_code' && value.length >= 8) {
       loadShippingOptions(value);
     }
@@ -149,30 +149,30 @@ const Checkout = () => {
     try {
       setLoading(true);
       
-      // Preparar datos para validación
+      // Preparar dados para validação
       const dataToValidate = { ...formData };
       
-      // Si same_as_shipping es true, copiar shipping_address a billing_address
+      // Se same_as_shipping for true, copiar shipping_address para billing_address
       if (formData.same_as_shipping) {
         dataToValidate.billing_address = { ...formData.shipping_address };
       }
       
-      // Validación específica por paso
+      // Validação específica por passo
       if (currentStep === CHECKOUT_STEPS.PAYMENT) {
         if (!selectedPaymentMethod) {
-          showError('Por favor selecciona un método de pago');
+          showError('Por favor selecione um método de pagamento');
           return false;
         }
         
-        // Validar datos del método de pago seleccionado
+        // Validar dados do método de pagamento selecionado
         if ((selectedPaymentMethod === 'credit_card' || selectedPaymentMethod === 'debit_card')) {
           if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvv || !paymentData.cardName) {
-            showError('Por favor completa todos los datos de la tarjeta');
+            showError('Por favor complete todos os dados do cartão');
             return false;
           }
         }
         
-        // Actualizar datos con el método de pago
+        // Atualizar dados com o método de pagamento
         dataToValidate.payment_method = selectedPaymentMethod;
       }
       
@@ -180,10 +180,10 @@ const Checkout = () => {
       setValidationErrors({});
       return true;
     } catch (error) {
-      if (error.message && error.message.includes('Datos de checkout inválidos')) {
+      if (error.message && error.message.includes('Dados de checkout inválidos')) {
         setValidationErrors(error.errors || {});
       } else {
-        showError(error.message || 'Error en la validación');
+        showError(error.message || 'Erro na validação');
       }
       return false;
     } finally {
@@ -228,23 +228,23 @@ const Checkout = () => {
       setLoading(true);
       setCurrentStep(CHECKOUT_STEPS.PROCESSING);
       
-      // Preparar datos para la orden
+      // Preparar dados para o pedido
       const orderData = { ...formData };
       
-      // Si same_as_shipping es true, copiar shipping_address a billing_address
+      // Se same_as_shipping for true, copiar shipping_address para billing_address
       if (formData.same_as_shipping) {
         orderData.billing_address = { ...formData.shipping_address };
       }
       
-      // Asegurar que el payment_method esté incluido
+      // Assegurar que o payment_method esteja incluído
       orderData.payment_method = selectedPaymentMethod;
       
-      // Paso 1: Crear la orden
+      // Passo 1: Criar o pedido
       const response = await checkoutAPI.createOrder(orderData);
       const order = response.data.order;
       setOrderResult(order);
       
-      // Paso 2: Procesar el pago
+      // Passo 2: Processar o pagamento
       const paymentRequestData = {
         order_id: order.id,
         payment_method: selectedPaymentMethod,
@@ -254,25 +254,25 @@ const Checkout = () => {
       const paymentResponse = await paymentsAPI.processPayment(paymentRequestData);
       setPaymentResult(paymentResponse.data);
       
-      // Paso 3: Manejar el resultado del pago
+      // Passo 3: Tratar o resultado do pagamento
       if (paymentResponse.data.payment_result.status === 'approved') {
-        // Pago aprobado inmediatamente (tarjetas)
-        showSuccess('¡Pago procesado exitosamente! Tu pedido ha sido confirmado.');
+        // Pagamento aprovado imediatamente (cartões)
+        showSuccess('Pagamento processado com sucesso! Seu pedido foi confirmado.');
         await clearCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
       } else if (paymentResponse.data.payment_result.status === 'pending') {
-        // Pago pendiente (PIX, Boleto)
-        showSuccess('¡Orden creada exitosamente! Completa el pago para confirmar tu pedido.');
+        // Pagamento pendente (PIX, Boleto)
+        showSuccess('Pedido criado com sucesso! Complete o pagamento para confirmar seu pedido.');
         await clearCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
       } else {
-        throw new Error('Error en el procesamiento del pago');
+        throw new Error('Erro no processamento do pagamento');
       }
       
     } catch (error) {
-      console.error('Error en el checkout:', error);
-      showError(error.message || 'Error al procesar el pedido');
-      // Volver al paso de revisión si hay error
+      console.error('Erro no checkout:', error);
+      showError(error.message || 'Erro ao processar o pedido');
+      // Voltar ao passo de revisão se houver erro
       setCurrentStep(CHECKOUT_STEPS.REVIEW);
     } finally {
       setLoading(false);
@@ -282,13 +282,13 @@ const Checkout = () => {
   const getStepTitle = () => {
     switch (currentStep) {
       case CHECKOUT_STEPS.SHIPPING:
-        return 'Información de Envío';
+        return 'Informações de Envio';
       case CHECKOUT_STEPS.PAYMENT:
-        return 'Método de Pago';
+        return 'Método de Pagamento';
       case CHECKOUT_STEPS.REVIEW:
-        return 'Revisar Orden';
+        return 'Revisar Pedido';
       case CHECKOUT_STEPS.CONFIRMATION:
-        return 'Confirmación';
+        return 'Confirmação';
       default:
         return 'Checkout';
     }
@@ -330,11 +330,11 @@ const Checkout = () => {
         <div className="checkout-progress">
           <div className={`step ${currentStep === CHECKOUT_STEPS.SHIPPING ? 'active' : 'completed'}`}>
             <span className="step-number">1</span>
-            <span className="step-label">Envío</span>
+            <span className="step-label">Envio</span>
           </div>
           <div className={`step ${currentStep === CHECKOUT_STEPS.PAYMENT ? 'active' : currentStep === CHECKOUT_STEPS.REVIEW ? 'completed' : ''}`}>
             <span className="step-number">2</span>
-            <span className="step-label">Pago</span>
+            <span className="step-label">Pagamento</span>
           </div>
           <div className={`step ${currentStep === CHECKOUT_STEPS.REVIEW ? 'active' : ''}`}>
             <span className="step-number">3</span>
@@ -385,16 +385,16 @@ const Checkout = () => {
 
             {currentStep === CHECKOUT_STEPS.REVIEW && (
               <div className="order-review">
-                <h3>Revisar tu orden</h3>
+                <h3>Revisar seu pedido</h3>
                 <div className="review-section">
-                  <h4>Información de contacto</h4>
-                  <p><strong>Nombre:</strong> {formData.customer_name}</p>
+                  <h4>Informações de contato</h4>
+                  <p><strong>Nome:</strong> {formData.customer_name}</p>
                   <p><strong>Email:</strong> {formData.customer_email}</p>
-                  <p><strong>Teléfono:</strong> {formData.customer_phone}</p>
+                  <p><strong>Telefone:</strong> {formData.customer_phone}</p>
                 </div>
                 
                 <div className="review-section">
-                  <h4>Dirección de envío</h4>
+                  <h4>Endereço de entrega</h4>
                   <p>
                     {formData.shipping_address.street} {formData.shipping_address.number}
                     {formData.shipping_address.complement && `, ${formData.shipping_address.complement}`}
@@ -408,13 +408,13 @@ const Checkout = () => {
                 </div>
                 
                 <div className="review-section">
-                  <h4>Método de pago</h4>
+                  <h4>Método de pagamento</h4>
                   <p>{paymentMethods.find(m => m.id === formData.payment_method)?.name}</p>
                 </div>
                 
                 {selectedShipping && (
                   <div className="review-section">
-                    <h4>Envío</h4>
+                    <h4>Entrega</h4>
                     <p>{selectedShipping.name} - R$ {selectedShipping.price.toFixed(2)}</p>
                     <p>{selectedShipping.description}</p>
                   </div>
@@ -442,8 +442,8 @@ const Checkout = () => {
               onClick={handleNextStep}
               disabled={loading}
             >
-              {loading ? 'Procesando...' : 
-               currentStep === CHECKOUT_STEPS.REVIEW ? 'Crear Orden' : 'Siguiente'}
+              {loading ? 'Processando...' : 
+               currentStep === CHECKOUT_STEPS.REVIEW ? 'Criar Pedido' : 'Próximo'}
             </button>
           </div>
         </div>

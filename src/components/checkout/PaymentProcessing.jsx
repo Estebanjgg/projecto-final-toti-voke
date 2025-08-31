@@ -4,8 +4,8 @@ import './PaymentProcessing.css';
 const PaymentProcessing = ({ paymentMethod, orderNumber }) => {
   const getPaymentMethodName = (method) => {
     const methods = {
-      credit_card: 'Tarjeta de Crédito',
-      debit_card: 'Tarjeta de Débito',
+      credit_card: 'Cartão de Crédito',
+      debit_card: 'Cartão de Débito',
       pix: 'PIX',
       boleto: 'Boleto Bancário'
     };
@@ -29,13 +29,13 @@ const PaymentProcessing = ({ paymentMethod, orderNumber }) => {
           <div className="spinner"></div>
         </div>
         
-        <h2>Procesando tu pago</h2>
+        <h2>Processando seu pagamento</h2>
         
         <div className="processing-info">
-          <p>Estamos procesando tu pedido...</p>
+          <p>Estamos processando seu pedido...</p>
           {orderNumber && (
             <p className="order-number">
-              <strong>Número de pedido:</strong> {orderNumber}
+              <strong>Número do pedido:</strong> {orderNumber}
             </p>
           )}
         </div>
@@ -48,23 +48,23 @@ const PaymentProcessing = ({ paymentMethod, orderNumber }) => {
         <div className="processing-steps">
           <div className="step active">
             <span className="step-icon">✓</span>
-            <span className="step-text">Orden creada</span>
+            <span className="step-text">Pedido criado</span>
           </div>
           <div className="step active">
             <span className="step-icon">
               <div className="mini-spinner"></div>
             </span>
-            <span className="step-text">Procesando pago</span>
+            <span className="step-text">Processando pagamento</span>
           </div>
           <div className="step">
             <span className="step-icon">⏳</span>
-            <span className="step-text">Confirmación</span>
+            <span className="step-text">Confirmação</span>
           </div>
         </div>
         
         <div className="processing-message">
-          <p>Por favor no cierres esta ventana ni hagas clic en el botón "Atrás" del navegador.</p>
-          <p>Este proceso puede tomar unos segundos...</p>
+          <p>Por favor, não feche esta janela nem clique no botão "Voltar" do navegador.</p>
+          <p>Este processo pode levar alguns segundos...</p>
         </div>
       </div>
     </div>

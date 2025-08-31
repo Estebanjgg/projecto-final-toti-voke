@@ -9,7 +9,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
   const [cancelReason, setCancelReason] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Formatear fecha
+  // Formatar data
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {
@@ -21,7 +21,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
     });
   };
 
-  // Obtener color del estado
+  // Obter cor do status
   const getStatusColor = (status) => {
     const colors = {
       'pending': '#f39c12',
@@ -34,33 +34,33 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
     return colors[status] || '#95a5a6';
   };
 
-  // Obtener texto del estado
+  // Obter texto do status
   const getStatusText = (status) => {
     const statuses = {
-      'pending': 'Pendiente',
+      'pending': 'Pendente',
       'confirmed': 'Confirmado',
-      'processing': 'Procesando',
+      'processing': 'Processando',
       'shipped': 'Enviado',
-      'delivered': 'Entregado',
+      'delivered': 'Entregue',
       'cancelled': 'Cancelado'
     };
     return statuses[status] || status;
   };
 
-  // Verificar si se puede cancelar
+  // Verificar se pode cancelar
   const canCancel = () => {
     return ['pending', 'confirmed'].includes(order.status);
   };
 
-  // Verificar si se puede reordenar
+  // Verificar se pode refazer pedido
   const canReorder = () => {
     return ['delivered', 'cancelled'].includes(order.status);
   };
 
-  // Manejar cancelación
+  // Gerenciar cancelamento
   const handleCancel = async () => {
     if (!cancelReason.trim()) {
-      addAlert('Por favor, proporciona una razón para la cancelación', 'warning');
+      addAlert('Por favor, forneça um motivo para o cancelamento', 'warning');
       return;
     }
 
@@ -70,44 +70,44 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
       setShowCancelModal(false);
       setCancelReason('');
     } catch (error) {
-      console.error('Error al cancelar:', error);
+      console.error('Erro ao cancelar:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Manejar reorden
+  // Gerenciar refazer pedido
   const handleReorder = async () => {
     try {
       setLoading(true);
       await onReorder(order.id, order.order_items || order.items || []);
     } catch (error) {
-      console.error('Error al reordenar:', error);
+      console.error('Erro ao refazer pedido:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Descargar factura
+  // Baixar nota fiscal
   const handleDownloadInvoice = async () => {
     try {
       setLoading(true);
       const blob = await ordersAPI.downloadInvoice(order.id);
       
-      // Crear URL para descarga
+      // Criar URL para download
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `factura-${order.order_number}.pdf`;
+      link.download = `nota-fiscal-${order.order_number}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      addAlert('Factura descargada exitosamente', 'success');
+      addAlert('Nota fiscal baixada com sucesso', 'success');
     } catch (error) {
-      console.error('Error al descargar factura:', error);
-      addAlert('Error al descargar la factura', 'error');
+      console.error('Erro ao baixar nota fiscal:', error);
+      addAlert('Erro ao baixar a nota fiscal', 'error');
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
   return (
     <>
       <div className="order-card">
-        {/* Header de la orden */}
+        {/* Header do pedido */}
         <div className="order-header">
           <div className="order-info">
             <div className="order-number">
@@ -137,9 +137,9 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
           </div>
         </div>
 
-        {/* Contenido de la orden */}
+        {/* Conteúdo do pedido */}
         <div className="order-content">
-          {/* Items de la orden */}
+          {/* Itens do pedido */}
           <div className="order-items">
             {(order.order_items || order.items) && (order.order_items || order.items).length > 0 ? (
               <>
@@ -156,7 +156,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                       {item.product_brand && (
                         <div className="item-brand">{item.product_brand}</div>
                       )}
-                      <div className="item-quantity">Cantidad: {item.quantity}</div>
+                      <div className="item-quantity">Quantidade: {item.quantity}</div>
                     </div>
                     <div className="item-price">
                       R$ {(item.total_price || 0).toFixed(2)}
@@ -166,21 +166,21 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                 
                 {(order.order_items || order.items).length > 3 && (
                   <div className="more-items">
-                    +{(order.order_items || order.items).length - 3} productos más
+                    +{(order.order_items || order.items).length - 3} produtos a mais
                   </div>
                 )}
               </>
             ) : (
               <div className="no-items">
-                <p>No se pudieron cargar los items de esta orden</p>
+                <p>Não foi possível carregar os itens deste pedido</p>
               </div>
             )}
           </div>
 
-          {/* Información de envío y pago */}
+          {/* Informações de envio e pagamento */}
           <div className="order-details">
             <div className="detail-section">
-              <h4>Información de Envío</h4>
+              <h4>Informações de Envio</h4>
               {order.shipping_address ? (
                 <div className="address">
                   <p>{order.shipping_address.street}, {order.shipping_address.number}</p>
@@ -188,25 +188,25 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                   <p>CEP: {order.shipping_address.postal_code}</p>
                 </div>
               ) : (
-                <p>Dirección no disponible</p>
+                <p>Endereço não disponível</p>
               )}
             </div>
             
             <div className="detail-section">
-              <h4>Información de Pago</h4>
+              <h4>Informações de Pagamento</h4>
               <p><strong>Método:</strong> {order.payment_method}</p>
-              <p><strong>Estado:</strong> 
+              <p><strong>Status:</strong> 
                 <span className={`payment-status ${order.payment_status}`}>
-                  {order.payment_status === 'pending' ? 'Pendiente' : 
-                   order.payment_status === 'paid' ? 'Pagado' : 
-                   order.payment_status === 'failed' ? 'Falló' : order.payment_status}
+                  {order.payment_status === 'pending' ? 'Pendente' : 
+                   order.payment_status === 'paid' ? 'Pago' : 
+                   order.payment_status === 'failed' ? 'Falhou' : order.payment_status}
                 </span>
               </p>
             </div>
           </div>
         </div>
 
-        {/* Footer de la orden */}
+        {/* Footer do pedido */}
         <div className="order-footer">
           <div className="order-total">
             <span className="total-label">Total:</span>
@@ -218,7 +218,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
               to={`/orders/${order.id}`} 
               className="btn btn-outline btn-sm"
             >
-              Ver Detalles
+              Ver Detalhes
             </Link>
             
             {order.status === 'shipped' && (
@@ -236,7 +236,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                 onClick={handleDownloadInvoice}
                 disabled={loading}
               >
-                {loading ? 'Descargando...' : 'Factura'}
+                {loading ? 'Baixando...' : 'Nota Fiscal'}
               </button>
             )}
             
@@ -246,7 +246,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                 onClick={handleReorder}
                 disabled={loading}
               >
-                {loading ? 'Agregando...' : 'Reordenar'}
+                {loading ? 'Adicionando...' : 'Refazer Pedido'}
               </button>
             )}
             
@@ -262,7 +262,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
         </div>
       </div>
 
-      {/* Modal de cancelación */}
+      {/* Modal de cancelamento */}
       {showCancelModal && (
         <div className="modal-overlay">
           <div className="modal">
@@ -277,10 +277,10 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
             </div>
             
             <div className="modal-content">
-              <p>¿Estás seguro de que deseas cancelar el pedido #{order.order_number}?</p>
+              <p>Tem certeza de que deseja cancelar o pedido #{order.order_number}?</p>
               
               <div className="form-group">
-                <label htmlFor="cancelReason">Razón de la cancelación:</label>
+                <label htmlFor="cancelReason">Motivo do cancelamento:</label>
                 <textarea
                   id="cancelReason"
                   value={cancelReason}
@@ -298,14 +298,14 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
                 onClick={() => setShowCancelModal(false)}
                 disabled={loading}
               >
-                Mantener Pedido
+                Manter Pedido
               </button>
               <button 
                 className="btn btn-danger"
                 onClick={handleCancel}
                 disabled={loading || !cancelReason.trim()}
               >
-                {loading ? 'Cancelando...' : 'Confirmar Cancelación'}
+                {loading ? 'Cancelando...' : 'Confirmar Cancelamento'}
               </button>
             </div>
           </div>
