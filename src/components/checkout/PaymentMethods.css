@@ -1,0 +1,550 @@
+/* ==========================================
+   PAYMENT METHODS - DISEÑO ULTRA MODERNO
+   ========================================== */
+
+.payment-methods {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.1),
+    0 4px 20px rgba(0, 123, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-methods::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #007bff, #00d4aa, #007bff);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
+
+.payment-methods h3 {
+  color: #1a1a1a;
+  margin-bottom: 28px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.payment-methods h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #007bff, #00d4aa);
+  border-radius: 2px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.error-message {
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  border: 2px solid rgba(245, 101, 101, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  color: #c53030;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-message::before {
+  content: '⚠️';
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* ==========================================
+   OPCIONES DE PAGO - CARDS MODERNAS
+   ========================================== */
+
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  padding: 24px 28px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.payment-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s;
+}
+
+.payment-option:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px rgba(0, 123, 255, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 123, 255, 0.3);
+}
+
+.payment-option:hover::before {
+  left: 100%;
+}
+
+.payment-option.selected {
+  background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%);
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 30px rgba(0, 123, 255, 0.25),
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.payment-option.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  animation: checkmark 0.3s ease-out;
+}
+
+@keyframes checkmark {
+  0% { transform: scale(0) rotate(180deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.payment-icon {
+  margin-right: 16px;
+  width: 80px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 12px;
+  box-shadow: 
+    0 3px 12px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  padding: 8px;
+}
+
+.payment-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.1));
+}
+
+.payment-name {
+  flex: 1;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+.payment-radio {
+  margin-left: 12px;
+}
+
+.payment-radio input {
+  width: 20px;
+  height: 20px;
+  accent-color: #007bff;
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+/* ==========================================
+   FORMULARIOS DE PAGO - ULTRA MODERNOS
+   ========================================== */
+
+.payment-form {
+  background: linear-gradient(145deg, #f8fafc 0%, #edf2f7 100%);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.02),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.payment-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, #007bff, #00d4aa, #007bff);
+  border-radius: 1px;
+}
+
+.card-form .form-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.card-form .form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.card-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.card-form input,
+.card-form select {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  background: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.card-form input:focus,
+.card-form select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 
+    0 0 0 4px rgba(0, 123, 255, 0.1),
+    0 4px 12px rgba(0, 123, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.card-form input::placeholder {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+.card-logos {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: linear-gradient(145deg, #ffffff, #f7fafc);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.card-logos img {
+  height: 28px;
+  width: auto;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  padding: 4px 8px;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-logos img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================
+   PIX Y BOLETO - DISEÑO ESPECTACULAR
+   ========================================== */
+
+.pix-form,
+.boleto-form {
+  text-align: center;
+  position: relative;
+}
+
+.pix-info,
+.boleto-info {
+  background: linear-gradient(145deg, #f0fff4 0%, #e6fffa 100%);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(72, 187, 120, 0.2);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 25px rgba(72, 187, 120, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.pix-info::before,
+.boleto-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #48bb78, #38b2ac, #48bb78);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.pix-info p,
+.boleto-info p {
+  margin: 12px 0;
+  color: #2d3748;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.pix-instructions,
+.boleto-instructions {
+  color: #4a5568;
+  font-size: 14px;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(72, 187, 120, 0.1);
+  font-weight: 500;
+}
+
+/* ==========================================
+   INFORMACIÓN DE SEGURIDAD
+   ========================================== */
+
+.security-info {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 28px;
+  padding: 24px;
+  background: linear-gradient(145deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.3s ease;
+}
+
+.security-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.security-item .icon {
+  font-size: 18px;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 768px) {
+  .payment-methods {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .payment-methods h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .payment-options {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .payment-option {
+    padding: 18px 22px;
+    min-height: 80px;
+  }
+  
+  .payment-icon {
+    width: 150px;
+    height: 80px;
+    margin-right: 14px;
+  }
+  
+  .payment-icon img {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .payment-form {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .card-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .card-logos {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .card-logos img {
+    height: 24px;
+  }
+  
+  .security-info {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .security-item {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-methods {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .payment-option {
+    padding: 12px 16px;
+  }
+  
+  .payment-name {
+    font-size: 14px;
+  }
+  
+  .card-form input,
+  .card-form select {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .payment-form {
+    padding: 16px;
+  }
+  
+  .pix-info,
+  .boleto-info {
+    padding: 20px;
+  }
+  
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}

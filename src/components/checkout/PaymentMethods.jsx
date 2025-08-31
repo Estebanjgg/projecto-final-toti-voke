@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { checkoutAPI } from '../../services/checkoutAPI';
+import './PaymentMethods.css';
 
 const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPaymentDataChange }) => {
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -10,18 +11,56 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
     const fetchPaymentMethods = async () => {
       try {
         setLoading(true);
-        const response = await checkoutAPI.getPaymentMethods();
-        // La respuesta del backend viene en response.data
-        setPaymentMethods(response.data || []);
+        // Usar sempre os métodos locais com imagens
+        const metodosComImagens = [
+          { 
+            id: 'credit_card', 
+            name: 'Cartão de Crédito', 
+            icon: '/picture/icone%20pagamento/credicard.jpg'
+          },
+          { 
+            id: 'debit_card', 
+            name: 'Cartão de Débito', 
+            icon: '/picture/icone%20pagamento/credicard.jpg'
+          },
+          { 
+            id: 'pix', 
+            name: 'PIX', 
+            icon: '/picture/icone%20pagamento/pix-banco-central-logo.svg'
+          },
+          { 
+            id: 'boleto', 
+            name: 'Boleto Bancário', 
+            icon: '/picture/icone%20pagamento/boleto-simbolo.png'
+          }
+        ];
+        console.log('Métodos de pagamento carregados:', metodosComImagens);
+        setPaymentMethods(metodosComImagens);
       } catch (err) {
         console.error('Erro ao carregar métodos de pagamento:', err);
         setError('Erro ao carregar métodos de pagamento');
         // Métodos de pagamento padrão em caso de erro
         setPaymentMethods([
-          { id: 'credit_card', name: 'Cartão de Crédito', icon: '💳' },
-          { id: 'debit_card', name: 'Cartão de Débito', icon: '💳' },
-          { id: 'pix', name: 'PIX', icon: '📱' },
-          { id: 'boleto', name: 'Boleto Bancário', icon: '🧾' }
+          { 
+            id: 'credit_card', 
+            name: 'Cartão de Crédito', 
+            icon: '/picture/icone%20pagamento/credicard.jpg'
+          },
+          { 
+            id: 'debit_card', 
+            name: 'Cartão de Débito', 
+            icon: '/picture/icone%20pagamento/credicard.jpg'
+          },
+          { 
+            id: 'pix', 
+            name: 'PIX', 
+            icon: '/picture/icone%20pagamento/pix-banco-central-logo.svg'
+          },
+          { 
+            id: 'boleto', 
+            name: 'Boleto Bancário', 
+            icon: '/picture/icone%20pagamento/boleto-simbolo.png'
+          }
         ]);
       } finally {
         setLoading(false);
@@ -78,7 +117,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
 
   return (
     <div className="payment-methods">
-      <h3>Método de Pagamento</h3>
+      <h3>💳 Método de Pagamento</h3>
       
       {error && (
         <div className="error-message">
@@ -94,7 +133,26 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
             className={`payment-option ${selectedMethod === method.id ? 'selected' : ''}`}
             onClick={() => handleMethodSelect(method.id)}
           >
-            <span className="payment-icon">{method.icon}</span>
+            <div className="payment-icon">
+              {method.icon && method.icon.startsWith('/') ? (
+                <img 
+                  src={method.icon} 
+                  alt={method.name}
+                  onError={(e) => {
+                    console.error('Error loading image:', method.icon);
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+              ) : method.icon ? (
+                <span style={{fontSize: '24px'}}>{method.icon}</span>
+              ) : (
+                <span style={{fontSize: '24px'}}>💳</span>
+              )}
+              {method.icon && method.icon.startsWith('/') && (
+                <span style={{fontSize: '24px', display: 'none'}}>💳</span>
+              )}
+            </div>
             <span className="payment-name">{method.name}</span>
             <span className="payment-radio">
               <input 
@@ -125,6 +183,12 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
                   maxLength="19"
                   required
                 />
+                <div className="card-logos">
+                  <img src="/picture/icone pagamento/visa-logo.svg" alt="Visa" />
+                  <img src="/picture/icone pagamento/mastercard-logo.svg" alt="Mastercard" />
+                  <img src="/picture/icone pagamento/amex-logo.svg" alt="American Express" />
+                  <img src="/picture/icone pagamento/tarjeta-generica.svg" alt="Outras bandeiras" />
+                </div>
               </div>
               
               <div className="form-row">
@@ -189,12 +253,16 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
           {selectedMethod === 'pix' && (
             <div className="pix-form">
               <div className="pix-info">
-                <p>🔹 Pagamento instantâneo</p>
-                <p>🔹 Disponível 24/7</p>
-                <p>🔹 Sem taxas adicionais</p>
+                <h4 style={{margin: '0 0 20px 0', color: '#2d3748', fontSize: '18px', textAlign: 'center'}}>PIX - Pagamento Instantâneo</h4>
+                <div className="benefits-grid">
+                  <p>⚡ Pagamento instantâneo</p>
+                  <p>🕒 Disponível 24/7</p>
+                  <p>💰 Sem taxas adicionais</p>
+                  <p>🔒 100% seguro</p>
+                </div>
               </div>
               <p className="pix-instructions">
-                Após confirmar o pedido, você receberá um código QR para realizar o pagamento via PIX.
+                ✨ Após confirmar o pedido, você receberá um código QR para realizar o pagamento via PIX de forma rápida e segura.
               </p>
             </div>
           )}
@@ -202,12 +270,16 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
           {selectedMethod === 'boleto' && (
             <div className="boleto-form">
               <div className="boleto-info">
-                <p>🔹 Vencimento em 3 dias úteis</p>
-                <p>🔹 Pagamento em bancos, lotéricas ou internet banking</p>
-                <p>🔹 Sem taxas adicionais</p>
+                <h4 style={{margin: '0 0 20px 0', color: '#2d3748', fontSize: '18px', textAlign: 'center'}}>Boleto Bancário</h4>
+                <div className="benefits-grid">
+                  <p>📅 Vencimento em 3 dias úteis</p>
+                  <p>🏦 Pagamento em bancos, lotéricas ou internet banking</p>
+                  <p>💰 Sem taxas adicionais</p>
+                  <p>📧 Envio por email</p>
+                </div>
               </div>
               <p className="boleto-instructions">
-                O boleto será enviado por email após confirmar o pedido.
+                📩 O boleto será enviado para seu email após confirmar o pedido. Você pode imprimir ou pagar pelo app do seu banco.
               </p>
             </div>
           )}
@@ -217,12 +289,16 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
       {/* Informações de segurança */}
       <div className="security-info">
         <div className="security-item">
-          <span className="icon">🔒</span>
+          <span className="icon">�</span>
           <span>Transação 100% segura</span>
         </div>
         <div className="security-item">
           <span className="icon">🛡️</span>
           <span>Dados protegidos com SSL</span>
+        </div>
+        <div className="security-item">
+          <span className="icon">✅</span>
+          <span>Ambiente verificado</span>
         </div>
       </div>
     </div>
