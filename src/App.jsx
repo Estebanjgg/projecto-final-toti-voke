@@ -18,6 +18,7 @@ import ResetPassword from './components/auth/ResetPassword';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AlertContainer from './components/ui/AlertContainer';
 import Checkout from './components/checkout/Checkout';
+import CartPage from './components/cart/CartPage';
 import Orders from './components/orders/Orders';
 import OrderDetails from './components/orders/OrderDetails';
 import AdminPanel from './components/admin/AdminPanel';
@@ -108,6 +109,11 @@ function App() {
                 <Route path="/checkout" element={
                   <Layout>
                     <Checkout />
+                  </Layout>
+                } />
+                <Route path="/cart" element={
+                  <Layout>
+                    <CartPage />
                   </Layout>
                 } />
                 <Route path="/orders" element={

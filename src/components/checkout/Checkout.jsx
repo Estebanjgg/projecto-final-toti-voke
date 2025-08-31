@@ -11,6 +11,7 @@ import PaymentMethods from './PaymentMethods';
 import ShippingOptions from './ShippingOptions';
 import OrderConfirmation from './OrderConfirmation';
 import PaymentProcessing from './PaymentProcessing';
+import StockErrorModal from './StockErrorModal';
 import './Checkout.css';
 
 const CHECKOUT_STEPS = {
@@ -23,13 +24,19 @@ const CHECKOUT_STEPS = {
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, cartSummary, clearCart } = useCart();
+  const { cartItems, cartSummary, clearCart, refreshCart, loadCart } = useCart();
   const { user, isAuthenticated } = useAuth();
-  const { showError, showSuccess } = useAlert();
+  const { showError, showSuccess, showWarning } = useAlert();
 
   const [currentStep, setCurrentStep] = useState(CHECKOUT_STEPS.SHIPPING);
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  
+  // Estados para tratamento de erros de estoque
+  const [stockErrorModal, setStockErrorModal] = useState({
+    isOpen: false,
+    errors: []
+  });
   
   // Datos del formulario
   const [formData, setFormData] = useState({
@@ -180,11 +187,37 @@ const Checkout = () => {
       setValidationErrors({});
       return true;
     } catch (error) {
-      if (error.message && error.message.includes('Dados de checkout inválidos')) {
-        setValidationErrors(error.errors || {});
-      } else {
-        showError(error.message || 'Erro na validação');
+      console.error('Erro na validação:', error);
+      
+      // Tratar erros de estoque especificamente
+      if (error.isStockError) {
+        setStockErrorModal({
+          isOpen: true,
+          errors: error.stockErrors || [error.message]
+        });
+        return false;
       }
+      
+      // Tratar erro de carrinho vazio
+      if (error.isEmptyCartError) {
+        showWarning('Seu carrinho está vazio. Redirecionando para a loja...');
+        setTimeout(() => navigate('/'), 2000);
+        return false;
+      }
+      
+      // Tratar erros de validação de formulário
+      if (error.isValidationError && error.validationErrors) {
+        const formattedErrors = {};
+        error.validationErrors.forEach(err => {
+          formattedErrors[err.field] = err.message;
+        });
+        setValidationErrors(formattedErrors);
+        showError('Por favor corrija os erros no formulário');
+        return false;
+      }
+      
+      // Erro genérico
+      showError(error.message || 'Erro na validação');
       return false;
     } finally {
       setLoading(false);
@@ -258,12 +291,14 @@ const Checkout = () => {
       if (paymentResponse.data.payment_result.status === 'approved') {
         // Pagamento aprovado imediatamente (cartões)
         showSuccess('Pagamento processado com sucesso! Seu pedido foi confirmado.');
-        await clearCart();
+        // Refresh do carrito para sincronizar com o backend
+        await refreshCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
       } else if (paymentResponse.data.payment_result.status === 'pending') {
         // Pagamento pendente (PIX, Boleto)
         showSuccess('Pedido criado com sucesso! Complete o pagamento para confirmar seu pedido.');
-        await clearCart();
+        // Refresh do carrito para sincronizar com o backend
+        await refreshCart();
         setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
       } else {
         throw new Error('Erro no processamento do pagamento');
@@ -271,8 +306,36 @@ const Checkout = () => {
       
     } catch (error) {
       console.error('Erro no checkout:', error);
+      
+      // Tratar erros de estoque durante a criação da ordem
+      if (error.isStockError) {
+        setStockErrorModal({
+          isOpen: true,
+          errors: error.stockErrors || [error.message]
+        });
+        setCurrentStep(CHECKOUT_STEPS.REVIEW);
+        return;
+      }
+      
+      // Tratar erro de carrinho vazio (quando o backend já processou a ordem)
+      if (error.isEmptyCartError) {
+        // Se chegou até aqui, provavelmente a ordem foi criada com sucesso
+        // Refresh do carrito e mostrar confirmação
+        await refreshCart();
+        showSuccess('Seu pedido foi processado com sucesso!');
+        setCurrentStep(CHECKOUT_STEPS.CONFIRMATION);
+        return;
+      }
+      
+      // Tratar erros de pagamento
+      if (error.message && error.message.includes('pagamento')) {
+        showError('Erro no processamento do pagamento. Tente novamente ou escolha outro método.');
+        setCurrentStep(CHECKOUT_STEPS.PAYMENT);
+        return;
+      }
+      
+      // Erro genérico
       showError(error.message || 'Erro ao processar o pedido');
-      // Voltar ao passo de revisão se houver erro
       setCurrentStep(CHECKOUT_STEPS.REVIEW);
     } finally {
       setLoading(false);
@@ -307,6 +370,30 @@ const Checkout = () => {
       tax,
       total: subtotal + shipping + tax
     };
+  };
+
+  // Funções para tratar erros de estoque
+  const handleCloseStockModal = () => {
+    setStockErrorModal({ isOpen: false, errors: [] });
+  };
+
+  const handleRefreshCart = async () => {
+    try {
+      await loadCart();
+      showSuccess('Carrinho atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro atualizando carrinho:', error);
+      showError('Erro ao atualizar carrinho');
+    }
+  };
+
+  const handleRetryCheckout = async () => {
+    // Atualizar carrinho antes de tentar novamente
+    await handleRefreshCart();
+    // Tentar validar novamente
+    setTimeout(() => {
+      validateCurrentStep();
+    }, 1000);
   };
 
   if (currentStep === CHECKOUT_STEPS.CONFIRMATION && orderResult) {
@@ -385,40 +472,101 @@ const Checkout = () => {
 
             {currentStep === CHECKOUT_STEPS.REVIEW && (
               <div className="order-review">
-                <h3>Revisar seu pedido</h3>
-                <div className="review-section">
-                  <h4>Informações de contato</h4>
-                  <p><strong>Nome:</strong> {formData.customer_name}</p>
-                  <p><strong>Email:</strong> {formData.customer_email}</p>
-                  <p><strong>Telefone:</strong> {formData.customer_phone}</p>
+                <div className="review-header">
+                  <h3>📋 Revisar seu pedido</h3>
+                  <p className="review-subtitle">Verifique todos os dados antes de finalizar</p>
                 </div>
-                
-                <div className="review-section">
-                  <h4>Endereço de entrega</h4>
-                  <p>
-                    {formData.shipping_address.street} {formData.shipping_address.number}
-                    {formData.shipping_address.complement && `, ${formData.shipping_address.complement}`}
-                  </p>
-                  <p>
-                    {formData.shipping_address.neighborhood}, {formData.shipping_address.city}
-                  </p>
-                  <p>
-                    {formData.shipping_address.state} - {formData.shipping_address.postal_code}
-                  </p>
-                </div>
-                
-                <div className="review-section">
-                  <h4>Método de pagamento</h4>
-                  <p>{paymentMethods.find(m => m.id === formData.payment_method)?.name}</p>
-                </div>
-                
-                {selectedShipping && (
-                  <div className="review-section">
-                    <h4>Entrega</h4>
-                    <p>{selectedShipping.name} - R$ {selectedShipping.price.toFixed(2)}</p>
-                    <p>{selectedShipping.description}</p>
+
+                <div className="review-content">
+                  {/* Informações de Contato */}
+                  <div className="review-card">
+                    <div className="review-card-header">
+                      <div className="review-icon">👤</div>
+                      <h4>Informações de contato</h4>
+                      <button className="edit-button" onClick={() => setCurrentStep(CHECKOUT_STEPS.SHIPPING)}>
+                        ✏️ Editar
+                      </button>
+                    </div>
+                    <div className="review-card-content">
+                      <div className="review-item">
+                        <span className="review-label">Nome:</span>
+                        <span className="review-value">{formData.customer_name}</span>
+                      </div>
+                      <div className="review-item">
+                        <span className="review-label">Email:</span>
+                        <span className="review-value">{formData.customer_email}</span>
+                      </div>
+                      <div className="review-item">
+                        <span className="review-label">Telefone:</span>
+                        <span className="review-value">{formData.customer_phone}</span>
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  {/* Endereço de Entrega */}
+                  <div className="review-card">
+                    <div className="review-card-header">
+                      <div className="review-icon">🏠</div>
+                      <h4>Endereço de entrega</h4>
+                      <button className="edit-button" onClick={() => setCurrentStep(CHECKOUT_STEPS.SHIPPING)}>
+                        ✏️ Editar
+                      </button>
+                    </div>
+                    <div className="review-card-content">
+                      <div className="address-block">
+                        <p className="address-line">
+                          {formData.shipping_address.street}, {formData.shipping_address.number}
+                          {formData.shipping_address.complement && `, ${formData.shipping_address.complement}`}
+                        </p>
+                        <p className="address-line">
+                          {formData.shipping_address.neighborhood}
+                        </p>
+                        <p className="address-line">
+                          {formData.shipping_address.city} - {formData.shipping_address.state}
+                        </p>
+                        <p className="address-line postal-code">
+                          CEP: {formData.shipping_address.postal_code}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Método de Pagamento */}
+                  <div className="review-card">
+                    <div className="review-card-header">
+                      <div className="review-icon">💳</div>
+                      <h4>Método de pagamento</h4>
+                      <button className="edit-button" onClick={() => setCurrentStep(CHECKOUT_STEPS.PAYMENT)}>
+                        ✏️ Editar
+                      </button>
+                    </div>
+                    <div className="review-card-content">
+                      <div className="payment-method-display">
+                        {paymentMethods.find(m => m.id === selectedPaymentMethod)?.name || 'Método não selecionado'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Entrega */}
+                  {selectedShipping && (
+                    <div className="review-card">
+                      <div className="review-card-header">
+                        <div className="review-icon">🚚</div>
+                        <h4>Opção de entrega</h4>
+                        <button className="edit-button" onClick={() => setCurrentStep(CHECKOUT_STEPS.SHIPPING)}>
+                          ✏️ Editar
+                        </button>
+                      </div>
+                      <div className="review-card-content">
+                        <div className="shipping-display">
+                          <div className="shipping-name">{selectedShipping.name}</div>
+                          <div className="shipping-price">R$ {selectedShipping.price.toFixed(2)}</div>
+                          <div className="shipping-description">{selectedShipping.description}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -457,6 +605,15 @@ const Checkout = () => {
           />
         </div>
       </div>
+
+      {/* Modal de erro de estoque */}
+      <StockErrorModal
+        isOpen={stockErrorModal.isOpen}
+        onClose={handleCloseStockModal}
+        stockErrors={stockErrorModal.errors}
+        onUpdateCart={handleRefreshCart}
+        onRetryCheckout={handleRetryCheckout}
+      />
     </div>
   );
 };

@@ -8,7 +8,26 @@ export const paymentsAPI = {
       return response.data;
     } catch (error) {
       console.error('Error procesando pago:', error);
-      throw error;
+      
+      // Criar erro personalizado com base no tipo de problema
+      const enhancedError = new Error(error.message || 'Erro no processamento do pagamento');
+      enhancedError.status = error.status;
+      enhancedError.originalError = error;
+      
+      // Tratar erros específicos de pagamento
+      if (error.message) {
+        if (error.message.includes('cartão') || error.message.includes('card')) {
+          enhancedError.isCardError = true;
+        }
+        if (error.message.includes('Stock insuficiente') || error.message.includes('estoque')) {
+          enhancedError.isStockError = true;
+        }
+        if (error.message.includes('expired') || error.message.includes('vencido')) {
+          enhancedError.isExpiredError = true;
+        }
+      }
+      
+      throw enhancedError;
     }
   },
 

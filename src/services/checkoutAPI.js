@@ -17,7 +17,39 @@ const handleResponse = async (response) => {
   const data = await response.json();
   
   if (!response.ok) {
-    throw new Error(data.message || 'Erro na solicitação');
+    // Criar erro específico com base no tipo de problema
+    const error = new Error(data.message || 'Erro na solicitação');
+    error.status = response.status;
+    error.data = data;
+    
+    // Tratar erros específicos de checkout
+    if (data.errors && Array.isArray(data.errors)) {
+      error.validationErrors = data.errors;
+      error.isValidationError = true;
+    }
+    
+    // Tratar erros de estoque especificamente
+    if (data.message && (
+      data.message.includes('Stock insuficiente') || 
+      data.message.includes('não está disponível') ||
+      data.message.includes('não está mais disponível') ||
+      data.message.includes('esgotado') ||
+      data.message.includes('Problemas com estoque') ||
+      data.message.includes('Problemas com o inventário')
+    )) {
+      error.isStockError = true;
+      error.stockErrors = data.errors || [];
+    }
+    
+    // Tratar erro de carrinho vazio
+    if (data.message && (
+      data.message.includes('carrito está vacío') ||
+      data.message.includes('carrinho está vazio')
+    )) {
+      error.isEmptyCartError = true;
+    }
+    
+    throw error;
   }
   
   return data;

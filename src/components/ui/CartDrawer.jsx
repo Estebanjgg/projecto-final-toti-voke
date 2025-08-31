@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import AddToCartButton from './AddToCartButton';
+import ConfirmationModal from './ConfirmationModal';
 import './CartDrawer.css';
 
 const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
-  // Verificar si el item tiene la estructura esperada
+  // Verificar se o item tem a estrutura esperada
   if (!item) {
-    return <div className="cart-item">Error: Item no encontrado</div>;
+    return <div className="cart-item">Erro: Item não encontrado</div>;
   }
   
-  // Determinar la estructura del producto según el formato del backend
+  // Determinar a estrutura do produto segundo o formato do backend
   const product = item.products || item.product || item;
   const quantity = item.quantity || 0;
-  const cartItemId = item.id; // ID del cart_item para eliminar/actualizar
+  const cartItemId = item.id; // ID do cart_item para eliminar/atualizar
   
   if (!product) {
-    return <div className="cart-item">Error: Producto no encontrado</div>;
+    return <div className="cart-item">Erro: Produto não encontrado</div>;
   }
   
   return (
@@ -24,12 +25,12 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
       <div className="cart-item-image">
         <img 
           src={product.image || product.image_url || '/placeholder.jpg'} 
-          alt={product.title || product.name || 'Producto'} 
+          alt={product.title || product.name || 'Produto'} 
         />
       </div>
       
       <div className="cart-item-details">
-        <h4 className="cart-item-title">{product.title || product.name || 'Producto sin nombre'}</h4>
+        <h4 className="cart-item-title">{product.title || product.name || 'Produto sem nome'}</h4>
         {product.brand && (
           <span className="cart-item-brand">{product.brand}</span>
         )}
@@ -101,11 +102,20 @@ const CartDrawer = ({ isOpen, onClose }) => {
     loading 
   } = useCart();
 
+  // Estado para controlar o modal de confirmação
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    type: 'warning',
+    title: '',
+    message: '',
+    onConfirm: null
+  });
+
   const handleUpdateQuantity = async (cartItemId, newQuantity) => {
     if (newQuantity > 0) {
       await updateQuantity(cartItemId, newQuantity);
     } else {
-      // Si la cantidad es 0, eliminar el item
+      // Se a quantidade é 0, eliminar o item
       await removeFromCart(cartItemId);
     }
   };
@@ -114,24 +124,42 @@ const CartDrawer = ({ isOpen, onClose }) => {
     await removeFromCart(cartItemId);
   };
 
-  const handleClearCart = async () => {
-    if (window.confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
-      await clearCart();
-    }
+  const handleClearCart = () => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      title: 'Esvaziar Carrinho',
+      message: 'Tem certeza que deseja remover todos os produtos do seu carrinho? Esta ação não pode ser desfeita.',
+      onConfirm: async () => {
+        await clearCart();
+      }
+    });
   };
 
   const handleCheckout = () => {
-    // Verificar que hay items en el carrito
+    // Verificar que há items no carrinho
     if (cartItems.length === 0) {
-      alert('Tu carrito está vacío');
+      setConfirmModal({
+        isOpen: true,
+        type: 'info',
+        title: 'Carrinho Vazio',
+        message: 'Seu carrinho está vazio. Adicione produtos antes de finalizar a compra.',
+        onConfirm: () => {
+          // Só fechar o modal
+        }
+      });
       return;
     }
     
-    // Cerrar el drawer del carrito
+    // Fechar o drawer do carrinho
     onClose();
     
-    // Navegar a la página de checkout
+    // Navegar para a página de checkout
     navigate('/checkout');
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModal(prev => ({ ...prev, isOpen: false }));
   };
 
   if (!isOpen) return null;
@@ -148,15 +176,15 @@ const CartDrawer = ({ isOpen, onClose }) => {
         <div className="cart-drawer-content">
           {loading && (
             <div className="cart-loading">
-              <span>Cargando...</span>
+              <span>Carregando...</span>
             </div>
           )}
           
           {!loading && cartItems.length === 0 ? (
             <div className="empty-cart">
               <div className="empty-cart-icon">🛒</div>
-              <h4>Tu carrito está vacío</h4>
-              <p>Agrega productos para comenzar a comprar</p>
+              <h4>Seu carrinho está vazio</h4>
+              <p>Adicione produtos para começar a comprar</p>
             </div>
           ) : (
             <>
@@ -174,7 +202,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
               <div className="cart-summary">
                 <div className="cart-stats">
                   <div className="stat">
-                    <span>Items: {totalItems}</span>
+                    <span>Itens: {totalItems}</span>
                   </div>
                   <div className="stat total">
                     <span>Total: R$ {cartTotal.toLocaleString('pt-BR', { 
@@ -190,7 +218,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     onClick={handleClearCart}
                     disabled={loading}
                   >
-                    Vaciar Carrito
+                    Esvaziar Carrinho
                   </button>
                   <button 
                     className="checkout-btn"
@@ -205,6 +233,18 @@ const CartDrawer = ({ isOpen, onClose }) => {
           )}
         </div>
       </div>
+
+      {/* Modal de Confirmação */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        type={confirmModal.type}
+        confirmText={confirmModal.type === 'info' ? 'Entendi' : 'Sim, confirmar'}
+        cancelText="Cancelar"
+      />
     </>
   );
 };

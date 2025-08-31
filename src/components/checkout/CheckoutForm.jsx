@@ -1,6 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useCEPLookup } from '../../hooks/useCEPLookup';
+import { formatCEP } from '../../services/cepAPI';
 
 const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChange }) => {
+  const [cepMessages, setCepMessages] = useState({
+    shipping: '',
+    billing: ''
+  });
+
+  // Hook para busca automática de CEP
+  const { loading: cepLoading, lookupCEP } = useCEPLookup(
+    // Callback quando endereço é encontrado
+    (addressData, addressType) => {
+      const targetAddress = addressType === 'billing' ? 'billing_address' : 'shipping_address';
+      
+      // Preencher campos automaticamente
+      onAddressChange(targetAddress, 'street', addressData.street);
+      onAddressChange(targetAddress, 'neighborhood', addressData.neighborhood);
+      onAddressChange(targetAddress, 'city', addressData.city);
+      onAddressChange(targetAddress, 'state', addressData.state);
+      
+      // Mostrar mensagem de sucesso
+      setCepMessages(prev => ({
+        ...prev,
+        [addressType]: '✅ Endereço encontrado automaticamente!'
+      }));
+      
+      // Limpar mensagem após 3 segundos
+      setTimeout(() => {
+        setCepMessages(prev => ({
+          ...prev,
+          [addressType]: ''
+        }));
+      }, 3000);
+    },
+    // Callback quando há erro
+    (error, addressType) => {
+      setCepMessages(prev => ({
+        ...prev,
+        [addressType]: `❌ ${error}`
+      }));
+      
+      // Limpar mensagem de erro após 5 segundos
+      setTimeout(() => {
+        setCepMessages(prev => ({
+          ...prev,
+          [addressType]: ''
+        }));
+      }, 5000);
+    }
+  );
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     onFormChange(name, value);
@@ -32,15 +81,29 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
   };
 
   const formatPostalCode = (value) => {
-    // Remover caracteres não numéricos
-    const numbers = value.replace(/\D/g, '');
-    // Aplicar máscara XXXXX-XXX
-    return numbers.replace(/(\d{5})(\d{3})/, '$1-$2');
+    // Usar a função centralizada do serviço
+    return formatCEP(value);
   };
 
   const handlePostalCodeChange = (addressType) => (e) => {
     const formatted = formatPostalCode(e.target.value);
-    onAddressChange(addressType, 'postal_code', formatted);
+    const targetAddress = addressType === 'billing_address' ? 'billing_address' : 'shipping_address';
+    
+    // Atualizar o campo CEP
+    onAddressChange(targetAddress, 'postal_code', formatted);
+    
+    // Buscar endereço automaticamente quando CEP estiver completo
+    if (formatted.length === 9) { // XXXXX-XXX
+      const addressTypeForLookup = targetAddress === 'billing_address' ? 'billing' : 'shipping';
+      lookupCEP(formatted, addressTypeForLookup);
+    } else {
+      // Limpar mensagem se CEP incompleto
+      const messageKey = targetAddress === 'billing_address' ? 'billing' : 'shipping';
+      setCepMessages(prev => ({
+        ...prev,
+        [messageKey]: ''
+      }));
+    }
   };
 
   const formatPhone = (value) => {
@@ -125,19 +188,29 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="shipping_postal_code">CEP *</label>
-            <input
-              type="text"
-              id="shipping_postal_code"
-              name="postal_code"
-              value={formData.shipping_address.postal_code}
-              onChange={handlePostalCodeChange('shipping_address')}
-              className={validationErrors['shipping_address.postal_code'] ? 'error' : ''}
-              placeholder="00000-000"
-              maxLength="9"
-              required
-            />
+            <div className="cep-input-container">
+              <input
+                type="text"
+                id="shipping_postal_code"
+                name="postal_code"
+                value={formData.shipping_address.postal_code}
+                onChange={handlePostalCodeChange('shipping_address')}
+                className={validationErrors['shipping_address.postal_code'] ? 'error' : ''}
+                placeholder="00000-000"
+                maxLength="9"
+                required
+              />
+              {cepLoading && (
+                <div className="cep-loading">🔍</div>
+              )}
+            </div>
             {validationErrors['shipping_address.postal_code'] && (
               <span className="error-message">{validationErrors['shipping_address.postal_code']}</span>
+            )}
+            {cepMessages.shipping && (
+              <span className={`cep-message ${cepMessages.shipping.includes('✅') ? 'success' : 'error'}`}>
+                {cepMessages.shipping}
+              </span>
             )}
           </div>
         </div>
@@ -294,19 +367,29 @@ const CheckoutForm = ({ formData, validationErrors, onFormChange, onAddressChang
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="billing_postal_code">CEP *</label>
-                <input
-                  type="text"
-                  id="billing_postal_code"
-                  name="postal_code"
-                  value={formData.billing_address.postal_code}
-                  onChange={handlePostalCodeChange('billing_address')}
-                  className={validationErrors['billing_address.postal_code'] ? 'error' : ''}
-                  placeholder="00000-000"
-                  maxLength="9"
-                  required
-                />
+                <div className="cep-input-container">
+                  <input
+                    type="text"
+                    id="billing_postal_code"
+                    name="postal_code"
+                    value={formData.billing_address.postal_code}
+                    onChange={handlePostalCodeChange('billing_address')}
+                    className={validationErrors['billing_address.postal_code'] ? 'error' : ''}
+                    placeholder="00000-000"
+                    maxLength="9"
+                    required
+                  />
+                  {cepLoading && (
+                    <div className="cep-loading">🔍</div>
+                  )}
+                </div>
                 {validationErrors['billing_address.postal_code'] && (
                   <span className="error-message">{validationErrors['billing_address.postal_code']}</span>
+                )}
+                {cepMessages.billing && (
+                  <span className={`cep-message ${cepMessages.billing.includes('✅') ? 'success' : 'error'}`}>
+                    {cepMessages.billing}
+                  </span>
                 )}
               </div>
             </div>

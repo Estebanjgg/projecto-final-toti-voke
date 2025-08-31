@@ -880,3 +880,308 @@
     font-size: 3rem;
   }
 }
+
+/* Estilos para busca automática de CEP */
+.cep-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cep-input-container input {
+  flex: 1;
+  padding-right: 40px; /* Espaço para o ícone de loading */
+}
+
+.cep-loading {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.cep-message {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.cep-message.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.cep-message.error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+/* Animação para aparecer mensagem */
+.cep-message {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorias na responsividade para CEP */
+@media (max-width: 768px) {
+  .cep-input-container {
+    min-height: 44px; /* Touch-friendly */
+  }
+  
+  .cep-loading {
+    right: 10px;
+    font-size: 14px;
+  }
+  
+  .cep-message {
+    font-size: 0.8rem;
+    padding: 4px 6px;
+  }
+}
+
+/* ========================================
+   SEÇÃO DE REVISÃO DO PEDIDO - MODERNA
+======================================== */
+
+.order-review {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.review-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.review-header h3 {
+  font-size: 1.75rem;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.review-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+  font-style: italic;
+}
+
+.review-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.review-card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.review-icon {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-card-header h4 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.edit-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
+.edit-button:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.review-card-content {
+  padding: 1.5rem;
+}
+
+.review-item {
+  display: flex;
+  margin-bottom: 0.75rem;
+  align-items: flex-start;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-label {
+  font-weight: 600;
+  color: #555;
+  min-width: 80px;
+  margin-right: 1rem;
+}
+
+.review-value {
+  color: #333;
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Endereço */
+.address-block {
+  line-height: 1.6;
+}
+
+.address-line {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.address-line:last-child {
+  margin-bottom: 0;
+}
+
+.postal-code {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Método de pagamento */
+.payment-method-display {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* Entrega */
+.shipping-display {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.shipping-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.shipping-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #28a745;
+  margin-bottom: 0.5rem;
+}
+
+.shipping-description {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Responsividade para Review */
+@media (max-width: 768px) {
+  .order-review {
+    padding: 0 0.5rem;
+  }
+  
+  .review-header h3 {
+    font-size: 1.5rem;
+  }
+  
+  .review-card-header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .edit-button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .review-card-content {
+    padding: 1rem;
+  }
+  
+  .review-item {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .review-label {
+    min-width: auto;
+    margin-right: 0;
+  }
+}

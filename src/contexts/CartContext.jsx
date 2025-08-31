@@ -200,21 +200,37 @@ export const CartProvider = ({ children }) => {
   };
 
   // Limpiar todo el carrito
-  const clearCart = async () => {
+  const clearCart = async (silent = false) => {
     try {
       dispatch({ type: CART_ACTIONS.SET_LOADING, payload: true });
       const response = await cartAPI.clearCart();
       
       if (response.success) {
         dispatch({ type: CART_ACTIONS.CLEAR_CART });
-        showSuccess('Carrinho limpo!');
+        if (!silent) {
+          showSuccess('Carrinho limpo!');
+        }
         return true;
       }
     } catch (error) {
       console.error('Error limpiando carrito:', error);
-      showError(error.message || 'Erro ao limpar carrinho');
+      if (!silent) {
+        showError(error.message || 'Erro ao limpar carrinho');
+      }
       dispatch({ type: CART_ACTIONS.SET_ERROR, payload: error.message });
       return false;
+    } finally {
+      dispatch({ type: CART_ACTIONS.SET_LOADING, payload: false });
+    }
+  };
+
+  // Refresh silencioso do carrito (para quando o backend já processou)
+  const refreshCart = async () => {
+    try {
+      dispatch({ type: CART_ACTIONS.SET_LOADING, payload: true });
+      await loadCart();
+    } catch (error) {
+      console.error('Error refreshing cart:', error);
     } finally {
       dispatch({ type: CART_ACTIONS.SET_LOADING, payload: false });
     }
@@ -248,6 +264,7 @@ export const CartProvider = ({ children }) => {
     updateQuantity,
     removeFromCart,
     clearCart,
+    refreshCart,
     loadCart,
     
     // Utilidades

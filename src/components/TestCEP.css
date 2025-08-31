@@ -1,0 +1,158 @@
+/* TestCEP.css - Estilos para o componente de teste de CEP */
+
+.test-cep-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.test-cep-container h2 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.test-cep-container p {
+  color: #666;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.cep-test-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.address-result {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.address-result h3 {
+  color: #28a745;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.address-item {
+  background: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  font-size: 0.9rem;
+}
+
+.address-item strong {
+  color: #495057;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cep-examples {
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.cep-examples h4 {
+  color: #1976d2;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.example-ceps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.example-ceps button {
+  background: #2196f3;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.example-ceps button:hover {
+  background: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.example-ceps button:active {
+  transform: translateY(0);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .test-cep-container {
+    margin: 10px;
+    padding: 20px;
+  }
+  
+  .address-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .example-ceps {
+    flex-direction: column;
+  }
+  
+  .example-ceps button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-cep-container {
+    padding: 15px;
+  }
+  
+  .test-cep-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .address-item {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}

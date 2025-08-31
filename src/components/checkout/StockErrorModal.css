@@ -1,0 +1,260 @@
+.stock-error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.stock-error-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stock-error-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.stock-error-modal-header h2 {
+  color: #dc2626;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.stock-error-modal-content {
+  padding: 0 24px 24px 24px;
+}
+
+.stock-error-description {
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.stock-errors-list {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.stock-error-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px 0;
+}
+
+.stock-error-item:last-child {
+  margin-bottom: 0;
+}
+
+.error-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.error-message {
+  color: #dc2626;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.stock-error-suggestions {
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.stock-error-suggestions h3 {
+  color: #0c4a6e;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.stock-error-suggestions ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #0c4a6e;
+}
+
+.stock-error-suggestions li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.stock-error-suggestions li:last-child {
+  margin-bottom: 0;
+}
+
+.stock-error-suggestions strong {
+  font-weight: 600;
+}
+
+.stock-error-modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px 24px 24px;
+  border-top: 1px solid #e5e7eb;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.stock-error-modal-actions .btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+
+.stock-error-modal-actions .btn-outline {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.stock-error-modal-actions .btn-outline:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.stock-error-modal-actions .btn-secondary {
+  background-color: #6b7280;
+  color: white;
+}
+
+.stock-error-modal-actions .btn-secondary:hover {
+  background-color: #4b5563;
+}
+
+.stock-error-modal-actions .btn-primary {
+  background-color: #2563eb;
+  color: white;
+}
+
+.stock-error-modal-actions .btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.stock-error-modal-actions .btn-warning {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.stock-error-modal-actions .btn-warning:hover {
+  background-color: #d97706;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .stock-error-modal-overlay {
+    padding: 10px;
+  }
+
+  .stock-error-modal {
+    max-height: 95vh;
+  }
+
+  .stock-error-modal-header {
+    padding: 20px 20px 0 20px;
+  }
+
+  .stock-error-modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .stock-error-modal-content {
+    padding: 0 20px 20px 20px;
+  }
+
+  .stock-error-modal-actions {
+    padding: 16px 20px 20px 20px;
+    flex-direction: column;
+  }
+
+  .stock-error-modal-actions .btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .stock-error-modal-actions .btn:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-error-modal-overlay {
+    padding: 5px;
+  }
+
+  .stock-errors-list {
+    padding: 12px;
+  }
+
+  .stock-error-suggestions {
+    padding: 16px;
+  }
+
+  .stock-error-suggestions ul {
+    padding-left: 16px;
+  }
+}
