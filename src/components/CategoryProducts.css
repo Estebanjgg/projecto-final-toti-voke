@@ -287,4 +287,35 @@
   .no-results {
     padding: 40px 15px;
   }
+  
+  .brand-propaganda-image {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Brand Propaganda Section */
+.brand-propaganda-section {
+  margin: 30px 0;
+  text-align: center;
+  background: transparent;
+  padding: 0;
+}
+
+.brand-propaganda-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.brand-propaganda-image:hover {
+  transform: scale(1.02);
+}
+
+@media (max-width: 768px) {
+  .brand-propaganda-section {
+    margin: 20px 0;
+    padding: 15px;
+  }
 }

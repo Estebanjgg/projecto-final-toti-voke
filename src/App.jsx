@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
 import CategoryPage from './components/CategoryPage';
+import BrandPage from './components/BrandPage';
 import ProductDetail from './components/ProductDetail';
 import Favorites from './components/Favorites';
 import Login from './components/auth/Login';
@@ -63,6 +64,11 @@ function App() {
                 <Route path="/categoria/:category" element={
                   <Layout>
                     <CategoryPage />
+                  </Layout>
+                } />
+                <Route path="/marca/:brand" element={
+                  <Layout>
+                    <BrandPage />
                   </Layout>
                 } />
                 <Route path="/product/:id" element={

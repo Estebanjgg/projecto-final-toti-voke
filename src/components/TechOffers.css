@@ -107,6 +107,87 @@
   }
 }
 
+/* Brands Section */
+.brands-section {
+  margin-bottom: 60px;
+}
+
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.brand-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--brand-color, #295991);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.brand-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--brand-color, #295991);
+}
+
+.brand-card:hover::before {
+  transform: scaleX(1);
+}
+
+.brand-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 8px 0;
+  font-family: 'Pixelify Sans', cursive;
+}
+
+.brand-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+.brand-arrow {
+  font-size: 20px;
+  color: var(--brand-color, #295991);
+  font-weight: bold;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.brand-card:hover .brand-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* No products message */
 .no-products {
   text-align: center;
@@ -121,12 +202,34 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
   }
+  
+  .brands-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
 }
 
 @media (max-width: 768px) {
   .tech-products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+  }
+  
+  .brands-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .brand-card {
+    padding: 25px 15px;
+  }
+  
+  .brand-icon {
+    font-size: 40px;
+  }
+  
+  .brand-name {
+    font-size: 20px;
   }
   
   .filter-tabs {
@@ -149,6 +252,23 @@
   .tech-products-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+  
+  .brands-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .brand-card {
+    padding: 20px 15px;
+  }
+  
+  .brand-icon {
+    font-size: 36px;
+  }
+  
+  .brand-name {
+    font-size: 18px;
   }
   
   .filter-tabs {

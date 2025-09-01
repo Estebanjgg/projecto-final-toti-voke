@@ -1,7 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './BrandOffers.css';
 
 const BrandOffers = () => {
+  const navigate = useNavigate();
+
+  const handleBrandClick = (brand) => {
+    const brandKey = brand.toLowerCase();
+    navigate(`/marca/${brandKey}`);
+  };
+
   const offers = [
     {
       id: 1,
@@ -9,7 +17,7 @@ const BrandOffers = () => {
       title: 'Loja APPLE',
       subtitle: 'A Voke mais desejada do Brasil',
       buttonText: 'Comprar Agora',
-      backgroundImage: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+      backgroundImage: '/picture/banner-lojas/Banner%20Apple%20%5BDesktop%5D@2x.png',
       badgeText: 'Descontos Imperdíveis!'
     },
     {
@@ -18,7 +26,7 @@ const BrandOffers = () => {
       title: 'Loja SAMSUNG',
       subtitle: 'Toda linha Galaxy e muito mais',
       buttonText: 'Comprar Agora',
-      backgroundImage: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+      backgroundImage: '/picture/banner-lojas/Banner%20Samsung%20%5BDesktop%5D@2x.png',
       badgeText: 'Descontos Imperdíveis!'
     },
     {
@@ -27,7 +35,7 @@ const BrandOffers = () => {
       title: 'Loja LENOVO',
       subtitle: 'Encontre Notebook, computadores, monitores e muito mais!',
       buttonText: 'Comprar Agora',
-      backgroundImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+      backgroundImage: '/picture/banner-lojas/Banner%20Lenovo%20%5BDesktop%5D@2x.png',
       badgeText: 'Novo preço!'
     },
     {
@@ -36,7 +44,7 @@ const BrandOffers = () => {
       title: 'Loja DELL',
       subtitle: 'Toda linha DELL exclusiva para você!',
       buttonText: 'Comprar Agora',
-      backgroundImage: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+      backgroundImage: '/picture/banner-lojas/Banner%20Dell%20%5BDesktop%5D@2x.png',
       badgeText: 'Versatilidade e economia!'
     }
   ];
@@ -67,7 +75,10 @@ const BrandOffers = () => {
                     <p className="offer-subtitle">{offer.subtitle}</p>
                   </div>
                   
-                  <button className="offer-button">
+                  <button 
+                    className="offer-button"
+                    onClick={() => handleBrandClick(offer.brand)}
+                  >
                     {offer.buttonText}
                   </button>
                 </div>
