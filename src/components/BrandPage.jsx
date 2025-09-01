@@ -26,7 +26,9 @@ const BrandPage = () => {
     'apple': 'Apple 🍎',
     'samsung': 'Samsung 📱',
     'lenovo': 'Lenovo 💻',
-    'dell': 'Dell 🖥️'
+    'dell': 'Dell 🖥️',
+    'microsoft': 'Microsoft 💻',
+    'motorola': 'Motorola 📱'
   };
 
   // Mapeo de URL a marca de base de datos
@@ -34,7 +36,9 @@ const BrandPage = () => {
     'apple': 'Apple',
     'samsung': 'Samsung', 
     'lenovo': 'Lenovo',
-    'dell': 'Dell'
+    'dell': 'Dell',
+    'microsoft': 'Microsoft',
+    'motorola': 'Motorola'
   };
 
   useEffect(() => {
