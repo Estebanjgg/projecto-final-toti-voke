@@ -55,7 +55,7 @@ const AdminPanel = () => {
     return (
       <div className="admin-loading">
         <div className="loading-spinner"></div>
-        <p>{authLoading ? 'Inicializando autenticación...' : 'Verificando permisos...'}</p>
+        <p>{authLoading ? 'Inicializando autenticação...' : 'Verificando permissões...'}</p>
       </div>
     );
   }
@@ -64,10 +64,10 @@ const AdminPanel = () => {
     return (
       <div className="admin-unauthorized">
         <div className="unauthorized-content">
-          <h2>Acceso Restringido</h2>
-          <p>Debes iniciar sesión para acceder al panel de administración.</p>
+          <h2>Acesso Restrito</h2>
+          <p>Você deve fazer login para acessar o painel de administração.</p>
           <Link to="/login" className="btn btn-primary">
-            Iniciar Sesión
+            Fazer Login
           </Link>
         </div>
       </div>
@@ -78,10 +78,10 @@ const AdminPanel = () => {
     return (
       <div className="admin-unauthorized">
         <div className="unauthorized-content">
-          <h2>Acceso Denegado</h2>
-          <p>No tienes permisos para acceder al panel de administración.</p>
+          <h2>Acesso Negado</h2>
+          <p>Você não tem permissões para acessar o painel de administração.</p>
           <Link to="/" className="btn btn-primary">
-            Volver al Inicio
+            Voltar ao Início
           </Link>
         </div>
       </div>
@@ -91,8 +91,8 @@ const AdminPanel = () => {
   const navigationItems = [
     { path: '/admin', label: 'Dashboard', icon: '📊' },
     { path: '/admin/orders', label: 'Pedidos', icon: '📦' },
-    { path: '/admin/products', label: 'Productos', icon: '🛍️' },
-    { path: '/admin/users', label: 'Usuarios', icon: '👥' }
+    { path: '/admin/products', label: 'Produtos', icon: '🛍️' },
+    { path: '/admin/users', label: 'Usuários', icon: '👥' }
   ];
 
 
@@ -101,8 +101,8 @@ const AdminPanel = () => {
     <div className="admin-panel">
       <div className="admin-sidebar">
         <div className="admin-header">
-          <h2>Panel de Admin</h2>
-          <p>Bienvenido, {user.first_name}</p>
+          <h2>Painel de Admin</h2>
+          <p>Bem-vindo, {user.first_name}</p>
         </div>
         
         <nav className="admin-nav">
@@ -122,7 +122,7 @@ const AdminPanel = () => {
         
         <div className="admin-footer">
           <Link to="/" className="btn btn-outline">
-            Volver a la Tienda
+            Voltar à Loja
           </Link>
         </div>
       </div>
