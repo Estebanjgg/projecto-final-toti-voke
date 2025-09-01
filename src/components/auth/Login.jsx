@@ -796,38 +796,84 @@ const Login = () => {
                <div className="tracking-result">
                  <div className="result-header">
                    <span className="success-icon">✅</span>
-                   <h3>Pedido Encontrado!</h3>
+                   <h3>{Array.isArray(trackingResult) ? `${trackingResult.length} Pedidos Encontrados!` : 'Pedido Encontrado!'}</h3>
                  </div>
-                 <div className="tracking-details">
-                   <div className="detail-item">
-                     <span className="detail-label">Pedido:</span>
-                     <span className="detail-value">{trackingResult.orderNumber}</span>
+                 
+                 {Array.isArray(trackingResult) ? (
+                   // Múltiples pedidos
+                   <div className="multiple-orders">
+                     {trackingResult.map((order, index) => (
+                       <div key={order.orderNumber} className="order-item">
+                         <div className="order-header">
+                           <h4>Pedido #{index + 1}</h4>
+                         </div>
+                         <div className="order-details">
+                           <div className="detail-item">
+                             <span className="detail-label">Pedido:</span>
+                             <span className="detail-value">{order.orderNumber}</span>
+                           </div>
+                           <div className="detail-item">
+                             <span className="detail-label">Status:</span>
+                             <span className={`detail-value status-${order.status.toLowerCase()}`}>
+                               {order.status}
+                             </span>
+                           </div>
+                           <div className="detail-item">
+                             <span className="detail-label">Código de Rastreio:</span>
+                             <span className="detail-value">{order.trackingCode}</span>
+                           </div>
+                           {order.estimatedDelivery && (
+                             <div className="detail-item">
+                               <span className="detail-label">Previsão de Entrega:</span>
+                               <span className="detail-value">{order.estimatedDelivery}</span>
+                             </div>
+                           )}
+                           <div className="detail-item">
+                             <span className="detail-label">Data do Pedido:</span>
+                             <span className="detail-value">{order.createdAt}</span>
+                           </div>
+                           <div className="detail-item">
+                             <span className="detail-label">Total:</span>
+                             <span className="detail-value total-value">R$ {order.total}</span>
+                           </div>
+                         </div>
+                       </div>
+                     ))}
                    </div>
-                   <div className="detail-item">
-                     <span className="detail-label">Status:</span>
-                     <span className={`detail-value status-${trackingResult.status.toLowerCase()}`}>
-                       {trackingResult.status}
-                     </span>
-                   </div>
-                   <div className="detail-item">
-                     <span className="detail-label">Código de Rastreio:</span>
-                     <span className="detail-value">{trackingResult.trackingCode}</span>
-                   </div>
-                   {trackingResult.estimatedDelivery && (
+                 ) : (
+                   // Pedido único
+                   <div className="tracking-details">
                      <div className="detail-item">
-                       <span className="detail-label">Previsão de Entrega:</span>
-                       <span className="detail-value">{trackingResult.estimatedDelivery}</span>
+                       <span className="detail-label">Pedido:</span>
+                       <span className="detail-value">{trackingResult.orderNumber}</span>
                      </div>
-                   )}
-                   <div className="detail-item">
-                     <span className="detail-label">Data do Pedido:</span>
-                     <span className="detail-value">{trackingResult.createdAt}</span>
+                     <div className="detail-item">
+                       <span className="detail-label">Status:</span>
+                       <span className={`detail-value status-${trackingResult.status.toLowerCase()}`}>
+                         {trackingResult.status}
+                       </span>
+                     </div>
+                     <div className="detail-item">
+                       <span className="detail-label">Código de Rastreio:</span>
+                       <span className="detail-value">{trackingResult.trackingCode}</span>
+                     </div>
+                     {trackingResult.estimatedDelivery && (
+                       <div className="detail-item">
+                         <span className="detail-label">Previsão de Entrega:</span>
+                         <span className="detail-value">{trackingResult.estimatedDelivery}</span>
+                       </div>
+                     )}
+                     <div className="detail-item">
+                       <span className="detail-label">Data do Pedido:</span>
+                       <span className="detail-value">{trackingResult.createdAt}</span>
+                     </div>
+                     <div className="detail-item">
+                       <span className="detail-label">Total:</span>
+                       <span className="detail-value total-value">R$ {trackingResult.total}</span>
+                     </div>
                    </div>
-                   <div className="detail-item">
-                     <span className="detail-label">Total:</span>
-                     <span className="detail-value total-value">R$ {trackingResult.total}</span>
-                   </div>
-                 </div>
+                 )}
+                 
                  <div className="tracking-actions">
                    <button 
                      onClick={() => navigate('/orders')}

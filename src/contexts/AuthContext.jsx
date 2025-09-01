@@ -143,9 +143,27 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
       
-      // Incluir session_id si existe para migrar carrito
+      // Dividir el nombre completo en first_name y last_name
+      const nameParts = userData.fullName.trim().split(' ');
+      const first_name = nameParts[0] || '';
+      const last_name = nameParts.slice(1).join(' ') || '';
+      
+      // Transformar datos del frontend al formato esperado por el backend
       const registrationData = {
-        ...userData,
+        email: userData.email,
+        password: userData.password,
+        first_name: first_name,
+        last_name: last_name,
+        full_name: userData.fullName, // Transformar fullName a full_name
+        document: userData.document,
+        document_type: userData.documentType?.toLowerCase(), // Transformar documentType a document_type
+        birth_date: userData.birthDate, // Transformar birthDate a birth_date
+        gender: userData.gender,
+        phone: userData.phone,
+        notification_email: userData.notifications?.email || false,
+        notification_sms: userData.notifications?.sms || false,
+        notification_phone: userData.notifications?.phone || false,
+        notification_whatsapp: userData.notifications?.whatsapp || false,
         session_id: state.sessionId
       };
       
