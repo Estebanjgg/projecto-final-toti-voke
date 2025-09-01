@@ -31,6 +31,12 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [trackingData, setTrackingData] = useState({
+    orderNumber: '',
+    email: ''
+  });
+  const [trackingResult, setTrackingResult] = useState(null);
+  const [isTrackingLoading, setIsTrackingLoading] = useState(false);
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
@@ -74,6 +80,79 @@ const Login = () => {
         ...prev,
         [name]: ''
       }));
+    }
+  };
+
+  const handleTrackingChange = (e) => {
+    const { name, value } = e.target;
+    setTrackingData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const validateTrackingForm = () => {
+    const newErrors = {};
+    
+    // Al menos uno de los dos campos debe estar lleno
+    const hasOrderNumber = trackingData.orderNumber.trim();
+    const hasEmail = trackingData.email.trim();
+    
+    if (!hasOrderNumber && !hasEmail) {
+      newErrors.tracking = 'Informe pelo menos o número do pedido ou o email';
+      return newErrors;
+    }
+    
+    // Si se proporciona email, debe ser válido
+    if (hasEmail && !/\S+@\S+\.\S+/.test(trackingData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+    
+    return newErrors;
+  };
+
+  const handleTrackingSubmit = async (e) => {
+    e.preventDefault();
+    
+    const newErrors = validateTrackingForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    setIsTrackingLoading(true);
+    setErrors({});
+    
+    try {
+      // API call for order tracking
+       const response = await fetch('/api/orders/track', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(trackingData),
+       });
+      
+      // Verificar si la respuesta es JSON válido
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Erro de conexão com o servidor. Tente novamente mais tarde.');
+      }
+      
+      const result = await response.json();
+       
+       if (!result.success) {
+         throw new Error(result.message || 'Pedido não encontrado');
+       }
+       
+       setTrackingResult(result.data);
+    } catch (error) {
+      console.error('Tracking error:', error);
+      setErrors({ 
+        tracking: error.message || 'Erro ao rastrear pedido. Verifique os dados informados.' 
+      });
+    } finally {
+      setIsTrackingLoading(false);
     }
   };
 
@@ -199,7 +278,7 @@ const Login = () => {
     setErrors({});
     
     try {
-      await login(formData.email, formData.password);
+      await login({ email: formData.email, password: formData.password });
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
@@ -662,37 +741,107 @@ const Login = () => {
           <div className="account-card tracking-card">
             <div className="card-header">
               <h2>Conferir o seu pedido</h2>
-              <p>Se preferir, informe os dados abaixo para acessar o seu código de rastreio</p>
+              <p>Informe o número do pedido ou o email para rastrear seu pedido. Você pode usar qualquer um dos dois campos.</p>
             </div>
             
-            <div className="tracking-form">
+            {errors.tracking && (
+              <div className="error-message">
+                <span className="error-icon">⚠️</span>
+                {errors.tracking}
+              </div>
+            )}
+            
+            <form onSubmit={handleTrackingSubmit} className="tracking-form">
               <div className="form-group">
-                <label>Número do Pedido</label>
+                <label>Número do Pedido <span className="optional-field">(opcional)</span></label>
                 <input 
                   type="text" 
+                  name="orderNumber"
+                  value={trackingData.orderNumber}
+                  onChange={handleTrackingChange}
                   placeholder="Digite o número do seu pedido"
-                  className="tracking-input"
+                  className={`tracking-input ${errors.orderNumber ? 'error' : ''}`}
                 />
+                {errors.orderNumber && <span className="error-text">{errors.orderNumber}</span>}
               </div>
               
               <div className="form-group">
-                <label>Email do Pedido</label>
+                <label>Email do Pedido <span className="optional-field">(opcional)</span></label>
                 <input 
                   type="email" 
+                  name="email"
+                  value={trackingData.email}
+                  onChange={handleTrackingChange}
                   placeholder="Digite o email usado no pedido"
-                  className="tracking-input"
+                  className={`tracking-input ${errors.email ? 'error' : ''}`}
                 />
+                {errors.email && <span className="error-text">{errors.email}</span>}
               </div>
               
-              <button className="tracking-button">
+              <button 
+                type="submit"
+                disabled={isTrackingLoading}
+                className="tracking-button"
+              >
                 <span>🔍</span>
-                Rastrear Pedido
+                {isTrackingLoading ? 'Rastreando...' : 'Rastrear Pedido'}
               </button>
               
               <div className="tracking-info">
                 <p><strong>💡 Dica:</strong> Você pode encontrar o número do pedido no email de confirmação que enviamos após a compra.</p>
               </div>
-            </div>
+            </form>
+            
+            {trackingResult && (
+               <div className="tracking-result">
+                 <div className="result-header">
+                   <span className="success-icon">✅</span>
+                   <h3>Pedido Encontrado!</h3>
+                 </div>
+                 <div className="tracking-details">
+                   <div className="detail-item">
+                     <span className="detail-label">Pedido:</span>
+                     <span className="detail-value">{trackingResult.orderNumber}</span>
+                   </div>
+                   <div className="detail-item">
+                     <span className="detail-label">Status:</span>
+                     <span className={`detail-value status-${trackingResult.status.toLowerCase()}`}>
+                       {trackingResult.status}
+                     </span>
+                   </div>
+                   <div className="detail-item">
+                     <span className="detail-label">Código de Rastreio:</span>
+                     <span className="detail-value">{trackingResult.trackingCode}</span>
+                   </div>
+                   {trackingResult.estimatedDelivery && (
+                     <div className="detail-item">
+                       <span className="detail-label">Previsão de Entrega:</span>
+                       <span className="detail-value">{trackingResult.estimatedDelivery}</span>
+                     </div>
+                   )}
+                   <div className="detail-item">
+                     <span className="detail-label">Data do Pedido:</span>
+                     <span className="detail-value">{trackingResult.createdAt}</span>
+                   </div>
+                   <div className="detail-item">
+                     <span className="detail-label">Total:</span>
+                     <span className="detail-value total-value">R$ {trackingResult.total}</span>
+                   </div>
+                 </div>
+                 <div className="tracking-actions">
+                   <button 
+                     onClick={() => navigate('/orders')}
+                     className="details-button"
+                   >
+                     <span>📋</span>
+                     Ver Detalhes Completos
+                   </button>
+                   <p className="login-hint">
+                     💡 Para ver detalhes completos, produtos e histórico, faça login em sua conta.
+                   </p>
+                 </div>
+               </div>
+             )}
           </div>
         </div>
       </div>

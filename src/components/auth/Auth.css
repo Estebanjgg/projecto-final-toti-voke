@@ -2062,3 +2062,153 @@
     padding: 1rem;
   }
 }
+
+/* Tracking result styles */
+.tracking-result {
+  margin-top: 20px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slideInUp 0.5s ease-out;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.success-icon {
+  font-size: 24px;
+}
+
+.result-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.tracking-details {
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #2c3e50;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.status-pendente {
+  color: #f39c12 !important;
+  font-weight: 600;
+}
+
+.status-processando {
+  color: #3498db !important;
+  font-weight: 600;
+}
+
+.status-enviado {
+  color: #9b59b6 !important;
+  font-weight: 600;
+}
+
+.status-entregue {
+  color: #27ae60 !important;
+  font-weight: 600;
+}
+
+.status-cancelado {
+  color: #e74c3c !important;
+  font-weight: 600;
+}
+
+.tracking-actions {
+  text-align: center;
+  padding-top: 15px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.details-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.details-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.details-button:active {
+  transform: translateY(0);
+}
+
+.login-hint {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.total-value {
+    font-weight: bold;
+    color: #2c5aa0;
+    font-size: 1.1rem;
+  }
+
+  .optional-field {
+    font-weight: normal;
+    color: #888;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
