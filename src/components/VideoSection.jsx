@@ -63,28 +63,40 @@ const VideoSection = () => {
         </div>
       </section>
       
-      {/* Video Section with yellow background */}
+      {/* Video Section with original Voke structure */}
       <section className="video-section">
-        <div className="video-section-content">
-          <div className="video-container">
-            <div className="video-content">
-              <div className="video-text">
-                <h2>Já pensou em comprar um seminovo?</h2>
-                <p>Os equipamentos da Voke são indicados para pequenas, médias e grandes empresas, que buscam modernizar e aumentar seu parque tecnológico com qualidade e economia.</p>
-                <button className="cta-button">
-                  <span className="icon">📞</span>
-                  Saiba mais sobre nossas soluções
-                </button>
+        <div className="container padding-adjustment-infoCard">
+          <div className="row informationCard">
+            <div className="col-md-4">
+              <div className="informationCard__left">
+                <p className="informationCard__title">Já pensou em comprar um seminovo?</p>
+                <p className="informationCard__description">
+                  Os equipamentos da Voke são indicados para pequenas, médias e grandes empresas, 
+                  que buscam modernizar e aumentar seu parque tecnológico com qualidade e preço competitivo.
+                </p>
+                <div className="informationCard__button">
+                  <div className="row">
+                    <a href="https://staging-na01-agasusseminovos.demandware.net/s/Voke/solucoes.html" className="buttonLink__circle">
+                      <span className="buttonLink__arrow">➔</span>
+                    </a>
+                    <span className="buttonLink__label mt-3">Saiba mais sobre nossas soluções</span>
+                  </div>
+                </div>
               </div>
-              <div className="video-wrapper">
-                <iframe
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                  title="Voke Seminovos"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-                <button className="close-btn">×</button>
+            </div>
+            <div className="col-md-8">
+              <div className="informationCard__right">
+                <div className="rounded-video-container">
+                  <iframe 
+                    width="100%" 
+                    height="400" 
+                    src="https://www.youtube.com/embed/obMOJ5A7pSw?si=e93A1h4rkNPNvRSj" 
+                    loading="lazy" 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allowFullScreen
+                  ></iframe>
+                </div>
               </div>
             </div>
           </div>

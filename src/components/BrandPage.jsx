@@ -45,7 +45,14 @@ const BrandPage = () => {
     if (brand && brandMapping[brand]) {
       loadBrandProducts();
     }
+    // Scroll al top cuando cambie la marca
+    window.scrollTo(0, 0);
   }, [brand]);
+
+  // Scroll al top cuando se monte el componente
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Aplicar filtros cuando cambien los productos o filtros
   useEffect(() => {

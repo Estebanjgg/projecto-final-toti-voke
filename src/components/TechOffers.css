@@ -3,7 +3,7 @@
   padding: 40px 20px;
   background-color: #f8f9fa;
   margin: 0;
-  width: 100%;
+  width: 100%;  
 }
 
 .tech-offers .container {
@@ -12,10 +12,9 @@
   padding: 0 20px;
 }
 
-.section-header {
-  text-align: left;
+.section-title-container {
+  text-align: center;
   margin-bottom: 40px;
-  padding: 0;
 }
 
 .section-title {
@@ -23,15 +22,20 @@
   font-size: 32px;
   font-weight: bold;
   color: #333;
-  margin: 0 0 30px 0;
-  text-align: left;
+  margin: 0;
+  text-align: center;
+}
+
+.filter-tabs-container {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .filter-tabs {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 20px 0 0 0;
+  gap: 15px;
+  margin: 0;
 }
 
 .filter-tab {

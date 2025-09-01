@@ -53,9 +53,11 @@ const TechOffers = () => {
   return (
     <section className="tech-offers">
       <div className="container">
-        <div className="section-header">
+        <div className="section-title-container">
           <h2 className="section-title">Ofertas Tech</h2>
-          
+        </div>
+        
+        <div className="filter-tabs-container">
           <div className="filter-tabs">
             {filters.map((filter) => (
               <button
