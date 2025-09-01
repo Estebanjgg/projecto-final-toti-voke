@@ -228,18 +228,48 @@
 }
 
 /* OrderCard Styles */
+.order-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  margin-bottom: 20px;
+}
+
 .order-card {
   background: white;
-  border: 1px solid #e1e8ed;
   border-radius: 12px;
   padding: 24px;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .order-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: #007bff;
+}
+
+.order-card.enhanced {
+  position: relative;
+  overflow: hidden;
+}
+
+.order-card.enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.order-card.enhanced:hover::before {
+  opacity: 1;
 }
 
 .order-card-header {
@@ -249,6 +279,25 @@
   margin-bottom: 20px;
   flex-wrap: wrap;
   gap: 15px;
+}
+
+.order-number {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.order-label {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.order-id {
+  color: #1a1a1a;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 .order-info h3 {
@@ -309,76 +358,68 @@
 }
 
 /* Items de la orden */
-.order-items {
-  margin: 20px 0;
+.order-preview {
+  margin-bottom: 16px;
 }
 
-.order-items h4 {
-  color: #2c3e50;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.items-list {
+.items-preview {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
-.order-item {
+.item-preview {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e9ecef;
   border-radius: 6px;
-  background: #e9ecef;
-}
-
-.item-details {
-  flex: 1;
-}
-
-.item-title {
-  color: #2c3e50;
-  font-weight: 500;
-  margin-bottom: 4px;
-  font-size: 0.95rem;
-}
-
-.item-brand {
-  color: #7f8c8d;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
+  font-size: 0.9rem;
 }
 
 .item-quantity {
-  color: #6c757d;
-  font-size: 0.85rem;
+  color: #007bff;
+  font-weight: 600;
+  min-width: 30px;
+}
+
+.item-name {
+  flex: 1;
+  color: #495057;
 }
 
 .item-price {
-  color: #27ae60;
+  color: #28a745;
   font-weight: 600;
-  font-size: 1rem;
 }
 
 .more-items {
+  padding: 8px 12px;
   text-align: center;
-  padding: 12px;
-  background: #e9ecef;
-  border-radius: 8px;
   color: #6c757d;
-  font-size: 0.9rem;
   font-style: italic;
+  font-size: 0.85rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.order-actions {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.view-details {
+  color: #007bff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.order-card:hover .view-details {
+  color: #0056b3;
 }
 
 /* Información adicional de la orden */
@@ -390,6 +431,59 @@
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.order-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.amount-label {
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.amount-value {
+  color: #28a745;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.order-items-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.items-icon {
+  font-size: 1.2rem;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.payment-icon {
+  font-size: 1.1rem;
 }
 
 .detail-section h5 {

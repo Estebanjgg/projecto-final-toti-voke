@@ -25,6 +25,17 @@ export const ordersAPI = {
     }
   },
 
+  // Obtener un pedido específico por ID
+  getOrderById: async (orderId) => {
+    try {
+      const response = await apiClient.get(`/checkout/orders/${orderId}`);
+      return response;
+    } catch (error) {
+      console.error('Error obteniendo pedido por ID:', error);
+      throw error;
+    }
+  },
+
   // Obtener estadísticas de órdenes del usuario
   getOrderStats: async () => {
     try {

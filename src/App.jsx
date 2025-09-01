@@ -20,7 +20,7 @@ import AlertContainer from './components/ui/AlertContainer';
 import Checkout from './components/checkout/Checkout';
 import CartPage from './components/cart/CartPage';
 import Orders from './components/orders/Orders';
-import OrderDetails from './components/orders/OrderDetails';
+import OrderDetail from './components/orders/OrderDetail';
 import AdminPanel from './components/admin/AdminPanel';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
@@ -126,7 +126,7 @@ function App() {
                 <Route path="/orders/:orderId" element={
                   <ProtectedRoute requireAuth={true}>
                     <Layout>
-                      <OrderDetails />
+                      <OrderDetail />
                     </Layout>
                   </ProtectedRoute>
                 } />

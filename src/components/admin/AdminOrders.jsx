@@ -229,19 +229,19 @@ const AdminOrders = () => {
                     <td><strong>{formatCurrency(order.total)}</strong></td>
                     <td>
                       <span className={`status-badge status-${getStatusColor(order.status)}`}>
-                        {order.status === 'pending' && 'Pendiente'}
-                        {order.status === 'confirmed' && 'Confirmada'}
-                        {order.status === 'processing' && 'Procesando'}
-                        {order.status === 'shipped' && 'Enviada'}
-                        {order.status === 'delivered' && 'Entregada'}
-                        {order.status === 'cancelled' && 'Cancelada'}
+                        {order.status === 'pending' && 'Pendente'}
+                        {order.status === 'confirmed' && 'Confirmado'}
+                        {order.status === 'processing' && 'Processando'}
+                        {order.status === 'shipped' && 'Enviado'}
+                        {order.status === 'delivered' && 'Entregue'}
+                        {order.status === 'cancelled' && 'Cancelado'}
                       </span>
                     </td>
                     <td>
                       <span className={`payment-badge payment-${getPaymentStatusColor(order.payment_status)}`}>
-                        {order.payment_status === 'pending' && 'Pendiente'}
-                        {order.payment_status === 'paid' && 'Pagado'}
-                        {order.payment_status === 'failed' && 'Fallido'}
+                        {order.payment_status === 'pending' && 'Pendente'}
+                        {order.payment_status === 'paid' && 'Pago'}
+                        {order.payment_status === 'failed' && 'Falhou'}
                         {order.payment_status === 'refunded' && 'Reembolsado'}
                       </span>
                     </td>
@@ -365,12 +365,12 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate, onPaymentStatusUpda
                   onChange={(e) => setNewStatus(e.target.value)}
                   className="form-select"
                 >
-                  <option value="pending">Pendiente</option>
-                  <option value="confirmed">Confirmada</option>
-                  <option value="processing">Procesando</option>
-                  <option value="shipped">Enviada</option>
-                  <option value="delivered">Entregada</option>
-                  <option value="cancelled">Cancelada</option>
+                  <option value="pending">Pendente</option>
+                  <option value="confirmed">Confirmado</option>
+                  <option value="processing">Processando</option>
+                  <option value="shipped">Enviado</option>
+                  <option value="delivered">Entregue</option>
+                  <option value="cancelled">Cancelado</option>
                 </select>
               </div>
               <div className="detail-item">
@@ -380,9 +380,9 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate, onPaymentStatusUpda
                   onChange={(e) => setNewPaymentStatus(e.target.value)}
                   className="form-select"
                 >
-                  <option value="pending">Pendiente</option>
-                  <option value="paid">Pagado</option>
-                  <option value="failed">Fallido</option>
+                  <option value="pending">Pendente</option>
+                  <option value="paid">Pago</option>
+                  <option value="failed">Falhou</option>
                   <option value="refunded">Reembolsado</option>
                 </select>
               </div>
