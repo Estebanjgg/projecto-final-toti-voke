@@ -112,36 +112,51 @@ export const calculateCartTotals = (cartItems = []) => {
   const subtotal = cartItems.reduce((sum, item) => {
     const price = parseFloat(item.products?.current_price || item.price || 0);
     const quantity = parseInt(item.quantity || 0);
+    // Verificar se price e quantity são válidos
+    if (isNaN(price) || isNaN(quantity)) {
+      return sum;
+    }
     return sum + (price * quantity);
   }, 0);
 
-  const itemCount = cartItems.reduce((sum, item) => sum + parseInt(item.quantity || 0), 0);
+  const itemCount = cartItems.reduce((sum, item) => {
+    const quantity = parseInt(item.quantity || 0);
+    return sum + (isNaN(quantity) ? 0 : quantity);
+  }, 0);
 
   // Calculamos descontos se houver produtos com preço original
   const totalDiscount = cartItems.reduce((sum, item) => {
     const currentPrice = parseFloat(item.products?.current_price || item.price || 0);
     const originalPrice = parseFloat(item.products?.original_price || currentPrice);
     const quantity = parseInt(item.quantity || 0);
+    // Verificar se os valores são válidos
+    if (isNaN(currentPrice) || isNaN(originalPrice) || isNaN(quantity)) {
+      return sum;
+    }
     return sum + ((originalPrice - currentPrice) * quantity);
   }, 0);
 
-  const total = subtotal;
+  const total = isNaN(subtotal) ? 0 : subtotal;
 
   return {
-    subtotal: subtotal,
-    totalDiscount: totalDiscount,
+    subtotal: isNaN(subtotal) ? 0 : subtotal,
+    totalDiscount: isNaN(totalDiscount) ? 0 : totalDiscount,
     total: total,
-    itemCount: itemCount,
+    itemCount: isNaN(itemCount) ? 0 : itemCount,
     isEmpty: itemCount === 0
   };
 };
 
 // Função para formatar preços
 export const formatPrice = (price) => {
+  const numPrice = parseFloat(price);
+  if (isNaN(numPrice) || numPrice === null || numPrice === undefined) {
+    return 'R$ 0,00';
+  }
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(price);
+  }).format(numPrice);
 };
 
 export default cartAPI;

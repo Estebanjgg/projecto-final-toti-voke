@@ -19,6 +19,18 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
 
+  // Função para formatar preços e tratar valores NaN
+  const formatProductPrice = (price) => {
+    if (price === null || price === undefined || isNaN(price)) {
+      return '0,00';
+    }
+    const numPrice = parseFloat(price);
+    if (isNaN(numPrice)) {
+      return '0,00';
+    }
+    return numPrice.toFixed(2);
+  };
+
   useEffect(() => {
     loadProduct();
   }, [id]);
@@ -186,21 +198,21 @@ const ProductDetail = () => {
           {/* Preços */}
           <div className="product-pricing">
             {product.original_price && (
-              <span className="original-price">R$ {product.original_price.toFixed(2)}</span>
+              <span className="original-price">R$ {formatProductPrice(product.original_price)}</span>
             )}
             {product.discount && (
               <span className="discount-badge">-{product.discount}%</span>
             )}
             <div className="current-price-container">
-              <span className="current-price">R$ {product.current_price.toFixed(2)}</span>
+              <span className="current-price">R$ {formatProductPrice(product.current_price)}</span>
               <span className="pix-label">no PIX / Boleto</span>
             </div>
             <div className="installments">
-              <span className="installment-price">R$ {(product.current_price * 1.1).toFixed(2)}</span>
+              <span className="installment-price">R$ {formatProductPrice(product.current_price * 1.1)}</span>
               <span className="installment-text">no cartão</span>
             </div>
             <div className="installment-details">
-              <span>em até 10x de R$ {(product.current_price * 1.1 / 10).toFixed(2)} sem juros</span>
+              <span>em até 10x de R$ {formatProductPrice(product.current_price * 1.1 / 10)} sem juros</span>
             </div>
           </div>
 

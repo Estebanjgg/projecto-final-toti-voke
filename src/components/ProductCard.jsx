@@ -32,6 +32,18 @@ const ProductCard = ({ product }) => {
   const finalIsOffer = isOffer || is_offer;
   const finalIsBestSeller = isBestSeller || is_best_seller;
 
+  // Função para formatar preços e tratar valores NaN
+  const formatProductPrice = (price) => {
+    if (price === null || price === undefined || isNaN(price)) {
+      return '0,00';
+    }
+    const numPrice = parseFloat(price);
+    if (isNaN(numPrice)) {
+      return '0,00';
+    }
+    return numPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   const handleCardClick = (e) => {
     // Evitar navegación si se hace clic en botones
     if (e.target.closest('.card-overlay') || e.target.closest('button')) {
@@ -95,18 +107,12 @@ const ProductCard = ({ product }) => {
       <div className="product-pricing">
         {finalOriginalPrice && (
           <span className="original-price">
-            R$ {typeof finalOriginalPrice === 'number' 
-              ? finalOriginalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : finalOriginalPrice
-            }
+            R$ {formatProductPrice(finalOriginalPrice)}
           </span>
         )}
         <div className="current-price-container">
           <span className="current-price">
-            R$ {typeof finalCurrentPrice === 'number' 
-              ? finalCurrentPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : finalCurrentPrice
-            }
+            R$ {formatProductPrice(finalCurrentPrice)}
           </span>
           {discount && (
             <span className="discount-badge">{discount}% OFF</span>

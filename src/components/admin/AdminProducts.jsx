@@ -35,8 +35,8 @@ const AdminProducts = () => {
       setProducts(response.data);
       setPagination(response.pagination);
     } catch (error) {
-      console.error('Error cargando productos:', error);
-      addAlert('Error cargando productos', 'error');
+      console.error('Erro carregando produtos:', error);
+      addAlert('Erro carregando produtos', 'error');
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ const AdminProducts = () => {
       const response = await categoriesAPI.getAll();
       setCategories(response.data);
     } catch (error) {
-      console.error('Error cargando categorías:', error);
+      console.error('Erro carregando categorias:', error);
     }
   };
 
@@ -85,54 +85,66 @@ const AdminProducts = () => {
     try {
       if (isEditing) {
         await adminAPI.updateProduct(selectedProduct.id, productData);
-        addAlert('Producto actualizado exitosamente', 'success');
+        addAlert('Produto atualizado com sucesso', 'success');
       } else {
         await adminAPI.createProduct(productData);
-        addAlert('Producto creado exitosamente', 'success');
+        addAlert('Produto criado com sucesso', 'success');
       }
       setShowProductModal(false);
       loadProducts();
     } catch (error) {
-      console.error('Error guardando producto:', error);
+      console.error('Erro salvando produto:', error);
       addAlert(
-        error.response?.data?.message || 'Error guardando producto',
+        error.response?.data?.message || 'Erro salvando produto',
         'error'
       );
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+    if (!window.confirm('Tem certeza de que deseja excluir este produto?')) {
       return;
     }
 
     try {
       await adminAPI.deleteProduct(productId);
-      addAlert('Producto eliminado exitosamente', 'success');
+      addAlert('Produto excluído com sucesso', 'success');
       loadProducts();
     } catch (error) {
-      console.error('Error eliminando producto:', error);
-      addAlert('Error eliminando producto', 'error');
+      console.error('Erro excluindo produto:', error);
+      addAlert('Erro excluindo produto', 'error');
     }
   };
 
   const formatCurrency = (amount) => {
+    // Verificar se o valor é válido e numérico
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount) || amount === null || amount === undefined) {
+      return 'R$ 0,00';
+    }
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(amount);
+    }).format(numericAmount);
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
     <div className="admin-products">
       <div className="products-header">
-        <h1>Gestión de Productos</h1>
+        <h1>Gestão de Produtos</h1>
         <button onClick={openCreateModal} className="btn btn-primary">
-          Crear Producto
+          Criar Produto
         </button>
       </div>
 
@@ -151,7 +163,7 @@ const AdminProducts = () => {
           </div>
           
           <div className="filter-group">
-            <label>Categoría:</label>
+            <label>Categoria:</label>
             <select
               value={filters.category}
               onChange={(e) => handleFilterChange('category', e.target.value)}
@@ -185,8 +197,8 @@ const AdminProducts = () => {
               className="form-select"
             >
               <option value="">Todos</option>
-              <option value="true">Con stock</option>
-              <option value="false">Sin stock</option>
+              <option value="true">Com estoque</option>
+              <option value="false">Sem estoque</option>
             </select>
           </div>
           
@@ -201,13 +213,13 @@ const AdminProducts = () => {
               }}
               className="form-select"
             >
-              <option value="created_at-desc">Fecha (Más reciente)</option>
-              <option value="created_at-asc">Fecha (Más antigua)</option>
-              <option value="title-asc">Nombre (A-Z)</option>
-              <option value="title-desc">Nombre (Z-A)</option>
-              <option value="price-desc">Precio (Mayor a menor)</option>
-              <option value="price-asc">Precio (Menor a mayor)</option>
-              <option value="stock-asc">Stock (Menor a mayor)</option>
+              <option value="created_at-desc">Data (Mais recente)</option>
+              <option value="created_at-asc">Data (Mais antiga)</option>
+              <option value="title-asc">Nome (A-Z)</option>
+              <option value="title-desc">Nome (Z-A)</option>
+              <option value="price-desc">Preço (Maior para menor)</option>
+              <option value="price-asc">Preço (Menor para maior)</option>
+              <option value="stock-asc">Estoque (Menor para maior)</option>
             </select>
           </div>
         </div>
@@ -217,7 +229,7 @@ const AdminProducts = () => {
       {loading ? (
         <div className="admin-loading">
           <div className="loading-spinner"></div>
-          <p>Cargando productos...</p>
+          <p>Carregando produtos...</p>
         </div>
       ) : (
         <>
@@ -227,7 +239,7 @@ const AdminProducts = () => {
                 <div className="product-image">
                   <img src={product.image} alt={product.title} />
                   {!product.is_active && (
-                    <div className="inactive-overlay">Inactivo</div>
+                    <div className="inactive-overlay">Inativo</div>
                   )}
                   {product.is_featured && (
                     <div className="featured-badge">Destacado</div>
@@ -250,7 +262,10 @@ const AdminProducts = () => {
                   </div>
                   
                   <div className="product-meta">
-                    <small>Creado: {formatDate(product.created_at)}</small>
+                    <small>Criado: {formatDate(product.created_at)}</small>
+                    {product.updated_at && product.updated_at !== product.created_at && (
+                      <small>Atualizado: {formatDate(product.updated_at)}</small>
+                    )}
                   </div>
                 </div>
                 
@@ -265,7 +280,7 @@ const AdminProducts = () => {
                     onClick={() => handleDeleteProduct(product.id)}
                     className="btn btn-sm btn-danger"
                   >
-                    Eliminar
+                    Excluir
                   </button>
                 </div>
               </div>
@@ -292,7 +307,7 @@ const AdminProducts = () => {
                 disabled={pagination.page >= pagination.pages}
                 className="btn btn-outline"
               >
-                Siguiente
+                Próxima
               </button>
             </div>
           )}
@@ -341,27 +356,27 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
     }
     
     if (!formData.description?.trim()) {
-      newErrors.description = 'La descripción es requerida';
+      newErrors.description = 'A descrição é obrigatória';
     }
     
     if (!formData.price || formData.price <= 0) {
-      newErrors.price = 'El precio debe ser mayor a 0';
+      newErrors.price = 'O preço deve ser maior que 0';
     }
     
     if (!formData.category?.trim()) {
-      newErrors.category = 'La categoría es requerida';
+      newErrors.category = 'A categoria é obrigatória';
     }
     
     if (!formData.brand?.trim()) {
-      newErrors.brand = 'La marca es requerida';
+      newErrors.brand = 'A marca é obrigatória';
     }
     
     if (!formData.image?.trim()) {
-      newErrors.image = 'La imagen es requerida';
+      newErrors.image = 'A imagem é obrigatória';
     }
     
     if (formData.stock < 0) {
-      newErrors.stock = 'El stock no puede ser negativo';
+      newErrors.stock = 'O estoque não pode ser negativo';
     }
     
     setErrors(newErrors);
@@ -384,7 +399,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content product-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{isEditing ? 'Editar Producto' : 'Crear Producto'}</h2>
+          <h2>{isEditing ? 'Editar Produto' : 'Criar Produto'}</h2>
           <button onClick={onClose} className="modal-close">&times;</button>
         </div>
         
@@ -397,13 +412,13 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
                 className={`form-input ${errors.title ? 'error' : ''}`}
-                placeholder="Nombre del producto"
+                placeholder="Nome do produto"
               />
               {errors.title && <span className="error-text">{errors.title}</span>}
             </div>
             
             <div className="form-group">
-              <label>Precio *</label>
+              <label>Preço *</label>
               <input
                 type="number"
                 step="0.01"
@@ -440,13 +455,13 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 value={formData.brand}
                 onChange={(e) => handleChange('brand', e.target.value)}
                 className={`form-input ${errors.brand ? 'error' : ''}`}
-                placeholder="Marca del producto"
+                placeholder="Marca do produto"
               />
               {errors.brand && <span className="error-text">{errors.brand}</span>}
             </div>
             
             <div className="form-group">
-              <label>Stock</label>
+              <label>Estoque</label>
               <input
                 type="number"
                 min="0"
@@ -460,7 +475,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
           </div>
           
           <div className="form-group">
-            <label>Descripción *</label>
+            <label>Descrição *</label>
             <textarea
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
@@ -472,13 +487,13 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
           </div>
           
           <div className="form-group">
-            <label>URL de Imagen *</label>
+            <label>URL da Imagem *</label>
             <input
               type="url"
               value={formData.image}
               onChange={(e) => handleChange('image', e.target.value)}
               className={`form-input ${errors.image ? 'error' : ''}`}
-              placeholder="https://ejemplo.com/imagen.jpg"
+              placeholder="https://exemplo.com/imagem.jpg"
             />
             {errors.image && <span className="error-text">{errors.image}</span>}
             {formData.image && (
@@ -495,7 +510,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 checked={formData.is_featured}
                 onChange={(e) => handleChange('is_featured', e.target.checked)}
               />
-              Producto destacado
+              Produto em destaque
             </label>
             
             <label className="checkbox-label">
@@ -504,7 +519,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 checked={formData.is_active}
                 onChange={(e) => handleChange('is_active', e.target.checked)}
               />
-              Producto activo
+              Produto ativo
             </label>
           </div>
         </form>
@@ -514,7 +529,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
             Cancelar
           </button>
           <button type="submit" onClick={handleSubmit} className="btn btn-primary">
-            {isEditing ? 'Actualizar' : 'Crear'} Producto
+            {isEditing ? 'Atualizar' : 'Criar'} Produto
           </button>
         </div>
       </div>

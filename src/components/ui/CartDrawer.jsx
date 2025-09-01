@@ -5,6 +5,18 @@ import AddToCartButton from './AddToCartButton';
 import ConfirmationModal from './ConfirmationModal';
 import './CartDrawer.css';
 
+// Função para formatar preços e tratar valores inválidos
+const formatCartPrice = (price) => {
+  const numPrice = parseFloat(price);
+  if (isNaN(numPrice) || numPrice === null || numPrice === undefined) {
+    return '0,00';
+  }
+  return numPrice.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
 const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
   // Verificar se o item tem a estrutura esperada
   if (!item) {
@@ -36,16 +48,10 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
         )}
         
         <div className="cart-item-price">
-          <span className="price">R$ {(product.current_price || product.currentPrice || product.price || 0).toLocaleString('pt-BR', { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2 
-          })}</span>
+          <span className="price">R$ {formatCartPrice(product.current_price || product.currentPrice || product.price)}</span>
           {(product.original_price || product.originalPrice) && (product.original_price || product.originalPrice) > (product.current_price || product.currentPrice || product.price) && (
             <span className="original-price">
-              R$ {(product.original_price || product.originalPrice).toLocaleString('pt-BR', { 
-                minimumFractionDigits: 2, 
-                maximumFractionDigits: 2 
-              })}
+              R$ {formatCartPrice(product.original_price || product.originalPrice)}
             </span>
           )}
         </div>
@@ -79,10 +85,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
         
         <div className="cart-item-total">
           <strong>
-            Total: R$ {((product.current_price || product.currentPrice || product.price || 0) * quantity).toLocaleString('pt-BR', { 
-              minimumFractionDigits: 2, 
-              maximumFractionDigits: 2 
-            })}
+            Total: R$ {formatCartPrice((product.current_price || product.currentPrice || product.price) * quantity)}
           </strong>
         </div>
       </div>
@@ -205,10 +208,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     <span>Itens: {totalItems}</span>
                   </div>
                   <div className="stat total">
-                    <span>Total: R$ {cartTotal.toLocaleString('pt-BR', { 
-                      minimumFractionDigits: 2, 
-                      maximumFractionDigits: 2 
-                    })}</span>
+                    <span>Total: R$ {formatCartPrice(cartTotal)}</span>
                   </div>
                 </div>
                 

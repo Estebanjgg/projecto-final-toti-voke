@@ -134,7 +134,7 @@ const OrderDetail = () => {
             <div className="info-item">
               <span className="info-label">Data:</span>
               <span className="info-value">
-                {new Date(order.created_at).toLocaleDateString('es-ES', {
+                {new Date(order.created_at).toLocaleDateString('pt-BR', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',

@@ -151,7 +151,7 @@ const Orders = () => {
                           <span className="order-id">#{order.id}</span>
                         </div>
                         <p className="order-date">
-                          {new Date(order.created_at).toLocaleDateString('es-ES', {
+                          {new Date(order.created_at).toLocaleDateString('pt-BR', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',

@@ -97,6 +97,12 @@ const TechOffers = () => {
                 }
               }
 
+              // Função para garantir valores numéricos válidos
+              const safeParseFloat = (value) => {
+                const parsed = parseFloat(value);
+                return isNaN(parsed) ? 0 : parsed;
+              };
+
               return (
                 <ProductCard 
                   key={product.id} 
@@ -105,8 +111,8 @@ const TechOffers = () => {
                     image: product.image,
                     title: product.title,
                     brand: product.brand,
-                    originalPrice: parseFloat(product.original_price),
-                    currentPrice: parseFloat(product.current_price),
+                    originalPrice: safeParseFloat(product.original_price),
+                    currentPrice: safeParseFloat(product.current_price),
                     discount: product.discount,
                     installments: installments,
                     stock: product.stock,
