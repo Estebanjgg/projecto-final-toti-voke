@@ -9,8 +9,8 @@ export const getOrders = async (params = {}) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo órdenes:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Obtener orden específica
@@ -20,8 +20,8 @@ export const getOrderById = async (orderId) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo orden:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Actualizar estado de orden
@@ -34,8 +34,8 @@ export const updateOrderStatus = async (orderId, status, notes = '') => {
     return response.data;
   } catch (error) {
     console.error('Error actualizando estado de orden:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Actualizar estado de pago
@@ -47,8 +47,8 @@ export const updatePaymentStatus = async (orderId, paymentStatus) => {
     return response.data;
   } catch (error) {
     console.error('Error actualizando estado de pago:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Obtener estadísticas de órdenes
@@ -60,8 +60,8 @@ export const getOrderStats = async (period = '30d') => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo estadísticas de órdenes:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // ===== GESTIÓN DE PRODUCTOS =====
@@ -73,8 +73,8 @@ export const getAdminProducts = async (params = {}) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo productos:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Crear nuevo producto
@@ -84,8 +84,8 @@ export const createProduct = async (productData) => {
     return response.data;
   } catch (error) {
     console.error('Error creando producto:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Actualizar producto
@@ -95,8 +95,8 @@ export const updateProduct = async (productId, productData) => {
     return response.data;
   } catch (error) {
     console.error('Error actualizando producto:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Eliminar producto
@@ -106,8 +106,8 @@ export const deleteProduct = async (productId) => {
     return response.data;
   } catch (error) {
     console.error('Error eliminando producto:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // ===== GESTIÓN DE USUARIOS =====
@@ -130,8 +130,8 @@ export const getUsers = async (params = {}) => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo usuarios:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Actualizar rol de usuario
@@ -141,8 +141,8 @@ export const updateUserRole = async (userId, role) => {
     return response.data;
   } catch (error) {
     console.error('Error actualizando rol de usuario:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // ===== DASHBOARD Y ANALYTICS =====
@@ -154,8 +154,8 @@ export const getDashboardData = async () => {
     return response.data;
   } catch (error) {
     console.error('Error obteniendo datos del dashboard:', error);
-    throw error;
-  }
+        throw error;
+    }
 };
 
 // Verificar si el usuario es administrador
@@ -165,11 +165,11 @@ export const checkAdminStatus = async () => {
     return response.status === 200;
   } catch (error) {
     console.error('Error verificando status admin:', error);
-    if (error.message && error.message.includes('403')) {
+        if (error.message && error.message.includes('403')) {
       return false; // No es admin
     }
     return false; // Error general
-  }
+    }
 };
 
 const adminAPI = {

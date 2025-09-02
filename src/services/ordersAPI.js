@@ -21,7 +21,7 @@ export const ordersAPI = {
       };
     } catch (error) {
       console.error('Error obteniendo pedidos:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -32,7 +32,7 @@ export const ordersAPI = {
       return response;
     } catch (error) {
       console.error('Error obteniendo pedido por ID:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -77,7 +77,7 @@ export const ordersAPI = {
       };
     } catch (error) {
       console.error('Error buscando pedidos:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -88,7 +88,7 @@ export const ordersAPI = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo pedido:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -99,7 +99,7 @@ export const ordersAPI = {
       throw new Error('Funcionalidad de cancelación no implementada aún');
     } catch (error) {
       console.error('Error cancelando pedido:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -110,7 +110,7 @@ export const ordersAPI = {
       throw new Error('Funcionalidad de reorden no implementada aún');
     } catch (error) {
       console.error('Error reordenando:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -121,7 +121,7 @@ export const ordersAPI = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo seguimiento:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -132,7 +132,7 @@ export const ordersAPI = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo resumen de pedidos:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -143,7 +143,7 @@ export const ordersAPI = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo orden por ID:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -154,7 +154,7 @@ export const ordersAPI = {
       return response.data;
     } catch (error) {
       console.error('Error rastreando orden:', error);
-      throw error;
+        throw error;
     }
   },
 
@@ -167,7 +167,7 @@ export const ordersAPI = {
       return blob;
     } catch (error) {
       console.error('Error descargando factura:', error);
-      throw error;
+        throw error;
     }
   }
 };

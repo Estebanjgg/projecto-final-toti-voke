@@ -33,8 +33,7 @@ const PaymentMethods = ({ selectedMethod, onMethodChange, paymentData, onPayment
             name: 'Boleto Bancário', 
             icon: '/picture/icone%20pagamento/boleto-simbolo.png'
           }
-        ];
-        console.log('Métodos de pagamento carregados:', metodosComImagens);
+        ];       
         setPaymentMethods(metodosComImagens);
       } catch (err) {
         console.error('Erro ao carregar métodos de pagamento:', err);

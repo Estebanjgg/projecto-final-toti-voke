@@ -250,7 +250,7 @@ const AdminProducts = () => {
                   <h3>{product.title}</h3>
                   <p className="product-category">{product.category}</p>
                   <p className="product-brand">{product.brand}</p>
-                  <p className="product-price">{formatCurrency(product.price)}</p>
+                  <p className="product-price">{formatCurrency(product.current_price)}</p>
                   
                   <div className="product-stock">
                     <span className={`stock-badge ${
@@ -389,7 +389,8 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
     if (validateForm()) {
       onSave({
         ...formData,
-        price: parseFloat(formData.price),
+        current_price: parseFloat(formData.price),
+        original_price: parseFloat(formData.original_price) || parseFloat(formData.price),
         stock: parseInt(formData.stock)
       });
     }
@@ -418,7 +419,7 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
             </div>
             
             <div className="form-group">
-              <label>Preço *</label>
+              <label>Preço Atual *</label>
               <input
                 type="number"
                 step="0.01"
@@ -429,6 +430,19 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 placeholder="0.00"
               />
               {errors.price && <span className="error-text">{errors.price}</span>}
+            </div>
+            
+            <div className="form-group">
+              <label>Preço Original</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.original_price || ''}
+                onChange={(e) => handleChange('original_price', e.target.value)}
+                className="form-input"
+                placeholder="0.00"
+              />
             </div>
             
             <div className="form-group">

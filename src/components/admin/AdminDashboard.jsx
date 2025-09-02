@@ -16,8 +16,7 @@ const AdminDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await adminAPI.getDashboardData();
-      console.log('Dashboard response:', response); // Para debug
+      const response = await adminAPI.getDashboardData();     
       setDashboardData(response.data || response);
     } catch (error) {
       console.error('Error loading dashboard:', error);

@@ -198,8 +198,8 @@ const Orders = () => {
                             <div key={index} className="item-preview">
                               <span className="item-quantity">{item.quantity}x</span>
                               <span className="item-name">{item.product_title || item.name || 'Producto'}</span>
-                              {item.price && (
-                                <span className="item-price">R$ {parseFloat(item.price).toFixed(2)}</span>
+                              {(item.products?.current_price || item.price) && (
+                                <span className="item-price">R$ {parseFloat(item.products?.current_price || item.price || 0).toFixed(2)}</span>
                               )}
                             </div>
                           ))}
