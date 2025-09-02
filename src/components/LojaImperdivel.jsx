@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import SidebarFilters from './SidebarFilters';
-import BestOffers from './BestOffers';
 import { productsAPI } from '../services/api';
-import './CategoryProducts.css'; // Reutilizamos los estilos existentes
+import './CategoryProducts.css';
 
-const CategoryPage = () => {
-  const { category } = useParams();
+const LojaImperdivel = () => {
   const navigate = useNavigate();
   
   const [products, setProducts] = useState([]);
@@ -19,44 +17,20 @@ const CategoryPage = () => {
   const [filters, setFilters] = useState({
     priceRange: '',
     condition: '',
-    type: '',
-    sortBy: 'relevance'
+    category: '',
+    sortBy: 'discount' // Por defecto ordenar por desconto
   });
 
-  const categoryNames = {
-    'smartphones': 'Smartphones 📱',
-    'tablets': 'Tablets 📱',
-    'notebooks': 'Notebooks 💻',
-    'desktops': 'Desktops 🖥️',
-    'monitores': 'Monitores 🖥️',
-    'acessorios': 'Acessórios 🎮',
-    'games': 'Games 🎮',
-    'camaras': 'Câmeras 📷'
-  };
-
-  // Mapeo de URL a categoría de base de datos
-  const categoryMapping = {
-    'smartphones': 'Smartphones',
-    'tablets': 'Tablets',
-    'notebooks': 'Notebooks',
-    'desktops': 'Desktops',
-    'monitores': 'Monitores',
-    'acessorios': 'Acessórios',
-    'games': 'Games',
-    'camaras': 'Camaras'
-  };
-
   useEffect(() => {
-    if (category && categoryMapping[category]) {
-      loadCategoryProducts();
-    }
-  }, [category]);
+    loadOfferProducts();
+    window.scrollTo(0, 0);
+  }, []);
   
   // Aplicar filtros cuando cambien los productos o filtros
   useEffect(() => {
     applyFilters();
   }, [products, filters]);
-  
+
   const applyFilters = () => {
     let filtered = [...products];
     
@@ -80,21 +54,11 @@ const CategoryPage = () => {
       );
     }
     
-    // Filtro por tipo/marca
-    if (filters.type) {
-      if (filters.type === 'Samsung') {
-        filtered = filtered.filter(product => 
-          product.brand && product.brand.toLowerCase().includes('samsung')
-        );
-      } else if (filters.type === 'Monitor') {
-        filtered = filtered.filter(product => 
-          product.category && product.category.toLowerCase().includes('monitor')
-        );
-      } else if (filters.type === 'Smartphone') {
-        filtered = filtered.filter(product => 
-          product.category && product.category.toLowerCase().includes('smartphone')
-        );
-      }
+    // Filtro por categoría
+    if (filters.category) {
+      filtered = filtered.filter(product => 
+        product.category && product.category.toLowerCase().includes(filters.category.toLowerCase())
+      );
     }
     
     // Ordenamiento
@@ -112,17 +76,13 @@ const CategoryPage = () => {
         filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
         break;
       default:
-        // Relevancia (productos destacados primero)
-        filtered.sort((a, b) => {
-          if (a.is_featured && !b.is_featured) return -1;
-          if (!a.is_featured && b.is_featured) return 1;
-          return 0;
-        });
+        // Por defecto ordenar por desconto
+        filtered.sort((a, b) => (b.discount || 0) - (a.discount || 0));
     }
     
     setFilteredProducts(filtered);
   };
-  
+
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -134,25 +94,30 @@ const CategoryPage = () => {
     setFilters({
       priceRange: '',
       condition: '',
-      type: '',
-      sortBy: 'relevance'
+      category: '',
+      sortBy: 'discount'
     });
   };
 
-  const loadCategoryProducts = async () => {
+  const loadOfferProducts = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const dbCategory = categoryMapping[category];
+      // Buscar productos en oferta
       const response = await productsAPI.getAll({ 
-        category: dbCategory,
-        limit: 50 
+        limit: 50,
+        is_offer: true // Solo productos en oferta
       });
       
-      setProducts(response.data || []);
+      // Filtrar productos que tengan descuento > 0
+      const offerProducts = (response.data || []).filter(product => 
+        product.discount && product.discount > 0
+      );
+      
+      setProducts(offerProducts);
     } catch (err) {
-      console.error('Error cargando productos de categoría:', err);
+      console.error('Error cargando ofertas imperdíveis:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -163,31 +128,6 @@ const CategoryPage = () => {
     navigate('/');
   };
 
-  if (!category || !categoryMapping[category]) {
-    return (
-      <section className="category-products">
-        <div className="container">
-          {/* Breadcrumb para error */}
-          <nav className="breadcrumb" style={{ marginBottom: '20px', fontSize: '14px', color: '#666' }}>
-            <span onClick={handleBackToHome} style={{ cursor: 'pointer', color: '#4A90E2' }}>
-              Home
-            </span>
-            <span style={{ margin: '0 8px' }}>→</span>
-            <span>Categoria não encontrada</span>
-          </nav>
-
-          <div className="category-header">
-            <h2 className="category-title">❌ Categoría no encontrada</h2>
-          </div>
-          <div className="error-state">
-            <p>A categoria "{category}" não existe. Verifique a URL ou volte ao início.</p>
-            <button onClick={handleBackToHome}>Voltar ao Home</button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="category-products">
       <div className="container">
@@ -197,13 +137,31 @@ const CategoryPage = () => {
             Home
           </span>
           <span style={{ margin: '0 8px' }}>→</span>
-          <span>{categoryNames[category] || category}</span>
+          <span>Loja Imperdível</span>
         </nav>
 
+        {/* Header da página */}
+        <div className="page-header" style={{ marginBottom: '30px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#333', marginBottom: '10px' }}>
+            🔥 Loja Imperdível
+          </h1>
+          <p style={{ fontSize: '1.1rem', color: '#666' }}>
+            As melhores ofertas e descontos que você não pode perder!
+          </p>
+        </div>
 
-
-        {/* Sección de Mejores Ofertas */}
-        <BestOffers categoryFilter={categoryMapping[category]} />
+        {/* Banner de ofertas */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', 
+          color: 'white', 
+          padding: '20px', 
+          borderRadius: '12px', 
+          marginBottom: '30px',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ margin: '0 0 10px 0', fontSize: '1.5rem' }}>💥 OFERTAS RELÂMPAGO</h2>
+          <p style={{ margin: '0', fontSize: '1rem' }}>Descontos de até 50% em produtos selecionados!</p>
+        </div>
 
         {/* Layout com sidebar */}
         <div className="products-layout">
@@ -212,6 +170,7 @@ const CategoryPage = () => {
             filters={filters}
             onFilterChange={handleFilterChange}
             onClearFilters={clearFilters}
+            showBrandFilter={true}
           />
           
           {/* Conteúdo principal */}
@@ -219,20 +178,20 @@ const CategoryPage = () => {
             {loading && (
               <div className="loading-state">
                 <div className="spinner"></div>
-                <p>Carregando produtos...</p>
+                <p>Carregando ofertas imperdíveis...</p>
               </div>
             )}
 
             {error && (
               <div className="error-state">
-                <p>Erro ao carregar produtos: {error}</p>
-                <button onClick={loadCategoryProducts}>Tentar novamente</button>
+                <p>Erro ao carregar ofertas: {error}</p>
+                <button onClick={loadOfferProducts}>Tentar novamente</button>
               </div>
             )}
 
             {!loading && !error && products.length === 0 && (
               <div className="empty-state">
-                <p>Nenhum produto encontrado nesta categoria.</p>
+                <p>Nenhuma oferta imperdível disponível no momento.</p>
               </div>
             )}
 
@@ -240,8 +199,8 @@ const CategoryPage = () => {
               <>
                 <div className="products-count">
                   <p>
-                    {filteredProducts.length} de {products.length} produtos encontrados
-                    {filters.priceRange || filters.condition || filters.sortBy !== 'relevance' ? ' (filtrados)' : ''}
+                    {filteredProducts.length} de {products.length} ofertas imperdíveis encontradas
+                    {filters.priceRange || filters.condition || filters.category || filters.sortBy !== 'discount' ? ' (filtrados)' : ''}
                   </p>
                 </div>
                 
@@ -253,17 +212,16 @@ const CategoryPage = () => {
                     onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                     className="sort-select"
                   >
-                    <option value="relevance">Mais relevantes</option>
+                    <option value="discount">Maior desconto</option>
                     <option value="price-low">Menor preço</option>
                     <option value="price-high">Maior preço</option>
-                    <option value="discount">Maior desconto</option>
                     <option value="name">Nome A-Z</option>
                   </select>
                 </div>
                 
                 {filteredProducts.length === 0 ? (
                   <div className="no-results">
-                    <p>Nenhum produto encontrado com os filtros selecionados.</p>
+                    <p>Nenhuma oferta encontrada com os filtros selecionados.</p>
                     <button onClick={clearFilters}>Limpar filtros</button>
                   </div>
                 ) : (
@@ -282,4 +240,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default LojaImperdivel;

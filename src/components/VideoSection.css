@@ -1,9 +1,9 @@
 /* Brand Section Styles */
 .brand-section {
-  background: #ffffff;
+  background: #F5F3ED;
   padding: 40px 20px;
   margin: 0;
-  border-top: 1px solid #e0e0e0;
+  border: none;
   width: 100%;
 }
 
@@ -24,10 +24,11 @@
 
 /* Video Section Styles - Original Voke Design */
 .video-section {
-  margin: 32px 0;
-  padding: 0;
+  margin: 0;
+  padding: 40px 20px;
   font-family: "Verdana", sans-serif;
   color: #262626;
+  background: #F5F3ED;
 }
 
 .padding-adjustment-infoCard {

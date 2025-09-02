@@ -25,20 +25,56 @@ const BrandPage = () => {
   const brandNames = {
     'apple': 'Apple 🍎',
     'samsung': 'Samsung 📱',
-    'lenovo': 'Lenovo 💻',
+    'sony': 'Sony 🎮',
     'dell': 'Dell 🖥️',
+    'lenovo': 'Lenovo 💻',
     'microsoft': 'Microsoft 💻',
-    'motorola': 'Motorola 📱'
+    'xiaomi': 'Xiaomi 📱',
+    'motorola': 'Motorola 📱',
+    'asus': 'Asus 💻',
+    'hp': 'HP 🖥️',
+    'lg': 'LG 📺',
+    'huawei': 'Huawei 📱',
+    'google': 'Google 🔍',
+    'oneplus': 'OnePlus 📱',
+    'nothing': 'Nothing 📱',
+    'realme': 'Realme 📱',
+    'oppo': 'Oppo 📱',
+    'vivo': 'Vivo 📱',
+    'nintendo': 'Nintendo 🎮',
+    'canon': 'Canon 📷',
+    'fujifilm': 'Fujifilm 📷',
+    'bose': 'Bose 🎧',
+    'steelseries': 'SteelSeries 🎮',
+    'logitech': 'Logitech 🖱️'
   };
 
   // Mapeo de URL a marca de base de datos
   const brandMapping = {
     'apple': 'Apple',
-    'samsung': 'Samsung', 
-    'lenovo': 'Lenovo',
+    'samsung': 'Samsung',
+    'sony': 'Sony',
     'dell': 'Dell',
+    'lenovo': 'Lenovo',
     'microsoft': 'Microsoft',
-    'motorola': 'Motorola'
+    'xiaomi': 'Xiaomi',
+    'motorola': 'Motorola',
+    'asus': 'Asus',
+    'hp': 'HP',
+    'lg': 'LG',
+    'huawei': 'Huawei',
+    'google': 'Google',
+    'oneplus': 'OnePlus',
+    'nothing': 'Nothing',
+    'realme': 'Realme',
+    'oppo': 'Oppo',
+    'vivo': 'Vivo',
+    'nintendo': 'Nintendo',
+    'canon': 'Canon',
+    'fujifilm': 'Fujifilm',
+    'bose': 'Bose',
+    'steelseries': 'SteelSeries',
+    'logitech': 'Logitech'
   };
 
   useEffect(() => {
@@ -170,9 +206,6 @@ const BrandPage = () => {
 
           <div className="category-header">
             <h2 className="category-title">❌ Marca no encontrada</h2>
-            <button className="close-btn" onClick={handleBackToHome}>
-              ← Voltar ao Home
-            </button>
           </div>
           <div className="error-state">
             <p>A marca "{brand}" não existe. Verifique a URL ou volte ao início.</p>
@@ -197,11 +230,7 @@ const BrandPage = () => {
           <span>{brandNames[brand] || brand}</span>
         </nav>
 
-        <div className="category-header">
-          <button className="close-btn" onClick={handleBackToHome}>
-            ← Voltar ao Home
-          </button>
-        </div>
+
 
         {/* Imagen de propaganda de la marca */}
         <div className="brand-propaganda-section">
@@ -245,7 +274,6 @@ const BrandPage = () => {
             {!loading && !error && products.length === 0 && (
               <div className="empty-state">
                 <p>Nenhum produto encontrado para a marca {brandNames[brand]}.</p>
-                <button onClick={handleBackToHome}>Voltar ao Home</button>
               </div>
             )}
 

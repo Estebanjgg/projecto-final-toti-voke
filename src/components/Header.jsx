@@ -6,7 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import CartIcon from './ui/CartIcon';
 import CartDrawer from './ui/CartDrawer';
 import Modal from './Modal';
-import { FiSearch, FiHeart, FiMenu, FiUser, FiPackage, FiLogOut } from 'react-icons/fi';
+import { FiSearch, FiHeart, FiMenu, FiUser, FiPackage, FiLogOut, FiChevronDown, FiSmartphone, FiMonitor, FiTablet, FiHardDrive, FiHeadphones, FiCamera } from 'react-icons/fi';
 import { productsAPI } from '../services/api';
 import './Header.css';
 
@@ -158,6 +158,138 @@ const SearchBar = () => {
               <span>Ver todos os resultados para "{searchTerm}"</span>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Componente para el menú desplegable
+const MenuDropdown = () => {
+  const [showDropdown, setShowDropdown] = React.useState(false);
+  const [hoveredCategory, setHoveredCategory] = React.useState(null);
+  const navigate = useNavigate();
+  const dropdownRef = React.useRef(null);
+
+  // Datos extraídos del SQL - Categorías disponibles
+  const categories = [
+    { name: 'Smartphones', icon: <FiSmartphone size={16} />, path: '/categoria/smartphones' },
+    { name: 'Notebooks', icon: <FiMonitor size={16} />, path: '/categoria/notebooks' },
+    { name: 'Tablets', icon: <FiTablet size={16} />, path: '/categoria/tablets' },
+    { name: 'Desktops', icon: <FiHardDrive size={16} />, path: '/categoria/desktops' },
+    { name: 'Monitores', icon: <FiMonitor size={16} />, path: '/categoria/monitores' },
+    { name: 'Acessórios', icon: <FiHeadphones size={16} />, path: '/categoria/acessorios' },
+    { name: 'Camaras', icon: <FiCamera size={16} />, path: '/categoria/camaras' },
+    { name: 'Games', icon: <FiHardDrive size={16} />, path: '/categoria/games' }
+  ];
+
+  // Marcas por categoría basadas en los datos del SQL
+  const brandsByCategory = {
+    'Smartphones': ['Apple', 'Samsung', 'Xiaomi', 'Motorola', 'Huawei', 'Google', 'OnePlus', 'Nothing', 'Realme', 'Oppo', 'Vivo', 'Microsoft'],
+    'Notebooks': ['Samsung', 'Lenovo', 'Dell', 'Asus', 'HP', 'Apple', 'Microsoft'],
+    'Tablets': ['Samsung', 'Apple', 'Lenovo', 'Motorola', 'Microsoft'],
+    'Desktops': ['Samsung', 'Dell', 'Lenovo', 'Apple'],
+    'Monitores': ['Sony', 'Samsung', 'Lenovo', 'Dell', 'LG', 'Apple'],
+    'Acessórios': ['SteelSeries', 'Sony', 'Samsung', 'Microsoft', 'Bose', 'Logitech'],
+    'Camaras': ['Sony', 'Canon', 'Fujifilm'],
+    'Games': ['Sony', 'Nintendo', 'Microsoft']
+  };
+
+  const handleCategoryClick = (path) => {
+    navigate(path);
+    setShowDropdown(false);
+    setHoveredCategory(null);
+  };
+
+  const handleBrandClick = (brand) => {
+    navigate(`/marca/${brand.toLowerCase()}`);
+    setShowDropdown(false);
+    setHoveredCategory(null);
+  };
+
+  const handleCategoryHover = (categoryName) => {
+    setHoveredCategory(categoryName);
+  };
+
+  const handleCategoryLeave = () => {
+    setHoveredCategory(null);
+  };
+
+  // Cerrar dropdown al hacer clic fuera
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+        setHoveredCategory(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="menu-dropdown" ref={dropdownRef}>
+      <button 
+        className="menu-toggle"
+        onClick={() => setShowDropdown(!showDropdown)}
+      >
+        <FiMenu size={20} />
+        <span>Menu</span>
+        <FiChevronDown size={16} className={`dropdown-chevron ${showDropdown ? 'rotated' : ''}`} />
+      </button>
+      
+      {showDropdown && (
+        <div className="mega-dropdown">
+          <div className="dropdown-section categories-section">
+            <h3 className="dropdown-title">Departamentos</h3>
+            <div className="dropdown-items">
+              {categories.map((category) => (
+                <div
+                  key={category.name}
+                  className="category-item-container"
+                  onMouseEnter={() => handleCategoryHover(category.name)}
+                  onMouseLeave={handleCategoryLeave}
+                >
+                  <button
+                    className={`dropdown-item category-item ${hoveredCategory === category.name ? 'hovered' : ''}`}
+                    onClick={() => handleCategoryClick(category.path)}
+                  >
+                    <span>{category.name}</span>
+                    <FiChevronDown size={12} className="category-arrow" />
+                  </button>
+                  
+                  {hoveredCategory === category.name && brandsByCategory[category.name] && (
+                    <div className="brands-submenu">
+                      <div className="submenu-header">
+                        <span>Marcas</span>
+                      </div>
+                      <div className="submenu-brands">
+                        {brandsByCategory[category.name].map((brand) => (
+                          <button
+                            key={brand}
+                            className="submenu-brand-item"
+                            onClick={() => handleBrandClick(brand)}
+                          >
+                            {brand}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            <div className="dropdown-footer">
+              <div className="business-message">
+                <h4>Para a sua empresa</h4>
+                <p>Temos as melhores soluções de gestão de hardwares para sua empresa. confira!</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -329,16 +461,13 @@ const Header = () => {
       <nav className="nav-menu">
         <div className="container">
           <div className="nav-content">
-            <button className="menu-toggle">
-              <FiMenu size={20} />
-              <span>Menu</span>
-            </button>
+            <MenuDropdown />
             <div className="nav-links">
-              <a href="#" className="nav-link">Lançamentos Tech</a>
-              <a href="#" className="nav-link">Loja Imperdível</a>
-              <a href="#" className="nav-link">Loja Samsung</a>
-              <a href="#" className="nav-link">Loja Lenovo</a>
-              <a href="#" className="nav-link">Loja Dell</a>
+              <Link to="/lancamentos-tech" className="nav-link">Lançamentos Tech</Link>
+              <Link to="/loja-imperdivel" className="nav-link">Loja Imperdível</Link>
+              <Link to="/marca/samsung" className="nav-link">Loja Samsung</Link>
+              <Link to="/marca/lenovo" className="nav-link">Loja Lenovo</Link>
+              <Link to="/marca/dell" className="nav-link">Loja Dell</Link>
             </div>
           </div>
         </div>

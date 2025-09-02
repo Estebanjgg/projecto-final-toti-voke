@@ -32,6 +32,8 @@
   border-bottom: none;
   padding-bottom: 0;
   position: relative;
+  background: none !important;
+  background-color: transparent !important;
 }
 
 .section-header::before,
@@ -53,6 +55,8 @@
   border: none;
   border-bottom: none;
   position: relative;
+  background: none !important;
+  background-color: transparent !important;
 }
 
 .section-title::before,

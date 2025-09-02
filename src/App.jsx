@@ -9,6 +9,8 @@ import Footer from './components/Footer';
 import Home from './components/Home';
 import CategoryPage from './components/CategoryPage';
 import BrandPage from './components/BrandPage';
+import LancamentosTech from './components/LancamentosTech';
+import LojaImperdivel from './components/LojaImperdivel';
 import ProductDetail from './components/ProductDetail';
 import Favorites from './components/Favorites';
 import Login from './components/auth/Login';
@@ -69,6 +71,16 @@ function App() {
                 <Route path="/marca/:brand" element={
                   <Layout>
                     <BrandPage />
+                  </Layout>
+                } />
+                <Route path="/lancamentos-tech" element={
+                  <Layout>
+                    <LancamentosTech />
+                  </Layout>
+                } />
+                <Route path="/loja-imperdivel" element={
+                  <Layout>
+                    <LojaImperdivel />
                   </Layout>
                 } />
                 <Route path="/product/:id" element={
