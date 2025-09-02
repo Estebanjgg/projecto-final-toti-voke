@@ -44,7 +44,7 @@
 
 /* Sección de imagen */
 .product-image-section {
-  padding: 40px;
+  padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -53,8 +53,8 @@
 
 .product-image-main {
   width: 100%;
-  max-width: 400px;
-  height: 400px;
+  max-width: 500px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,11 +124,7 @@
   line-height: 1.3;
 }
 
-.product-sku {
-  font-size: 14px;
-  color: #666;
-  margin: 0;
-}
+
 
 /* Precios */
 .product-pricing {
@@ -213,6 +209,22 @@
   margin: 0 0 15px 0;
 }
 
+/* Especificaciones dinámicas del producto */
+.product-dynamic-specifications {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.product-dynamic-specifications h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 15px 0;
+}
+
 .specs-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -223,8 +235,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.spec-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .spec-label {
@@ -236,6 +256,7 @@
 .spec-value {
   color: #333;
   font-size: 14px;
+  font-weight: 500;
   text-align: right;
 }
 
@@ -429,43 +450,347 @@
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 .shipping-calculator label {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .shipping-input {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: stretch;
 }
 
 .shipping-input input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 14px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
   font-size: 14px;
+  font-weight: 500;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.shipping-input input:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.12), 0 2px 8px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+.shipping-input input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
 }
 
 .shipping-input button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background: #4A90E2;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #4A90E2 0%, #357abd 100%);
   color: white;
+  border: none;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
 }
 
-.shipping-input button:hover {
-  background: #357ABD;
+.shipping-input button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.shipping-input button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #357abd 0%, #2c5aa0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.shipping-input button:hover::before {
+  left: 100%;
+}
+
+.shipping-input button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.shipping-input button:disabled {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.shipping-input button:disabled::before {
+  display: none;
+}
+
+.shipping-input button.loading {
+  background: #6c757d;
+}
+
+/* Estados de carga y error mejorados */
+.shipping-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin-top: 15px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.shipping-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e9ecef;
+  border-top: 3px solid #4A90E2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.shipping-loading-text {
+  color: #495057;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.shipping-loading-subtext {
+  color: #6c757d;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.shipping-error {
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  color: #c53030;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 15px;
+  border: 1px solid #feb2b2;
+  box-shadow: 0 2px 8px rgba(197, 48, 48, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shipping-error::before {
+  content: '⚠️';
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.shipping-error-text {
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Opções de frete */
+.shipping-options {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shipping-options h4 {
+  color: #1a202c;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #4A90E2;
+  padding-bottom: 12px;
+  background: linear-gradient(135deg, #4A90E2 0%, #27ae60 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shipping-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #e8ecf0;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.shipping-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #4A90E2 0%, #27ae60 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shipping-option:hover {
+  border-color: #4A90E2;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
+}
+
+.shipping-option:hover::before {
+  opacity: 1;
+}
+
+.option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.option-name {
+  font-weight: 700;
+  color: #1a202c;
+  font-size: 15px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-name::before {
+  content: '📦';
+  font-size: 16px;
+}
+
+.option-description {
+  color: #4a5568;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.option-description::before {
+  content: '🚚';
+  font-size: 12px;
+}
+
+.option-location {
+  color: #718096;
+  font-size: 12px;
+  margin-top: 0;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.option-location::before {
+  content: '📍';
+  font-size: 11px;
+}
+
+.option-details {
+  text-align: right;
+}
+
+.option-price {
+  font-weight: 800;
+  color: #27ae60;
+  font-size: 18px;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(39, 174, 96, 0.1);
+}
+
+.option-delivery {
+  color: #4a5568;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.option-delivery small {
+  color: #718096;
+  font-size: 12px;
+}
+
+/* Informações do frete */
+.shipping-info {
+  background: #e8f4fd;
+  border: 1px solid #bee5eb;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 15px;
+}
+
+.shipping-info small {
+  color: #0c5460;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .shipping-input {
+    flex-direction: column;
+  }
+  
+  .shipping-input button {
+    width: 100%;
+  }
+  
+  .shipping-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .option-details {
+    text-align: left;
+    width: 100%;
+  }
 }
 
 /* Estados de carga y error */

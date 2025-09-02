@@ -44,16 +44,14 @@ const ProductCard = ({ product }) => {
     return numPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  const handleCardClick = (e) => {
-    // Evitar navegación si se hace clic en botones
-    if (e.target.closest('.card-overlay') || e.target.closest('button')) {
-      return;
-    }
+  const handleImageClick = () => {
     navigate(`/product/${id}`);
+    // Scroll to top when navigating to product details
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="product-card" onClick={handleCardClick}>
+    <div className="product-card">
       {/* Product badges */}
       <div className="product-badges">
         {finalIsOffer && <span className="badge offer-badge">Oferta</span>}
@@ -79,7 +77,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Product image */}
-      <div className="product-image">
+      <div className="product-image" onClick={handleImageClick} style={{cursor: 'pointer'}}>
         <img src={image} alt={title} />
       </div>
 

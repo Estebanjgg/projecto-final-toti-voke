@@ -13,11 +13,13 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedColor, setSelectedColor] = useState('');
-  const [selectedStorage, setSelectedStorage] = useState('');
-  const [selectedCondition, setSelectedCondition] = useState('');
+  // Estados removidos: selectedColor, selectedStorage, selectedCondition ya no son necesarios
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [cep, setCep] = useState('');
+  const [shippingOptions, setShippingOptions] = useState([]);
+  const [loadingShipping, setLoadingShipping] = useState(false);
+  const [shippingError, setShippingError] = useState('');
 
   // Função para formatar preços e tratar valores NaN
   const formatProductPrice = (price) => {
@@ -29,6 +31,132 @@ const ProductDetail = () => {
       return '0,00';
     }
     return numPrice.toFixed(2);
+  };
+
+  // Função para validar CEP
+  const validateCEP = (cep) => {
+    const cepRegex = /^\d{5}-?\d{3}$/;
+    return cepRegex.test(cep.replace(/\D/g, ''));
+  };
+
+  // Função para formatar CEP
+  const formatCEP = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 5) {
+      return numbers;
+    }
+    return `${numbers.slice(0, 5)}-${numbers.slice(5, 8)}`;
+  };
+
+  // Função para calcular frete usando API real de ViaCEP
+  const calculateShipping = async () => {
+    if (!validateCEP(cep)) {
+      setShippingError('CEP inválido. Digite um CEP válido (ex: 01234-567)');
+      return;
+    }
+
+    setLoadingShipping(true);
+    setShippingError('');
+    setShippingOptions([]);
+
+    try {
+      // Consultar API ViaCEP para validar CEP e obter localização
+      const cepResponse = await fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`);
+      
+      if (!cepResponse.ok) {
+        throw new Error('CEP não encontrado');
+      }
+
+      const addressData = await cepResponse.json();
+      
+      if (addressData.erro) {
+        throw new Error('CEP não encontrado na base de dados');
+      }
+
+      // Simular delay adicional para parecer mais realista
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Calcular frete baseado na localização real
+      const { uf, localidade } = addressData;
+      
+      // Definir fatores de distância por estado (simulado mas realista)
+      const stateDistanceFactors = {
+        'SP': 1.0,  // Base (São Paulo)
+        'RJ': 1.2,  // Rio de Janeiro
+        'MG': 1.3,  // Minas Gerais
+        'ES': 1.4,  // Espírito Santo
+        'PR': 1.5,  // Paraná
+        'SC': 1.6,  // Santa Catarina
+        'RS': 1.8,  // Rio Grande do Sul
+        'GO': 1.7,  // Goiás
+        'MT': 2.0,  // Mato Grosso
+        'MS': 1.9,  // Mato Grosso do Sul
+        'DF': 1.6,  // Distrito Federal
+        'BA': 2.2,  // Bahia
+        'SE': 2.3,  // Sergipe
+        'AL': 2.4,  // Alagoas
+        'PE': 2.5,  // Pernambuco
+        'PB': 2.6,  // Paraíba
+        'RN': 2.7,  // Rio Grande do Norte
+        'CE': 2.8,  // Ceará
+        'PI': 2.9,  // Piauí
+        'MA': 3.0,  // Maranhão
+        'TO': 2.1,  // Tocantins
+        'PA': 3.2,  // Pará
+        'AP': 3.5,  // Amapá
+        'AM': 3.8,  // Amazonas
+        'RR': 4.0,  // Roraima
+        'AC': 4.2   // Acre
+      };
+
+      const basePrice = 12;
+      const weightFactor = product?.weight ? product.weight * 1.8 : 4;
+      const distanceFactor = (stateDistanceFactors[uf] || 2.0) * 8;
+      
+      // Adicionar variação por cidade (capitais são mais baratas)
+      const capitals = ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Salvador', 'Fortaleza', 'Brasília', 'Curitiba', 'Recife', 'Porto Alegre', 'Manaus', 'Belém', 'Goiânia', 'Guarulhos', 'Campinas', 'São Luís', 'São Gonçalo', 'Maceió', 'Duque de Caxias', 'Natal', 'Teresina'];
+      const isCapital = capitals.includes(localidade);
+      const cityFactor = isCapital ? 0.9 : 1.1;
+      
+      const pacPrice = (basePrice + weightFactor + distanceFactor) * cityFactor;
+      const sedexPrice = pacPrice * 1.7;
+      const expressPrice = sedexPrice * 1.4;
+
+      // Todos os fretes são gratuitos - política da loja
+       const baseDays = stateDistanceFactors[uf] <= 1.5 ? 3 : stateDistanceFactors[uf] <= 2.5 ? 5 : 7;
+       
+       const options = [
+         {
+           id: 'free-shipping',
+           name: 'Frete Grátis',
+           price: 0,
+           days: baseDays,
+           description: `Entrega gratuita para ${localidade}/${uf}`,
+           location: `${localidade} - ${uf}`
+         }
+       ];
+
+      setShippingOptions(options);
+    } catch (error) {
+      if (error.message.includes('CEP não encontrado')) {
+        setShippingError('CEP não encontrado. Verifique se o CEP está correto.');
+      } else {
+        setShippingError('Erro ao consultar CEP. Verifique sua conexão e tente novamente.');
+      }
+    } finally {
+      setLoadingShipping(false);
+    }
+  };
+
+  // Função para formatar data de entrega
+  const formatDeliveryDate = (days) => {
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + days);
+    return deliveryDate.toLocaleDateString('pt-BR', {
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit'
+    });
   };
 
   useEffect(() => {
@@ -44,12 +172,7 @@ const ProductDetail = () => {
       const response = await productsAPI.getById(id);
       setProduct(response.data);
       
-      // Estabelecer valores padrão
-      if (response.data) {
-        setSelectedColor(response.data.color || 'Rosa');
-        setSelectedStorage(response.data.storage || '512 GB');
-        setSelectedCondition(response.data.condition || 'Muito Bom');
-      }
+      // Valores padrão removidos - ahora usamos especificaciones dinámicas
     } catch (err) {
       console.error('Erro carregando produto:', err);
       setError('Erro ao carregar o produto');
@@ -74,14 +197,7 @@ const ProductDetail = () => {
       const success = await addToCart(id, quantity);
       
       if (success) {
-        // Opcional: mostrar as opções selecionadas na mensagem
-        const options = [];
-        if (selectedColor) options.push(`Cor: ${selectedColor}`);
-        if (selectedStorage) options.push(`Armazenamento: ${selectedStorage}`);
-        if (selectedCondition) options.push(`Estado: ${selectedCondition}`);
-        
-        const optionsText = options.length > 0 ? ` (${options.join(', ')})` : '';
-        showSuccess(`${product.title}${optionsText} adicionado ao carrinho!`);
+        showSuccess(`${product.title} adicionado ao carrinho!`);
       }
     } catch (error) {
       console.error('Erro adicionando ao carrinho:', error);
@@ -191,9 +307,8 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Título e SKU */}
-          <h1 className="product-title">{product.title}</h1>
-          <p className="product-sku">SKU: {product.id}</p>
+          {/* Título */}
+            <h1 className="product-title">{product.title}</h1>
 
           {/* Preços */}
           <div className="product-pricing">
@@ -261,49 +376,20 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* Opções de produto */}
-          <div className="product-options">
-            {/* Color */}
-            <div className="option-group">
-              <label>Cor</label>
-              <div className="color-options">
-                <button 
-                  className={`color-option ${selectedColor === (product.color || 'Rosa') ? 'selected' : ''}`}
-                  onClick={() => setSelectedColor(product.color || 'Rosa')}
-                >
-                  {product.color || 'Rosa'}
-                </button>
+          {/* Especificações dinâmicas do produto */}
+          {product.specifications && (
+            <div className="product-dynamic-specifications">
+              <h3>Especificações</h3>
+              <div className="specs-grid">
+                {Object.entries(product.specifications).map(([key, value]) => (
+                  <div key={key} className="spec-item">
+                    <span className="spec-label">{key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+                    <span className="spec-value">{value}</span>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* Armazenamento */}
-            {product.category === 'Smartphones' && (
-              <div className="option-group">
-                <label>Armazenamento</label>
-                <div className="storage-options">
-                  <button 
-                    className={`storage-option ${selectedStorage === (product.storage || '512 GB') ? 'selected' : ''}`}
-                    onClick={() => setSelectedStorage(product.storage || '512 GB')}
-                  >
-                    {product.storage || '512 GB'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Estado do produto */}
-            <div className="option-group">
-              <label>Estado do produto</label>
-              <div className="condition-options">
-                <button 
-                  className={`condition-option ${selectedCondition === (product.condition || 'Muito Bom') ? 'selected' : ''}`}
-                  onClick={() => setSelectedCondition(product.condition || 'Muito Bom')}
-                >
-                  {product.condition || 'Muito Bom'}
-                </button>
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Descrição */}
           <div className="product-description">
@@ -359,9 +445,72 @@ const ProductDetail = () => {
           <div className="shipping-calculator">
             <label>Calcule o frete e prazo de entrega</label>
             <div className="shipping-input">
-              <input type="text" placeholder="CEP" />
-              <button>Consultar</button>
+              <input 
+                type="text" 
+                placeholder="Digite seu CEP" 
+                value={cep}
+                onChange={(e) => setCep(formatCEP(e.target.value))}
+                maxLength={9}
+                onKeyPress={(e) => e.key === 'Enter' && calculateShipping()}
+              />
+              <button 
+                onClick={calculateShipping}
+                disabled={!cep}
+              >
+                Consultar
+              </button>
             </div>
+            
+            {loadingShipping && (
+              <div className="shipping-loading">
+                <div className="shipping-loading-spinner"></div>
+                <div className="shipping-loading-text">Calculando frete...</div>
+                <div className="shipping-loading-subtext">
+                  Consultando as melhores opções de entrega para seu CEP
+                </div>
+              </div>
+            )}
+            
+            {shippingError && (
+              <div className="shipping-error">
+                <div className="shipping-error-text">⚠️ {shippingError}</div>
+              </div>
+            )}
+            
+            {shippingOptions.length > 0 && (
+              <div className="shipping-options">
+                <h4>Opções de entrega para {cep}:</h4>
+                {shippingOptions.map((option) => (
+                  <div key={option.id} className="shipping-option">
+                    <div className="option-info">
+                      <div className="option-name">{option.name}</div>
+                      <div className="option-description">{option.description}</div>
+                      {option.location && (
+                        <div className="option-location">📍 {option.location}</div>
+                      )}
+                    </div>
+                    <div className="option-details">
+                      <div className="option-price">
+                        {option.price === 0 ? 'Grátis' : `R$ ${option.price.toFixed(2)}`}
+                      </div>
+                      <div className="option-delivery">
+                        {option.days === 1 ? 'Amanhã' : `${option.days} dias úteis`}
+                        <br />
+                        <small>até {formatDeliveryDate(option.days)}</small>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                <div className="shipping-info">
+                  <small>
+                    📦 Produto será enviado pelos Correios<br />
+                    📍 Rastreamento incluído em todas as modalidades<br />
+                    🎉 Frete grátis para todo o Brasil!
+                  </small>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
