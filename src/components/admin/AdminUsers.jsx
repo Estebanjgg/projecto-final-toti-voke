@@ -18,6 +18,8 @@ const AdminUsers = () => {
     role: '',
     is_active: ''
   });
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   useEffect(() => {
     loadUsers();
@@ -38,8 +40,8 @@ const AdminUsers = () => {
         setPagination({});
       }
     } catch (error) {
-      console.error('Error cargando usuarios:', error);
-      showError('Error cargando usuarios');
+      console.error('Erro carregando usuários:', error);
+      showError('Erro ao carregar usuários');
       setUsers([]);
       setPagination({});
     } finally {
@@ -57,25 +59,40 @@ const AdminUsers = () => {
 
   const handleRoleUpdate = async (userId, newRole) => {
     if (userId === currentUser.id && newRole !== 'admin') {
-      showError('No puedes cambiar tu propio rol de administrador');
+      showError('Você não pode alterar seu próprio papel de administrador');
       return;
     }
 
-    if (!window.confirm(`¿Estás seguro de cambiar el rol de este usuario a "${newRole}"?`)) {
-      return;
-    }
+    // Mostrar modal de confirmación personalizado
+    setConfirmAction({
+      userId,
+      newRole,
+      userName: users.find(u => u.id === userId)?.email || 'este usuario'
+    });
+    setShowConfirmModal(true);
+  };
+
+  const confirmRoleUpdate = async () => {
+    if (!confirmAction) return;
 
     try {
-      await adminAPI.updateUserRole(userId, newRole);
-      showSuccess('Rol de usuario actualizado exitosamente');
+      await adminAPI.updateUserRole(confirmAction.userId, confirmAction.newRole);
+      showSuccess('Papel do usuário atualizado com sucesso');
       loadUsers();
       setShowUserModal(false);
+      setShowConfirmModal(false);
+      setConfirmAction(null);
     } catch (error) {
-      console.error('Error actualizando rol:', error);
+      console.error('Erro atualizando papel:', error);
       showError(
-        error.response?.data?.message || 'Error actualizando rol de usuario'
+        error.response?.data?.message || 'Erro ao atualizar papel do usuário'
       );
     }
+  };
+
+  const cancelRoleUpdate = () => {
+    setShowConfirmModal(false);
+    setConfirmAction(null);
   };
 
   const viewUserDetails = (user) => {
@@ -97,7 +114,6 @@ const AdminUsers = () => {
   const getRoleColor = (role) => {
     const colors = {
       admin: 'danger',
-      moderator: 'warning',
       user: 'primary'
     };
     return colors[role] || 'secondary';
@@ -106,8 +122,7 @@ const AdminUsers = () => {
   const getRoleLabel = (role) => {
     const labels = {
       admin: 'Administrador',
-      moderator: 'Moderador',
-      user: 'Usuario'
+      user: 'Usuário'
     };
     return labels[role] || role;
   };
@@ -115,8 +130,8 @@ const AdminUsers = () => {
   return (
     <div className="admin-users">
       <div className="users-header">
-        <h1>Gestión de Usuarios</h1>
-        <p>Administra los usuarios y sus roles</p>
+        <h1>Gestão de Usuários</h1>
+        <p>Administre os usuários e seus papéis</p>
       </div>
 
       {/* Filtros */}
@@ -126,7 +141,7 @@ const AdminUsers = () => {
             <label>Buscar:</label>
             <input
               type="text"
-              placeholder="Email, nombre, apellido..."
+              placeholder="Email, nome, sobrenome..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               className="form-input"
@@ -134,43 +149,42 @@ const AdminUsers = () => {
           </div>
           
           <div className="filter-group">
-            <label>Rol:</label>
+            <label>Papel:</label>
             <select
               value={filters.role}
               onChange={(e) => handleFilterChange('role', e.target.value)}
               className="form-select"
             >
               <option value="">Todos</option>
-              <option value="user">Usuario</option>
-              <option value="moderator">Moderador</option>
+              <option value="user">Usuário</option>
               <option value="admin">Administrador</option>
             </select>
           </div>
           
           <div className="filter-group">
-            <label>Estado:</label>
+            <label>Status:</label>
             <select
               value={filters.is_active}
               onChange={(e) => handleFilterChange('is_active', e.target.value)}
               className="form-select"
             >
               <option value="">Todos</option>
-              <option value="true">Activos</option>
-              <option value="false">Inactivos</option>
+              <option value="true">Ativos</option>
+              <option value="false">Inativos</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Lista de usuarios */}
+      {/* Lista de usuários */}
       {loading ? (
-        <div className="admin-loading">
-          <div className="loading-spinner"></div>
-          <p>Cargando usuarios...</p>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <span>⏳ Carregando usuários...</span>
         </div>
       ) : users.length === 0 ? (
-        <div className="no-users">
-          <p>No se encontraron usuarios.</p>
+        <div className="empty-state">
+          <p>Nenhum usuário encontrado com os filtros aplicados.</p>
         </div>
       ) : (
         <>
@@ -178,14 +192,14 @@ const AdminUsers = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Usuario</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  <th>Último Login</th>
-                  <th>Registro</th>
-                  <th>Acciones</th>
+                  <th>👤 Usuário</th>
+                      <th>📧 Email</th>
+                      <th>📱 Telefone</th>
+                      <th>🎭 Papel</th>
+                      <th>⚡ Status</th>
+                      <th>🕐 Último Login</th>
+                      <th>📅 Registro</th>
+                      <th>⚙️ Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,7 +210,7 @@ const AdminUsers = () => {
                         <div className="user-name">
                           {user.first_name} {user.last_name}
                           {user.id === currentUser.id && (
-                            <span className="current-user-badge">Tú</span>
+                            <span className="current-user-badge">Você</span>
                           )}
                         </div>
                       </div>
@@ -209,7 +223,7 @@ const AdminUsers = () => {
                         )}
                       </div>
                     </td>
-                    <td>{user.phone || 'No especificado'}</td>
+                    <td>{user.phone || 'Não especificado'}</td>
                     <td>
                       <span className={`role-badge role-${getRoleColor(user.role)}`}>
                         {getRoleLabel(user.role)}
@@ -219,7 +233,7 @@ const AdminUsers = () => {
                       <span className={`status-badge ${
                         user.is_active ? 'status-success' : 'status-danger'
                       }`}>
-                        {user.is_active ? 'Activo' : 'Inactivo'}
+                        {user.is_active ? 'Ativo' : 'Inativo'}
                       </span>
                     </td>
                     <td>{formatDate(user.last_login)}</td>
@@ -228,9 +242,10 @@ const AdminUsers = () => {
                       <div className="action-buttons">
                         <button
                           onClick={() => viewUserDetails(user)}
-                          className="btn btn-sm btn-outline"
+                          className="btn btn-sm btn-outline action-btn"
+                          title="Ver detalhes do usuário"
                         >
-                          Ver Detalles
+                          👁️ Ver Detalhes
                         </button>
                       </div>
                     </td>
@@ -240,7 +255,7 @@ const AdminUsers = () => {
             </table>
           </div>
 
-          {/* Paginación */}
+          {/* Paginação */}
           {pagination.pages > 1 && (
             <div className="pagination">
               <button
@@ -260,14 +275,14 @@ const AdminUsers = () => {
                 disabled={pagination.page >= pagination.pages}
                 className="btn btn-outline"
               >
-                Siguiente
+                Próximo
               </button>
             </div>
           )}
         </>
       )}
 
-      {/* Modal de detalles de usuario */}
+      {/* Modal de detalhes de usuário */}
       {showUserModal && selectedUser && (
         <UserDetailsModal
           user={selectedUser}
@@ -276,11 +291,51 @@ const AdminUsers = () => {
           onRoleUpdate={handleRoleUpdate}
         />
       )}
+
+      {/* Modal de Confirmação Personalizado */}
+      {showConfirmModal && confirmAction && (
+        <div className="modal-overlay">
+          <div className="confirmation-modal">
+            <div className="modal-header">
+              <div className="warning-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Confirmar Mudança de Papel</h3>
+            </div>
+            
+            <div className="modal-body">
+              <p className="confirmation-message">
+                Tem certeza de que deseja alterar o papel de <strong>{confirmAction.userName}</strong> para <span className={`role-badge role-${confirmAction.newRole}`}>{confirmAction.newRole === 'admin' ? 'Administrador' : 'Usuário'}</span>?
+              </p>
+              <p className="confirmation-warning">
+                Esta ação modificará as permissões do usuário no sistema.
+              </p>
+            </div>
+            
+            <div className="modal-footer">
+              <button 
+                onClick={cancelRoleUpdate} 
+                className="btn btn-outline"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmRoleUpdate} 
+                className="btn btn-danger"
+              >
+                Confirmar Mudança
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// Componente del modal de detalles
+// Componente do modal de detalhes
 const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
   const [newRole, setNewRole] = useState(user.role);
 
@@ -298,8 +353,7 @@ const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
   const getRoleLabel = (role) => {
     const labels = {
       admin: 'Administrador',
-      moderator: 'Moderador',
-      user: 'Usuario'
+      user: 'Usuário'
     };
     return labels[role] || role;
   };
@@ -308,105 +362,167 @@ const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content user-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>
-            Detalles de Usuario
-            {isCurrentUser && <span className="current-user-badge">Tú</span>}
-          </h2>
-          <button onClick={onClose} className="modal-close">&times;</button>
+      <div className="modal-content user-modal enhanced" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header enhanced-header">
+          <div className="header-content">
+            <div className="user-avatar">
+              <div className="avatar-circle">
+                {user.first_name?.charAt(0)}{user.last_name?.charAt(0)}
+              </div>
+            </div>
+            <div className="header-info">
+              <h2>
+                {user.first_name} {user.last_name}
+                {isCurrentUser && <span className="current-user-badge">Você</span>}
+              </h2>
+              <p className="user-email">{user.email}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="modal-close enhanced-close">&times;</button>
         </div>
         
-        <div className="modal-body">
-          <div className="user-details-grid">
-            {/* Información personal */}
-            <div className="detail-section">
-              <h3>Información Personal</h3>
-              <div className="detail-item">
-                <label>Nombre:</label>
-                <span>{user.first_name} {user.last_name}</span>
+        <div className="modal-body enhanced-body">
+          <div className="user-details-grid enhanced-grid">
+            {/* Informações pessoais */}
+            <div className="detail-section enhanced-section">
+              <div className="section-header">
+                <div className="section-icon personal-icon">👤</div>
+                <h3>Informações Pessoais</h3>
               </div>
-              <div className="detail-item">
-                <label>Email:</label>
-                <span>
-                  {user.email}
-                  {user.email_verified && (
-                    <span className="verified-badge">Verificado ✓</span>
-                  )}
-                </span>
-              </div>
-              <div className="detail-item">
-                <label>Teléfono:</label>
-                <span>{user.phone || 'No especificado'}</span>
-              </div>
-            </div>
-
-            {/* Estado y rol */}
-            <div className="detail-section">
-              <h3>Estado y Permisos</h3>
-              <div className="detail-item">
-                <label>Estado:</label>
-                <span className={`status-badge ${
-                  user.is_active ? 'status-success' : 'status-danger'
-                }`}>
-                  {user.is_active ? 'Activo' : 'Inactivo'}
-                </span>
-              </div>
-              <div className="detail-item">
-                <label>Rol Actual:</label>
-                <span className={`role-badge role-${user.role}`}>
-                  {getRoleLabel(user.role)}
-                </span>
-              </div>
-              <div className="detail-item">
-                <label>Cambiar Rol:</label>
-                <select
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                  className="form-select"
-                  disabled={isCurrentUser && user.role === 'admin'}
-                >
-                  <option value="user">Usuario</option>
-                  <option value="moderator">Moderador</option>
-                  <option value="admin">Administrador</option>
-                </select>
-                {isCurrentUser && user.role === 'admin' && (
-                  <small className="warning-text">
-                    No puedes cambiar tu propio rol de administrador
-                  </small>
-                )}
+              <div className="detail-items">
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">📝</div>
+                  <div className="item-content">
+                    <label>Nome Completo</label>
+                    <span className="item-value">{user.first_name} {user.last_name}</span>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">📧</div>
+                  <div className="item-content">
+                    <label>Email</label>
+                    <div className="email-container">
+                      <span className="item-value">{user.email}</span>
+                      {user.email_verified && (
+                        <span className="verified-badge enhanced-verified">✓ Verificado</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">📱</div>
+                  <div className="item-content">
+                    <label>Telefone</label>
+                    <span className="item-value">{user.phone || 'Não especificado'}</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Fechas importantes */}
-            <div className="detail-section">
-              <h3>Actividad</h3>
-              <div className="detail-item">
-                <label>Fecha de Registro:</label>
-                <span>{formatDate(user.created_at)}</span>
+            {/* Status e papel */}
+            <div className="detail-section enhanced-section">
+              <div className="section-header">
+                <div className="section-icon permissions-icon">🔐</div>
+                <h3>Status e Permissões</h3>
               </div>
-              <div className="detail-item">
-                <label>Última Actualización:</label>
-                <span>{formatDate(user.updated_at)}</span>
+              <div className="detail-items">
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">🟢</div>
+                  <div className="item-content">
+                    <label>Status da Conta</label>
+                    <span className={`status-badge enhanced-status ${
+                      user.is_active ? 'status-success' : 'status-danger'
+                    }`}>
+                      {user.is_active ? '🟢 Ativo' : '🔴 Inativo'}
+                    </span>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">👑</div>
+                  <div className="item-content">
+                    <label>Papel Atual</label>
+                    <span className={`role-badge enhanced-role role-${user.role}`}>
+                      {user.role === 'admin' ? '👑 ' : '👤 '}{getRoleLabel(user.role)}
+                    </span>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item role-change-item">
+                  <div className="item-icon">⚙️</div>
+                  <div className="item-content">
+                    <label>Alterar Papel</label>
+                    <select
+                      value={newRole}
+                      onChange={(e) => setNewRole(e.target.value)}
+                      className="form-select enhanced-select"
+                      disabled={isCurrentUser && user.role === 'admin'}
+                    >
+                      <option value="user">👤 Usuário</option>
+                      <option value="admin">👑 Administrador</option>
+                    </select>
+                    {isCurrentUser && user.role === 'admin' && (
+                      <div className="warning-text enhanced-warning">
+                        ⚠️ Você não pode alterar seu próprio papel de administrador
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="detail-item">
-                <label>Último Login:</label>
-                <span>{formatDate(user.last_login)}</span>
+            </div>
+
+            {/* Datas importantes */}
+            <div className="detail-section enhanced-section">
+              <div className="section-header">
+                <div className="section-icon activity-icon">📊</div>
+                <h3>Histórico de Atividade</h3>
+              </div>
+              <div className="detail-items">
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">📅</div>
+                  <div className="item-content">
+                    <label>Data de Registro</label>
+                    <span className="item-value date-value">{formatDate(user.created_at)}</span>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">🔄</div>
+                  <div className="item-content">
+                    <label>Última Atualização</label>
+                    <span className="item-value date-value">{formatDate(user.updated_at)}</span>
+                  </div>
+                </div>
+                <div className="detail-item enhanced-item">
+                  <div className="item-icon">🚪</div>
+                  <div className="item-content">
+                    <label>Último Login</label>
+                    <span className="item-value date-value">{formatDate(user.last_login)}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Información adicional */}
-          <div className="detail-section">
-            <h3>Información del Sistema</h3>
-            <div className="system-info">
-              <div className="info-item">
-                <label>ID de Usuario:</label>
-                <span className="monospace">{user.id}</span>
+          {/* Informações do sistema */}
+          <div className="detail-section enhanced-section system-section">
+            <div className="section-header">
+              <div className="section-icon system-icon">💻</div>
+              <h3>Informações do Sistema</h3>
+            </div>
+            <div className="system-info enhanced-system">
+              <div className="info-item enhanced-info">
+                <div className="info-icon">🆔</div>
+                <div className="info-content">
+                  <label>ID do Usuário</label>
+                  <span className="monospace enhanced-mono">{user.id}</span>
+                </div>
               </div>
-              <div className="info-item">
-                <label>Email Verificado:</label>
-                <span>{user.email_verified ? 'Sim' : 'Não'}</span>
+              <div className="info-item enhanced-info">
+                <div className="info-icon">✉️</div>
+                <div className="info-content">
+                  <label>Email Verificado</label>
+                  <span className={`verification-status ${user.email_verified ? 'verified' : 'unverified'}`}>
+                    {user.email_verified ? '✅ Sim' : '❌ Não'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -414,7 +530,7 @@ const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
         
         <div className="modal-footer">
           <button onClick={onClose} className="btn btn-outline">
-            Cerrar
+            Fechar
           </button>
           {newRole !== user.role && (
             <button
@@ -422,7 +538,7 @@ const UserDetailsModal = ({ user, currentUser, onClose, onRoleUpdate }) => {
               className="btn btn-primary"
               disabled={isCurrentUser && user.role === 'admin' && newRole !== 'admin'}
             >
-              Actualizar Rol
+              Atualizar Papel
             </button>
           )}
         </div>

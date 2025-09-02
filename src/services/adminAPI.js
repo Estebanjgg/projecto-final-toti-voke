@@ -114,9 +114,20 @@ export const deleteProduct = async (productId) => {
 
 // Obtener todos los usuarios
 export const getUsers = async (params = {}) => {
+  const queryParams = new URLSearchParams();
+  
+  Object.keys(params).forEach(key => {
+    if (params[key] !== '' && params[key] !== null && params[key] !== undefined) {
+      queryParams.append(key, params[key]);
+    }
+  });
+  
+  const queryString = queryParams.toString();
+  const url = `/admin/users${queryString ? `?${queryString}` : ''}`;
+  
   try {
-    const response = await api.get('/admin/users', { params });
-    return response.data; // response.data já contém {success: true, data: [...], pagination: {...}}
+    const response = await api.get(url);
+    return response.data;
   } catch (error) {
     console.error('Error obteniendo usuarios:', error);
     throw error;
