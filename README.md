@@ -1,79 +1,203 @@
-# 🛍️ Voke E-commerce Frontend
+# 🛍️ Voke E-commerce - Plataforma Completa
 
-**Frontend moderno para tienda electrónica construido con React + Vite**
+**Plataforma moderna de e-commerce construída com React 19 + Vite, com funcionalidades completas de loja virtual**
 
-## 🚀 **Deployment en Vercel**
+## 🚀 **Deploy no Vercel**
 
 ### **Deploy Automático:**
-1. Push a GitHub
-2. Conectar con Vercel
-3. ¡Listo! Auto-deploy en cada commit
 
-### **Configuración:**
+1. Push para GitHub
+2. Conectar com Vercel
+3. ¡Pronto! Auto-deploy a cada commit
+
+### **Configuração:**
+
 - ✅ **Framework:** Vite
-- ✅ **Build Command:** `npm run build`
-- ✅ **Output Directory:** `dist`
-- ✅ **API:** Heroku (sin variables de entorno)
+- ✅ **Comando de Build:** `npm run build`
+- ✅ **Diretório de Saída:** `dist`
+- ✅ **API Backend:** Heroku (sem variáveis de ambiente)
 
-## 🛠️ **Desarrollo Local**
+## 🛠️ **Desenvolvimento Local**
 
 ```bash
-# Instalar dependencias
+# Instalar dependências
 npm install
 
-# Ejecutar en desarrollo
+# Executar em desenvolvimento
 npm run dev
 
-# Build para producción
+# Build para produção
 npm run build
 
-# Preview del build
+# Preview do build
 npm run preview
 ```
 
 ## 🌐 **URLs**
 
-- **🖥️ Desarrollo:** http://localhost:5173
-- **🌍 Producción:** https://tu-app-voke.vercel.app
-- **📱 API:** https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api
+- **🖥️ Desenvolvimento:** http://localhost:5173
+- **🌍 Produção:** https://sua-app-voke.vercel.app
+- **📱 API Backend:** https://sua-app-voke-backend-7da6ed58e5fc.herokuapp.com/api
 
-## ✨ **Características**
+## ✨ **Funcionalidades Principais**
 
-- ✅ **React 19** con hooks modernos
-- ✅ **Vite** para desarrollo rápido
-- ✅ **Responsive Design** mobile-first
-- ✅ **Filtros avanzados** de productos
-- ✅ **Navegación por categorías**
-- ✅ **Búsqueda en tiempo real**
-- ✅ **API integrada** con Heroku
+### 🔐 **Sistema de Autenticação**
 
-## 📁 **Estructura**
+- ✅ **Login/Registro** completo de usuários
+- ✅ **Recuperação de senha** via email
+- ✅ **Reset de senha** seguro
+- ✅ **Perfil de usuário** editável
+- ✅ **Rotas protegidas** com middleware
+
+### 🛒 **E-commerce Completo**
+
+- ✅ **Catálogo de produtos** com filtros avançados
+- ✅ **Carrinho de compras** persistente
+- ✅ **Lista de favoritos** personalizada
+- ✅ **Checkout completo** com múltiplas formas de pagamento
+- ✅ **Histórico de pedidos** detalhado
+- ✅ **Busca em tempo real** por produtos
+
+### 🏪 **Navegação e Interface**
+
+- ✅ **Categorias de produtos** organizadas
+- ✅ **Páginas de marca** dedicadas
+- ✅ **Ofertas especiais** e promoções
+- ✅ **Banners promocionais** dinâmicos
+- ✅ **Design responsivo** mobile-first
+- ✅ **Interface moderna** e intuitiva
+
+### 👨‍💼 **Painel Administrativo**
+
+- ✅ **Dashboard completo** para administradores
+- ✅ **Gestão de produtos** (CRUD completo)
+- ✅ **Gestão de usuários** e permissões
+- ✅ **Gestão de pedidos** e status
+- ✅ **Relatórios e estatísticas** em tempo real
+
+### 🤖 **Recursos Avançados**
+
+- ✅ **ChatBot integrado** para atendimento
+- ✅ **Consulta de CEP** automática
+- ✅ **Sistema de alertas** contextuais
+- ✅ **Validação em tempo real** de formulários
+- ✅ **Notificações** de sistema
+- ✅ **API de pagamentos** integrada
+
+## 📁 **Estrutura do Projeto**
 
 ```
 src/
-├── components/          # Componentes React
+├── components/              # Componentes React
+│   ├── auth/               # Autenticação
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── Profile.jsx
+│   │   ├── ForgotPassword.jsx
+│   │   └── ProtectedRoute.jsx
+│   ├── admin/              # Painel Admin
+│   │   ├── AdminDashboard.jsx
+│   │   ├── AdminProducts.jsx
+│   │   ├── AdminUsers.jsx
+│   │   └── AdminOrders.jsx
+│   ├── cart/               # Carrinho
+│   ├── checkout/           # Finalização
+│   ├── orders/             # Pedidos
+│   ├── ui/                 # Componentes UI
 │   ├── CategoryProducts.jsx
-│   ├── SidebarFilters.jsx
-│   └── ProductCard.jsx
-├── services/           # API y servicios
-│   └── api.js
-├── config/            # Configuración
+│   ├── ProductCard.jsx
+│   ├── ChatBot.jsx
+│   ├── Header.jsx
+│   ├── Footer.jsx
+│   └── SidebarFilters.jsx
+├── services/               # APIs e Serviços
+│   ├── api.js             # API principal
+│   ├── authAPI.js         # Autenticação
+│   ├── cartAPI.js         # Carrinho
+│   ├── checkoutAPI.js     # Checkout
+│   ├── ordersAPI.js       # Pedidos
+│   ├── paymentsAPI.js     # Pagamentos
+│   ├── adminAPI.js        # Admin
+│   ├── chatbotAPI.js      # ChatBot
+│   └── cepAPI.js          # CEP
+├── contexts/              # Context API
+│   ├── AuthContext.jsx    # Autenticação
+│   ├── CartContext.jsx    # Carrinho
+│   ├── FavoritesContext.jsx # Favoritos
+│   └── AlertContext.jsx   # Alertas
+├── hooks/                 # Custom Hooks
+├── config/               # Configurações
 │   └── api-config.js
-└── assets/            # Recursos estáticos
+└── assets/               # Recursos estáticos
 ```
 
-## 🔧 **Tecnologías**
+## 🔧 **Tecnologias Utilizadas**
 
-- **React 19** - UI Library
-- **Vite** - Build Tool
-- **ESLint** - Code Quality
-- **CSS3** - Styling
-- **Vercel** - Deployment
+### **Frontend**
 
----
+- **React 19** - Biblioteca UI moderna
+- **React Router DOM** - Roteamento SPA
+- **React Icons** - Ícones otimizados
+- **Vite** - Build tool ultrarrápido
+- **CSS3** - Estilização responsiva
 
-**¡Listo para producción! 🎉**
+### **Desenvolvimento**
 
-## Expanding the ESLint configuration
+- **ESLint** - Qualidade de código
+- **TypeScript** - Tipagem estática (suporte)
+- **React Hooks** - Gerenciamento de estado
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### **Deploy e Infraestrutura**
+
+- **Vercel** - Deploy frontend
+- **Heroku** - API backend
+- **Supabase** - Banco de dados
+
+## 🎯 **Principais Páginas**
+
+- **🏠 Home** - Página inicial com ofertas
+- **📱 Produtos** - Catálogo completo
+- **🔍 Busca** - Pesquisa avançada
+- **🛒 Carrinho** - Gestão de compras
+- **❤️ Favoritos** - Lista de desejos
+- **💳 Checkout** - Finalização de compra
+- **👤 Perfil** - Dados do usuário
+- **📦 Pedidos** - Histórico de compras
+- **⚙️ Admin** - Painel administrativo
+
+## � **Recursos de UX/UI**
+
+- ✅ **Loading states** em todas as operações
+- ✅ **Feedback visual** para ações do usuário
+- ✅ **Modais** para confirmações importantes
+- ✅ **Formulários validados** em tempo real
+- ✅ **Breadcrumbs** para navegação
+- ✅ **Paginação** otimizada
+- ✅ **Skeleton loading** para melhor UX
+
+## 🔒 **Segurança**
+
+- ✅ **Autenticação JWT** segura
+- ✅ **Rotas protegidas** por role
+- ✅ **Validação** client e server-side
+- ✅ **Sanitização** de dados
+- ✅ **HTTPS** em produção
+
+## 📱 **Responsividade**
+
+- ✅ **Mobile First** design
+- ✅ **Tablet** otimizado
+- ✅ **Desktop** completo
+- ✅ **Touch friendly** interface
+
+### Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+### Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
