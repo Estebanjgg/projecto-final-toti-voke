@@ -14,7 +14,7 @@ const LoadingSpinner = () => (
 
 const Orders = () => {
   const { user, isAuthenticated } = useAuth();
-  const { addAlert } = useAlert();
+  const { showAlert, showSuccess, showError, showWarning } = useAlert();
   
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);

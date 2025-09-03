@@ -866,6 +866,26 @@
   grid-column: 1 / -1;
 }
 
+.product-modal .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.product-modal .form-help {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.product-modal .form-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
 /* User Modal */
 .user-modal {
   width: 750px;
@@ -2018,6 +2038,7 @@
   border-top: 1px solid #f3f4f6;
   display: flex;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .product-actions .btn {
@@ -2084,11 +2105,15 @@
   
   .product-actions {
     padding: 1rem;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   
   .product-actions .btn {
-    width: 100%;
+    flex: 1;
+    min-width: 100px;
+    margin-bottom: 0.5rem;
   }
   
   .confirmation-modal {

@@ -421,7 +421,7 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate, onPaymentStatusUpda
                     <div className="item-details">
                       <h4>{item.product_title}</h4>
                       <p>Cantidad: {item.quantity}</p>
-                      <p>Precio: {formatCurrency(item.products?.current_price || item.price || 0)}</p>
+                      <p>Precio: {formatCurrency(item.products?.current_price || 0)}</p>
                     </div>
                   </div>
                 ))}

@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import AlertContext from '../../contexts/AlertContext';
 import adminAPI from '../../services/adminAPI';
 import { categoriesAPI } from '../../services/categoriesAPI';
+import ConfirmationModal from '../../components/ui/ConfirmationModal';
 
 const AdminProducts = () => {
-  const { addAlert } = useContext(AlertContext);
+  const { showAlert, showSuccess, showError } = useContext(AlertContext);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,8 @@ const AdminProducts = () => {
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [filters, setFilters] = useState({
     page: 1,
     limit: 20,
@@ -36,7 +39,11 @@ const AdminProducts = () => {
       setPagination(response.pagination);
     } catch (error) {
       console.error('Erro carregando produtos:', error);
-      addAlert('Erro carregando produtos', 'error');
+      if (typeof showError === 'function') {
+        showError('Erro carregando produtos');
+      } else {
+        console.error('showError no es una función');
+      }
     } finally {
       setLoading(false);
     }
@@ -63,13 +70,21 @@ const AdminProducts = () => {
     setSelectedProduct({
       title: '',
       description: '',
-      price: '',
+      current_price: '',
+      original_price: '',
       category: '',
       brand: '',
       image: '',
       stock: 0,
+      discount: 0,
+      condition: 'new',
+      warranty: '',
+      installments: { max: 12, interest_free: 6 },
+      specifications: {},
       is_featured: false,
-      is_active: true
+      is_active: true,
+      is_offer: false,
+      is_best_seller: false
     });
     setIsEditing(false);
     setShowProductModal(true);
@@ -85,34 +100,48 @@ const AdminProducts = () => {
     try {
       if (isEditing) {
         await adminAPI.updateProduct(selectedProduct.id, productData);
-        addAlert('Produto atualizado com sucesso', 'success');
+        showSuccess('Produto atualizado com sucesso');
       } else {
         await adminAPI.createProduct(productData);
-        addAlert('Produto criado com sucesso', 'success');
+        showSuccess('Produto criado com sucesso');
       }
       setShowProductModal(false);
       loadProducts();
     } catch (error) {
       console.error('Erro salvando produto:', error);
-      addAlert(
-        error.response?.data?.message || 'Erro salvando produto',
-        'error'
-      );
+      if (typeof showError === 'function') {
+        showError(
+          error.response?.data?.message || 'Erro salvando produto'
+        );
+      } else {
+        console.error('showError no es una función');
+      }
     }
   };
 
-  const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('Tem certeza de que deseja excluir este produto?')) {
-      return;
-    }
+  const openDeleteConfirmation = (product) => {
+    setProductToDelete(product);
+    setShowDeleteConfirmation(true);
+  };
 
+  const handleDeleteProduct = async () => {
+    if (!productToDelete) return;
+    
     try {
-      await adminAPI.deleteProduct(productId);
-      addAlert('Produto excluído com sucesso', 'success');
+      await adminAPI.deleteProduct(productToDelete.id);
+      if (typeof showSuccess === 'function') {
+        showSuccess('Produto excluído com sucesso');
+      }
+      setShowDeleteConfirmation(false);
+      setProductToDelete(null);
       loadProducts();
     } catch (error) {
       console.error('Erro excluindo produto:', error);
-      addAlert('Erro excluindo produto', 'error');
+      if (typeof showError === 'function') {
+        showError('Erro excluindo produto');
+      } else {
+        console.error('showError no es una función');
+      }
     }
   };
 
@@ -217,8 +246,8 @@ const AdminProducts = () => {
               <option value="created_at-asc">Data (Mais antiga)</option>
               <option value="title-asc">Nome (A-Z)</option>
               <option value="title-desc">Nome (Z-A)</option>
-              <option value="price-desc">Preço (Maior para menor)</option>
-              <option value="price-asc">Preço (Menor para maior)</option>
+              <option value="current_price-desc">Preço (Maior para menor)</option>
+              <option value="current_price-asc">Preço (Menor para maior)</option>
               <option value="stock-asc">Estoque (Menor para maior)</option>
             </select>
           </div>
@@ -277,7 +306,7 @@ const AdminProducts = () => {
                     Editar
                   </button>
                   <button
-                    onClick={() => handleDeleteProduct(product.id)}
+                    onClick={() => openDeleteConfirmation(product)}
                     className="btn btn-sm btn-danger"
                   >
                     Excluir
@@ -324,13 +353,31 @@ const AdminProducts = () => {
           onClose={() => setShowProductModal(false)}
         />
       )}
+
+      {/* Modal de confirmación para eliminar producto */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirmation}
+        onClose={() => {
+          setShowDeleteConfirmation(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={handleDeleteProduct}
+        title="Confirmar exclusão"
+        message={`Tem certeza que deseja excluir o produto "${productToDelete?.title}"? Esta ação não pode ser desfeita.`}
+        confirmText="Sim, excluir"
+        cancelText="Cancelar"
+        type="danger"
+      />
     </div>
   );
 };
 
 // Componente del modal de producto
 const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
-  const [formData, setFormData] = useState(product);
+  const { showAlert, showSuccess, showError } = useContext(AlertContext);
+  const [formData, setFormData] = useState({
+    ...product
+  });
   const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
@@ -359,8 +406,8 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
       newErrors.description = 'A descrição é obrigatória';
     }
     
-    if (!formData.price || formData.price <= 0) {
-      newErrors.price = 'O preço deve ser maior que 0';
+    if (!formData.current_price || formData.current_price <= 0) {
+      newErrors.current_price = 'O preço deve ser maior que 0';
     }
     
     if (!formData.category?.trim()) {
@@ -387,11 +434,49 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
     e.preventDefault();
     
     if (validateForm()) {
+      // Procesar los campos JSON
+      let installments = formData.installments;
+      if (formData.installments_text) {
+        try {
+          installments = JSON.parse(formData.installments_text);
+        } catch (error) {
+          console.error('Error al parsear installments:', error);
+          if (typeof showError === 'function') {
+            showError('Error en el formato JSON de installments');
+          } else {
+            console.error('showError no es una función en installments');
+          }
+          return;
+        }
+      }
+
+      let specifications = formData.specifications;
+      if (formData.specifications_text) {
+        try {
+          specifications = JSON.parse(formData.specifications_text);
+        } catch (error) {
+          console.error('Error al parsear specifications:', error);
+          if (typeof showError === 'function') {
+            showError('Error en el formato JSON de specifications');
+          } else {
+            console.error('showError no es una función en specifications');
+          }
+          return;
+        }
+      }
+
       onSave({
         ...formData,
-        current_price: parseFloat(formData.price),
-        original_price: parseFloat(formData.original_price) || parseFloat(formData.price),
-        stock: parseInt(formData.stock)
+        current_price: parseFloat(formData.current_price),
+        original_price: parseFloat(formData.original_price) || parseFloat(formData.current_price),
+        stock: parseInt(formData.stock),
+        discount: parseInt(formData.discount) || 0,
+        is_offer: formData.is_offer || false,
+        is_best_seller: formData.is_best_seller || false,
+        condition: formData.condition || 'new',
+        warranty: formData.warranty || '',
+        installments: installments,
+        specifications: specifications
       });
     }
   };
@@ -424,12 +509,12 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 type="number"
                 step="0.01"
                 min="0"
-                value={formData.price}
-                onChange={(e) => handleChange('price', e.target.value)}
-                className={`form-input ${errors.price ? 'error' : ''}`}
+                value={formData.current_price}
+                onChange={(e) => handleChange('current_price', e.target.value)}
+                className={`form-input ${errors.current_price ? 'error' : ''}`}
                 placeholder="0.00"
               />
-              {errors.price && <span className="error-text">{errors.price}</span>}
+              {errors.current_price && <span className="error-text">{errors.current_price}</span>}
             </div>
             
             <div className="form-group">
@@ -517,6 +602,83 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
             )}
           </div>
           
+          <div className="form-group">
+            <label>Desconto (%)</label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={formData.discount || ''}
+              onChange={(e) => handleChange('discount', e.target.value)}
+              className="form-input"
+              placeholder="0"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Condição</label>
+            <select
+              value={formData.condition || 'new'}
+              onChange={(e) => handleChange('condition', e.target.value)}
+              className="form-select"
+            >
+              <option value="new">Novo</option>
+              <option value="used">Usado</option>
+              <option value="refurbished">Recondicionado</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Garantia</label>
+            <input
+              type="text"
+              value={formData.warranty || ''}
+              onChange={(e) => handleChange('warranty', e.target.value)}
+              className="form-input"
+              placeholder="Ex: 12 meses"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Parcelamento (JSON)</label>
+            <textarea
+              value={formData.installments ? JSON.stringify(formData.installments, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  const value = e.target.value.trim() ? JSON.parse(e.target.value) : null;
+                  handleChange('installments', value);
+                } catch (error) {
+                  // Mantener el valor como string si no es un JSON válido
+                  handleChange('installments_text', e.target.value);
+                }
+              }}
+              className="form-textarea"
+              placeholder='{"max": 12, "interest_free": 6}'
+              rows="3"
+            />
+            <small className="form-help">Formato: {'{"max": 12, "interest_free": 6}'}</small>
+          </div>
+
+          <div className="form-group">
+            <label>Especificações (JSON)</label>
+            <textarea
+              value={formData.specifications ? JSON.stringify(formData.specifications, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  const value = e.target.value.trim() ? JSON.parse(e.target.value) : null;
+                  handleChange('specifications', value);
+                } catch (error) {
+                  // Mantener el valor como string si no es un JSON válido
+                  handleChange('specifications_text', e.target.value);
+                }
+              }}
+              className="form-textarea"
+              placeholder='{"processor": "Intel i7", "memory": "16GB"}'
+              rows="4"
+            />
+            <small className="form-help">Formato: {'{"chave": "valor", "chave2": "valor2"}'}</small>
+          </div>
+
           <div className="form-checkboxes">
             <label className="checkbox-label">
               <input
@@ -534,6 +696,24 @@ const ProductModal = ({ product, categories, isEditing, onSave, onClose }) => {
                 onChange={(e) => handleChange('is_active', e.target.checked)}
               />
               Produto ativo
+            </label>
+
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={formData.is_offer}
+                onChange={(e) => handleChange('is_offer', e.target.checked)}
+              />
+              Em oferta
+            </label>
+
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={formData.is_best_seller}
+                onChange={(e) => handleChange('is_best_seller', e.target.checked)}
+              />
+              Mais vendido
             </label>
           </div>
         </form>

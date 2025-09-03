@@ -4,7 +4,7 @@ import { ordersAPI } from '../../services/ordersAPI';
 import { useAlert } from '../../contexts/AlertContext';
 
 const OrderCard = ({ order, onCancel, onReorder }) => {
-  const { addAlert } = useAlert();
+  const { showAlert, showSuccess, showError, showWarning } = useAlert();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,7 +60,7 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
   // Gerenciar cancelamento
   const handleCancel = async () => {
     if (!cancelReason.trim()) {
-      addAlert('Por favor, forneça um motivo para o cancelamento', 'warning');
+      showWarning('Por favor, forneça um motivo para o cancelamento');
       return;
     }
 
@@ -104,10 +104,10 @@ const OrderCard = ({ order, onCancel, onReorder }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      addAlert('Nota fiscal baixada com sucesso', 'success');
+      showSuccess('Nota fiscal baixada com sucesso');
     } catch (error) {
       console.error('Erro ao baixar nota fiscal:', error);
-      addAlert('Erro ao baixar a nota fiscal', 'error');
+      showError('Erro ao baixar a nota fiscal');
     } finally {
       setLoading(false);
     }

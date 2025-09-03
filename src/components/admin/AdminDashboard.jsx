@@ -4,7 +4,7 @@ import adminAPI from '../../services/adminAPI';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  const { addAlert } = useContext(AlertContext);
+  const { showAlert, showSuccess, showError } = useContext(AlertContext);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('30d');
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
       setDashboardData(response.data || response);
     } catch (error) {
       console.error('Error loading dashboard:', error);
-      addAlert('Erro carregando dados do dashboard', 'error');
+      showError('Erro carregando dados do dashboard');
     } finally {
       setLoading(false);
     }
