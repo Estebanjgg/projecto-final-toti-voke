@@ -25,6 +25,7 @@ import CartPage from './components/cart/CartPage';
 import Orders from './components/orders/Orders';
 import OrderDetail from './components/orders/OrderDetail';
 import AdminPanel from './components/admin/AdminPanel';
+import ChatBot from './components/ChatBot';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
 
@@ -151,6 +152,7 @@ function App() {
                 <Route path="/admin/*" element={<AdminPanel />} />
               </Routes>
               <GlobalAlerts />
+              <ChatBot />
             </Router>
           </CartProvider>
         </FavoritesProvider>
