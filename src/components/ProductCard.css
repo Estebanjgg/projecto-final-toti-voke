@@ -57,11 +57,6 @@
   z-index: 3;
 }
 
-/* Action button styling */
-.action-button {
-  /* Los estilos específicos están en sus propios archivos CSS */
-}
-
 /* Product image */
 .product-image {
   text-align: center;
@@ -200,21 +195,36 @@
 /* Responsive */
 @media (max-width: 768px) {
   .product-card {
-    padding: 15px;
+    padding: 14px;
+    min-height: 380px;
   }
   
   .product-image {
-    height: 150px;
-    margin: 30px 0 15px 0;
+    height: 140px;
+    margin: 25px 0 12px 0;
   }
   
   .product-title {
     font-size: 13px;
-    height: 35px;
+    height: auto;
+    min-height: 32px;
+    margin: 8px 0 12px 0;
   }
   
   .current-price {
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 1.1;
+  }
+  
+  .current-price-container {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .installments {
+    font-size: 10px;
+    margin: 4px 0 0 0;
+    line-height: 1.2;
   }
   
   .action-buttons-container {
@@ -226,5 +236,56 @@
   .product-badges {
     top: 12px;
     left: 12px;
+  }
+}
+
+/* Ajustes específicos para tablets pequeñas */
+@media (max-width: 600px) and (min-width: 481px) {
+  .product-card {
+    padding: 12px;
+    min-height: 360px;
+  }
+  
+  .product-image {
+    height: 130px;
+    margin: 20px 0 10px 0;
+  }
+  
+  .product-title {
+    font-size: 12px;
+    min-height: 30px;
+    margin: 6px 0 10px 0;
+  }
+  
+  .current-price {
+    font-size: 14px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .current-price-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 5px;
+  }
+  
+  .discount-badge {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+  
+  .installments {
+    font-size: 9px;
+    margin: 3px 0 0 0;
+    line-height: 1.1;
+  }
+  
+  .original-price {
+    font-size: 11px;
+    margin-bottom: 3px;
   }
 }
