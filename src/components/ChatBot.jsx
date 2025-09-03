@@ -45,6 +45,26 @@ const ChatBot = () => {
     }
   };
 
+  const resetConversation = () => {
+    // Resetear todos los estados a su valor inicial
+    setMessages([
+      {
+        id: 1,
+        text: 'Olá! Sou o VokeBot, seu assistente virtual. Como posso ajudá-lo hoje?',
+        sender: 'bot',
+        timestamp: new Date()
+      }
+    ]);
+    setInputMessage('');
+    setIsTyping(false);
+    setUserName('');
+    setIsWaitingForName(false);
+    setShowQuickMenu(false);
+    
+    // Resetear el servicio del chatbot
+    chatBotService.conversationId = null;
+  };
+
   const handleQuickAction = (action) => {
     setShowQuickMenu(false);
     handleSendMessage(action);
@@ -170,13 +190,23 @@ const ChatBot = () => {
                 <span className="chatbot-status">Online • {formatTime(new Date())}</span>
               </div>
             </div>
-            <button 
-              className="chatbot-close" 
-              onClick={toggleChat}
-              aria-label="Fechar chat"
-            >
-              ×
-            </button>
+            <div className="chatbot-header-buttons">
+              <button 
+                className="chatbot-reset" 
+                onClick={resetConversation}
+                aria-label="Resetar conversa"
+                title="Resetar conversa"
+              >
+                🔄
+              </button>
+              <button 
+                className="chatbot-close" 
+                onClick={toggleChat}
+                aria-label="Fechar chat"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           <div className="chatbot-schedule">

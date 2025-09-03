@@ -106,11 +106,18 @@
   color: #ccc;
 }
 
+.chatbot-header-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chatbot-reset,
 .chatbot-close {
   background: none;
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
   padding: 0;
   width: 30px;
@@ -119,11 +126,26 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
+.chatbot-reset {
+  font-size: 16px;
+}
+
+.chatbot-close {
+  font-size: 24px;
+}
+
+.chatbot-reset:hover,
 .chatbot-close:hover {
   background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.chatbot-reset:active,
+.chatbot-close:active {
+  transform: scale(0.95);
 }
 
 /* Horario de atendimento */
