@@ -2,12 +2,36 @@ import React, { useState, useEffect, useContext } from 'react';
 import AlertContext from '../../contexts/AlertContext';
 import adminAPI from '../../services/adminAPI';
 import './AdminDashboard.css';
+import { Link } from 'react-router-dom';
+import ProductListModal from './ProductListModal';
+
+const getCategoryIcon = (category) => {
+  const categoryIcons = {
+    'Smartphones': 'fas fa-mobile-alt',
+    'Tablets': 'fas fa-tablet-alt',
+    'Notebooks': 'fas fa-laptop',
+    'Desktops': 'fas fa-desktop',
+    'Monitores': 'fas fa-tv',
+    'Acessórios': 'fas fa-headphones'
+  };
+  
+  return categoryIcons[category] || 'fas fa-tag';
+};
 
 const AdminDashboard = () => {
   const { showAlert, showSuccess, showError } = useContext(AlertContext);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('30d');
+  
+  // Estados para los modales de productos
+  const [showActiveProductsModal, setShowActiveProductsModal] = useState(false);
+  const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
+  const [showLowStockModal, setShowLowStockModal] = useState(false);
+  const [productsList, setProductsList] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  
 
   useEffect(() => {
     loadDashboardData();
@@ -24,6 +48,95 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+  
+  // Función para cargar productos activos
+  const loadActiveProducts = async () => {
+    setLoadingProducts(true);
+    setModalTitle('Productos Activos');
+    try {
+      const response = await adminAPI.getAdminProducts({ status: 'active' });     
+      // Asegurarse de que los datos tengan la estructura correcta
+      const formattedProducts = (response.data || []).map(product => ({
+        ...product,
+        current_price: product.current_price || product.precio || product.price || 0,
+        price: product.current_price || product.precio || product.price || 0,
+        precio: product.current_price || product.precio || product.price || 0,
+        image: product.image || (product.images && product.images.length > 0 ? product.images[0] : null),
+        images: product.image ? [product.image] : (product.images || [])
+      }));
+      
+      setProductsList(formattedProducts);
+      setShowActiveProductsModal(true);
+    } catch (error) {
+      console.error('Error al cargar productos activos:', error);
+      showError('Error al cargar productos activos');
+      setProductsList([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+  
+  // Función para cargar productos sin stock
+  const loadOutOfStockProducts = async () => {
+    setLoadingProducts(true);
+    setModalTitle('Productos Sin Stock');
+    try {
+      const response = await adminAPI.getAdminProducts({ stock: '0' });      
+      // Asegurarse de que los datos tengan la estructura correcta
+      const formattedProducts = (response.data || []).map(product => ({
+        ...product,
+        current_price: product.current_price || product.precio || product.price || 0,
+        price: product.current_price || product.precio || product.price || 0,
+        precio: product.current_price || product.precio || product.price || 0,
+        image: product.image || (product.images && product.images.length > 0 ? product.images[0] : null),
+        images: product.image ? [product.image] : (product.images || [])
+      }));
+      
+      setProductsList(formattedProducts);
+      setShowOutOfStockModal(true);
+    } catch (error) {
+      console.error('Error al cargar productos sin stock:', error);
+      showError('Error al cargar productos sin stock');
+      setProductsList([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+  
+  // Función para cargar productos con stock bajo
+  const loadLowStockProducts = async () => {
+    setLoadingProducts(true);
+    setModalTitle('Productos con Stock Bajo');
+    try {
+      const response = await adminAPI.getAdminProducts({ lowStock: 'true' });      
+      // Asegurarse de que los datos tengan la estructura correcta para productos con stock bajo
+      const formattedProducts = (response.data || []).map(product => ({
+        ...product,
+        current_price: product.current_price || product.precio || product.price || 0,
+        price: product.current_price || product.precio || product.price || 0,
+        precio: product.current_price || product.precio || product.price || 0,
+        image: product.image || (product.images && product.images.length > 0 ? product.images[0] : null),
+        images: product.image ? [product.image] : (product.images || [])
+      }));
+      
+      setProductsList(formattedProducts);
+      setShowLowStockModal(true);
+    } catch (error) {
+      console.error('Error al cargar productos con stock bajo:', error);
+      showError('Error al cargar productos con stock bajo');
+      setProductsList([]);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+  
+  // Función para cerrar todos los modales
+  const closeAllModals = () => {
+    setShowActiveProductsModal(false);
+    setShowOutOfStockModal(false);
+    setShowLowStockModal(false);
+    setProductsList([]);
   };
 
   const formatCurrency = (amount) => {
@@ -283,7 +396,7 @@ const AdminDashboard = () => {
             <h3><i className="fas fa-box"></i> Estatísticas de Produtos</h3>
           </div>
           <div className="stats-grid">
-            <div className="stat-card products-active">
+            <div className="stat-card products-active clickable" onClick={loadActiveProducts}>
               <div className="stat-icon">
                 <i className="fas fa-check-circle"></i>
               </div>
@@ -292,7 +405,7 @@ const AdminDashboard = () => {
                 <span className="stat-label">Produtos ativos</span>
               </div>
             </div>
-            <div className="stat-card products-out-stock">
+            <div className="stat-card products-out-stock clickable" onClick={loadOutOfStockProducts}>
               <div className="stat-icon">
                 <i className="fas fa-exclamation-circle"></i>
               </div>
@@ -301,7 +414,7 @@ const AdminDashboard = () => {
                 <span className="stat-label">Sem estoque</span>
               </div>
             </div>
-            <div className="stat-card products-low-stock">
+            <div className="stat-card products-low-stock clickable" onClick={loadLowStockProducts}>
               <div className="stat-icon">
                 <i className="fas fa-exclamation-triangle"></i>
               </div>
@@ -313,11 +426,13 @@ const AdminDashboard = () => {
           </div>
           
           <div className="category-stats">
-            <h4><i className="fas fa-tags"></i> Top Categorias:</h4>
+            <h4><i className="fas fa-chart-pie"></i> Top Categorias</h4>
             <div className="category-list">
-              {Object.entries(products.by_category || {}).slice(0, 5).map(([category, count]) => (
-                <div key={category} className="category-item">
-                  <span className="category-name">{category}</span>
+              {Object.entries(products.by_category || {}).slice(0, 5).map(([category, count], index) => (
+                <div key={category} className={`category-item category-${index}`}>
+                  <span className="category-name">
+                    <i className={getCategoryIcon(category)}></i> {category}
+                  </span>
                   <span className="category-count">{count}</span>
                 </div>
               ))}
@@ -366,6 +481,31 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      
+      {/* Modales para mostrar listas de productos */}
+      <ProductListModal 
+        isOpen={showActiveProductsModal}
+        onClose={closeAllModals}
+        title={modalTitle}
+        products={productsList}
+        loading={loadingProducts}
+      />
+      
+      <ProductListModal 
+        isOpen={showOutOfStockModal}
+        onClose={closeAllModals}
+        title={modalTitle}
+        products={productsList}
+        loading={loadingProducts}
+      />
+      
+      <ProductListModal 
+        isOpen={showLowStockModal}
+        onClose={closeAllModals}
+        title={modalTitle}
+        products={productsList}
+        loading={loadingProducts}
+      />
     </div>
   );
 };
