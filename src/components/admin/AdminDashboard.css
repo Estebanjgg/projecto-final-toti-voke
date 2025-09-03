@@ -214,11 +214,12 @@
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .stat-card {
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #2980b9, #3498db);
   border-radius: 10px;
   padding: 1.5rem;
   display: flex;
@@ -226,87 +227,154 @@
   gap: 1rem;
   transition: all 0.3s ease;
   border-left: 4px solid #3498db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .stat-card:hover {
-  background: #e8f4fd;
+  background: linear-gradient(135deg, #1c6ea4, #2980b9);
   transform: translateX(5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .stat-card.pending {
   border-left-color: #f39c12;
 }
+.stat-card.pending .stat-icon {
+  background: linear-gradient(135deg, #f5b041, #f39c12);
+  color: #ffffff;
+}
 
 .stat-card.processing {
   border-left-color: #3498db;
 }
+.stat-card.processing .stat-icon {
+  background: linear-gradient(135deg, #5dade2, #3498db);
+  color: #ffffff;
+}
 
 .stat-card.shipped {
-  border-left-color: #9b59b6;
+  border-left-color: #3498db;
+}
+.stat-card.shipped .stat-icon {
+  background: linear-gradient(135deg, #5dade2, #3498db);
+  color: #ffffff;
 }
 
 .stat-card.delivered {
   border-left-color: #27ae60;
 }
+.stat-card.delivered .stat-icon {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #ffffff;
+}
 
 .stat-card.cancelled {
   border-left-color: #e74c3c;
+}
+.stat-card.cancelled .stat-icon {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
 }
 
 .stat-card.payment-pending {
   border-left-color: #f39c12;
 }
+.stat-card.payment-pending .stat-icon {
+  background: linear-gradient(135deg, #f5b041, #f39c12);
+  color: #ffffff;
+}
 
 .stat-card.payment-paid {
   border-left-color: #27ae60;
+}
+.stat-card.payment-paid .stat-icon {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #ffffff;
 }
 
 .stat-card.payment-failed {
   border-left-color: #e74c3c;
 }
+.stat-card.payment-failed .stat-icon {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
+}
 
 .stat-card.payment-refunded {
   border-left-color: #95a5a6;
+}
+.stat-card.payment-refunded .stat-icon {
+  background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+  color: #ffffff;
 }
 
 .stat-card.users-new {
   border-left-color: #2ecc71;
 }
+.stat-card.users-new .stat-icon {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #ffffff;
+}
 
 .stat-card.users-active {
   border-left-color: #3498db;
+}
+.stat-card.users-active .stat-icon {
+  background: linear-gradient(135deg, #5dade2, #3498db);
+  color: #ffffff;
 }
 
 .stat-card.users-admin {
   border-left-color: #e74c3c;
 }
+.stat-card.users-admin .stat-icon {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
+}
 
 .stat-card.users-regular {
   border-left-color: #95a5a6;
+}
+.stat-card.users-regular .stat-icon {
+  background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+  color: #ffffff;
 }
 
 .stat-card.products-active {
   border-left-color: #27ae60;
 }
+.stat-card.products-active .stat-icon {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #ffffff;
+}
 
 .stat-card.products-out-stock {
   border-left-color: #e74c3c;
+}
+.stat-card.products-out-stock .stat-icon {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
 }
 
 .stat-card.products-low-stock {
   border-left-color: #f39c12;
 }
+.stat-card.products-low-stock .stat-icon {
+  background: linear-gradient(135deg, #f5b041, #f39c12);
+  color: #ffffff;
+}
 
 .stat-icon {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(52, 152, 219, 0.1);
-  color: #3498db;
-  font-size: 1.2rem;
+  background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+  color: #2c3e50;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .stat-info {
@@ -315,17 +383,21 @@
 
 .stat-value {
   display: block;
-  font-size: 1.8rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #ffffff;
   line-height: 1;
   margin-bottom: 0.25rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
-  color: #7f8c8d;
-  font-size: 0.9rem;
+  color: #ecf0f1;
+  font-size: 1.1rem;
   font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 /* Categorías */

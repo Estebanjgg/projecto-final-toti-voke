@@ -56,7 +56,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.1) 100%);
   z-index: -1;
 }
 
@@ -122,9 +122,10 @@
 
 .admin-nav-item.active {
   color: #ffffff;
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+  background: linear-gradient(135deg, #2980b9 0%, #1c5a85 100%);
+  box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4);
   transform: translateX(8px) scale(1.02);
+  border-radius: 8px;
 }
 
 .admin-nav-item.active::after {
@@ -283,12 +284,12 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
   padding: 1.5rem;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 .stat-card.revenue {
@@ -297,8 +298,12 @@
 }
 
 .stat-card.users {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.stat-card.shipped {
+  border-left-color: #3498db;
 }
 
 .stat-card.products {
@@ -428,8 +433,8 @@
 
 .orders-table tr:hover,
 .products-table tr:hover,
-.users-table tr:hover {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+.users-table tbody tr:hover {
+  background: linear-gradient(135deg, #f8f9fa 0%, #d6eaf8 100%);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -565,12 +570,12 @@
 
 .btn-outline {
   background: transparent;
-  color: #667eea;
-  border: 1px solid #667eea;
+  color: #3498db;
+  border: 1px solid #3498db;
 }
 
 .btn-outline:hover {
-  background: #667eea;
+  background: #3498db;
   color: white;
 }
 
@@ -672,7 +677,7 @@
 
 /* Special Badges */
 .current-user-badge {
-  background: #667eea;
+  background: #3498db;
   color: white;
   padding: 0.2rem 0.5rem;
   border-radius: 12px;
@@ -1064,7 +1069,7 @@
   }
 
   .users-table tbody tr:hover {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #d6eaf8 100%);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
