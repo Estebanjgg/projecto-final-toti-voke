@@ -25,6 +25,7 @@ import CartPage from './components/cart/CartPage';
 import Orders from './components/orders/Orders';
 import OrderDetail from './components/orders/OrderDetail';
 import AdminPanel from './components/admin/AdminPanel';
+import NotFound from './components/NotFound';
 import ChatBot from './components/ChatBot';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
@@ -150,6 +151,13 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/*" element={<AdminPanel />} />
+                
+                {/* Ruta catch-all para páginas no encontradas */}
+                <Route path="*" element={
+                  <Layout>
+                    <NotFound />
+                  </Layout>
+                } />
               </Routes>
               <GlobalAlerts />
               <ChatBot />

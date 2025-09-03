@@ -2,7 +2,7 @@
 .App {
   min-height: 100vh;
   background-color: #ffffff;
-}
+  }
 
 main {
   width: 100%;
@@ -14,6 +14,12 @@ main {
 /* Remove margins from all sections to eliminate white spaces */
 main > * {
   margin: 0 !important;
+}
+
+/* Específicamente eliminar espacios entre VideoSection y Footer */
+.video-section + .footer,
+.video-section + * {
+  margin-top: 0 !important;
 }
 
 /* Global container */

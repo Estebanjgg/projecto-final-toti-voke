@@ -7,7 +7,7 @@ const FavoritesContext = createContext();
 export const useFavorites = () => {
   const context = useContext(FavoritesContext);
   if (!context) {
-    throw new Error('useFavorites debe ser usado dentro de FavoritesProvider');
+    throw new Error('useFavoritos deve ser usado dentro de FavoritosProvider');
   }
   return context;
 };
@@ -48,7 +48,7 @@ export const FavoritesProvider = ({ children }) => {
           }
           return null;
         } catch (error) {
-          console.error(`Error cargando producto ${favorite.product_id}:`, error);
+          console.error(`Erro ao carregar produto ${favorite.product_id}:`, error);
           return null;
         }
       });
@@ -57,7 +57,7 @@ export const FavoritesProvider = ({ children }) => {
       const validProducts = products.filter(product => product !== null);
       setFavoriteProducts(validProducts);
     } catch (error) {
-      console.error('Error cargando productos favoritos:', error);
+      console.error('Erro ao carregar produtos favoritos:', error);
       // Si falla, usar productos mock como fallback
       const mockFavorites = favoritesList.slice(0, 6).map((fav, index) => ({
         id: fav.product_id,
@@ -93,7 +93,7 @@ export const FavoritesProvider = ({ children }) => {
 
       if (response.ok && data.success) {
         setFavorites(data.data || []);
-        
+
         // Cargar información completa de los productos favoritos
         if (data.data && data.data.length > 0) {
           await loadFavoriteProducts(data.data);
@@ -101,7 +101,7 @@ export const FavoritesProvider = ({ children }) => {
           setFavoriteProducts([]);
         }
       } else {
-        console.error('Error cargando favoritos:', data.message);
+        console.error('Erro ao carregar favoritos:', data.message);
         // Si falla, usar datos mock para testing (solo para desarrollo)
         setFavorites([
           { product_id: 1, created_at: new Date().toISOString() },
@@ -110,7 +110,7 @@ export const FavoritesProvider = ({ children }) => {
         setFavoriteProducts([]);
       }
     } catch (error) {
-      console.error('Error cargando favoritos:', error);
+      console.error('Erro ao carregar favoritos:', error);
       // Si falla la conexión, usar datos mock para testing (solo para desarrollo)
       setFavorites([
         { product_id: 1, created_at: new Date().toISOString() },
@@ -153,7 +153,7 @@ export const FavoritesProvider = ({ children }) => {
         // Agregar a la lista local
         const newFavorite = { product_id: productId, created_at: new Date().toISOString() };
         setFavorites(prev => [...prev, newFavorite]);
-        
+
         // Intentar cargar información del producto
         try {
           const productResponse = await fetch(`${API_URL}/api/products/${productId}`);
@@ -164,22 +164,22 @@ export const FavoritesProvider = ({ children }) => {
             }
           }
         } catch (error) {
-          console.error('Error cargando datos del producto:', error);
+          console.error('Erro ao carregar dados do produto:', error);
         }
-        
-        showSuccess('❤️ Agregado a favoritos');
+
+        showSuccess('❤️ Adicionado aos favoritos');
         return true;
       } else {
-        if (data.message === 'El producto ya está en favoritos') {
-          showError('ℹ️ El producto ya está en tus favoritos');
+        if (data.message === 'O produto já está nos favoritos') {
+          showError('ℹ️ O produto já está nos seus favoritos');
         } else {
-          showError(`❌ Error: ${data.message || 'Error al agregar a favoritos'}`);
+          showError(`❌ Erro: ${data.message || 'Erro ao adicionar aos favoritos'}`);
         }
         return false;
       }
     } catch (error) {
-      console.error('Error agregando a favoritos:', error);
-      showError('❌ Error de conexión');
+      console.error('Erro ao adicionar aos favoritos:', error);
+      showError('❌ Erro de conexão');
       return false;
     }
   }, [isAuthenticated, API_URL, showSuccess, showError]);
@@ -208,15 +208,15 @@ export const FavoritesProvider = ({ children }) => {
         // Remover de la lista local
         setFavorites(prev => prev.filter(fav => fav.product_id !== productId));
         setFavoriteProducts(prev => prev.filter(product => product.id !== productId));
-        showSuccess('💔 Removido de favoritos');
+        showSuccess('💔 Removido dos favoritos');
         return true;
       } else {
-        showError(`❌ Error: ${data.message || 'Error al remover de favoritos'}`);
+        showError(`❌ Erro: ${data.message || 'Erro ao remover dos favoritos'}`);
         return false;
       }
     } catch (error) {
-      console.error('Error removiendo de favoritos:', error);
-      showError('❌ Error de conexión');
+      console.error('Erro ao remover dos favoritos:', error);
+      showError('❌ Erro de conexão');
       return false;
     }
   }, [isAuthenticated, API_URL, showSuccess, showError]);
@@ -224,12 +224,12 @@ export const FavoritesProvider = ({ children }) => {
   // Toggle favorito (agregar si no está, remover si está)
   const toggleFavorite = useCallback(async (productId) => {
     if (!isAuthenticated) {
-      showError('❌ Debes iniciar sesión para gestionar favoritos');
+      showError('❌ Você precisa estar logado para gerenciar favoritos');
       return false;
     }
 
     const isCurrentlyFavorite = isFavorite(productId);
-    
+
     if (isCurrentlyFavorite) {
       return await removeFromFavorites(productId);
     } else {

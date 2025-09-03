@@ -25,7 +25,9 @@
 /* Video Section Styles - Original Voke Design */
 .video-section {
   margin: 0;
+  margin-bottom: 0;
   padding: 40px 20px;
+  padding-bottom: 40px;
   font-family: "Verdana", sans-serif;
   color: #262626;
   background: #F5F3ED;
@@ -172,6 +174,12 @@
     margin: 0;
   }
   
+  .video-section {
+    padding: 30px 15px;
+    padding-bottom: 30px;
+    margin-bottom: 0;
+  }
+  
   .brand-title {
     font-size: 1.5rem;
   }
@@ -240,6 +248,12 @@
 @media (max-width: 480px) {
   .padding-adjustment-infoCard {
     padding: 0 10px;
+  }
+  
+  .video-section {
+    padding: 25px 10px;
+    padding-bottom: 25px;
+    margin-bottom: 0;
   }
   
   .informationCard {

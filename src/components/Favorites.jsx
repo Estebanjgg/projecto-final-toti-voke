@@ -6,7 +6,7 @@ import { useAlert } from '../contexts/AlertContext';
 import ProductCard from './ProductCard';
 import './Favorites.css';
 
-// Datos mock de productos para testing
+// Dados mock de produtos para teste
 const mockProducts = [
   {
     id: 1,
@@ -93,9 +93,9 @@ const Favorites = () => {
     }
   }, [isAuthenticated, loadFavorites]);
 
-  // Determinar qué productos mostrar
+  // Determinar quais produtos mostrar
   const getDisplayProducts = () => {
-    // Si tenemos productos reales del backend, usarlos
+    // Se temos produtos reais do backend, usar eles
     if (favoriteProducts.length > 0) {
       return favoriteProducts.map(product => ({
         id: product.id,
@@ -111,7 +111,7 @@ const Favorites = () => {
       }));
     }
     
-    // Si tenemos favoritos pero sin datos de productos, usar mock como fallback
+    // Se temos favoritos mas sem dados de produtos, usar mock como fallback
     if (favorites.length > 0) {
       return favorites.map((fav, index) => {
         const mockProduct = mockProducts[index % mockProducts.length];
@@ -139,14 +139,14 @@ const Favorites = () => {
     return (
       <div className="favorites-container">
         <div className="favorites-header">
-          <h1>Mis Favoritos</h1>
+          <h1>Meus Favoritos</h1>
         </div>
         <div className="empty-favorites">
           <div className="empty-favorites-icon">❤️</div>
-          <h2>Inicia sesión para ver tus favoritos</h2>
-          <p>Necesitas estar conectado para acceder a tu lista de favoritos</p>
+          <h2>Faça login para ver seus favoritos</h2>
+          <p>Você precisa estar conectado para acessar sua lista de favoritos</p>
           <Link to="/login" className="login-link">
-            Iniciar Sesión
+            Entrar
           </Link>
         </div>
       </div>
@@ -157,11 +157,11 @@ const Favorites = () => {
     return (
       <div className="favorites-container">
         <div className="favorites-header">
-          <h1>Mis Favoritos</h1>
+          <h1>Meus Favoritos</h1>
         </div>
         <div className="loading-favorites">
           <div className="loading-spinner"></div>
-          <p>Cargando tus favoritos...</p>
+          <p>Carregando seus favoritos...</p>
         </div>
       </div>
     );
@@ -170,10 +170,10 @@ const Favorites = () => {
   return (
     <div className="favorites-container">
       <div className="favorites-header">
-        <h1>Mis Favoritos</h1>
+        <h1>Meus Favoritos</h1>
         <div className="favorites-info">
           <span className="favorites-count-text">
-            {displayProducts.length} {displayProducts.length === 1 ? 'producto' : 'productos'}
+            {displayProducts.length} {displayProducts.length === 1 ? 'produto' : 'produtos'}
           </span>
         </div>
       </div>
@@ -181,10 +181,10 @@ const Favorites = () => {
       {displayProducts.length === 0 ? (
         <div className="empty-favorites">
           <div className="empty-favorites-icon">💔</div>
-          <h2>Aún no tienes favoritos</h2>
-          <p>Explora nuestros productos y marca los que más te gusten como favoritos</p>
+          <h2>Você ainda não tem favoritos</h2>
+          <p>Explore nossos produtos e marque os que você mais gostar como favoritos</p>
           <Link to="/" className="browse-products-link">
-            Explorar Productos
+            Explorar Produtos
           </Link>
         </div>
       ) : (
@@ -217,13 +217,12 @@ const Favorites = () => {
           <button 
             className="clear-favorites-btn"
             onClick={() => {
-              if (window.confirm('¿Estás seguro de que quieres limpiar todos tus favoritos?')) {
-                // Aquí podrías implementar una función para limpiar todos los favoritos
-                showInfo('Funcionalidad de limpiar favoritos próximamente');
+              if (window.confirm('Tem certeza de que deseja limpar todos os seus favoritos?')) {
+                showInfo('Funcionalidade de limpar favoritos em breve');
               }
             }}
           >
-            Limpiar Favoritos
+            Limpar Favoritos
           </button>
         </div>
       )}

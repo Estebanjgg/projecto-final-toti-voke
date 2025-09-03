@@ -39,6 +39,15 @@ body {
   width: 100%;
 }
 
+/* Específicamente evitar espacios entre VideoSection y Footer */
+.video-section {
+  margin-bottom: 0 !important;
+}
+
+.footer {
+  margin-top: 0 !important;
+}
+
 a {
   color: #4A90E2;
   text-decoration: none;
