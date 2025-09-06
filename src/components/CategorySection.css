@@ -103,6 +103,7 @@
   color: #333;
   margin-top: 5px;
   background: transparent !important;
+  font-family: 'Pixelify Sans', sans-serif;
 }
 
 /* Responsive */
@@ -128,6 +129,7 @@
   
   .category-name {
     font-size: 12px;
+    font-family: 'Pixelify Sans', sans-serif;
   }
 }
 
