@@ -33,6 +33,11 @@ class ChatBotService {
   // Procesar mensaje del usuario
   async processMessage(message, user = null) {
     try {
+      // Validar que message sea una string
+      if (typeof message !== 'string' || !message.trim()) {
+        throw new Error('Invalid message format');
+      }
+
       // Crear conversación si no existe
       if (!this.conversationId) {
         await this.createConversation();
@@ -47,13 +52,21 @@ class ChatBotService {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
+      // Crear payload limpio sin referencias circulares
+      const payload = {
+        message: message.trim(),
+        conversationId: this.conversationId
+      };
+
+      // Agregar userId solo si existe y es válido
+      if (user && user.id) {
+        payload.userId = user.id;
+      }
+
       const response = await fetch(`${API_BASE_URL}/chatbot/message`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          message,
-          conversationId: this.conversationId
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useAlert } from './AlertContext';
+import { API_BASE_URL } from '../config/api-config.js';
 
 const FavoritesContext = createContext();
 
@@ -19,7 +20,7 @@ export const FavoritesProvider = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
   const { showSuccess, showError } = useAlert();
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com';
+  const API_URL = API_BASE_URL.replace('/api', '');
 
   // Función para obtener headers de autenticación
   const getAuthHeaders = () => {

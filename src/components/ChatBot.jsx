@@ -71,8 +71,9 @@ const ChatBot = () => {
   };
 
   const handleSendMessage = async (quickMessage = null) => {
-    const messageText = quickMessage || inputMessage.trim();
-    if (!messageText) return;
+    // Asegurar que quickMessage sea una string válida
+    const messageText = (typeof quickMessage === 'string' ? quickMessage : inputMessage.trim());
+    if (!messageText || typeof messageText !== 'string') return;
 
     const userMessage = {
       id: Date.now(),
@@ -112,20 +113,21 @@ const ChatBot = () => {
     try {
       const response = await chatBotService.processMessage(
         messageText,
-        user?.id,
-        null // conversationId - se puede implementar después
+        user
       );
       
       setTimeout(() => {
         const botMessage = {
           id: Date.now() + 1,
-          text: response.response,
+          text: response.text || response.response,
           sender: 'bot',
           timestamp: new Date(),
-          intent: response.intent
+          intent: response.intent,
+          quickReplies: response.quickReplies
         };
         setMessages(prev => [...prev, botMessage]);
         setIsTyping(false);
+        setShowQuickMenu(false); // Ocultar menú rápido cuando hay quickReplies
       }, 1000);
     } catch (error) {
       console.error('Error processing message:', error);
@@ -142,7 +144,10 @@ const ChatBot = () => {
     }
   };
 
-
+  // Función para manejar clicks en quickReplies
+  const handleQuickReply = (reply) => {
+    sendMessage(reply, true);
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -217,15 +222,31 @@ const ChatBot = () => {
           </div>
 
           <div className="chatbot-messages">
-            {messages.map((message) => (
-              <div 
-                key={message.id} 
-                className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
-              >
-                <div className="message-content">
-                  <p>{message.text}</p>
-                  <span className="message-time">{formatTime(message.timestamp)}</span>
+            {messages.map((message, index) => (
+              <div key={message.id}>
+                <div className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}>
+                  <div className="message-content">
+                    <p>{typeof message.text === 'string' ? message.text : 'Erro ao exibir mensagem'}</p>
+                    <span className="message-time">{formatTime(message.timestamp)}</span>
+                  </div>
                 </div>
+                
+                {/* Renderizar quickReplies se existirem e for a última mensagem do bot */}
+                {message.sender === 'bot' && message.quickReplies && index === messages.length - 1 && (
+                  <div className="quick-replies">
+                    <div className="quick-replies-container">
+                      {message.quickReplies.map((reply, replyIndex) => (
+                        <button
+                          key={replyIndex}
+                          className="quick-reply-button"
+                          onClick={() => handleQuickReply(reply)}
+                        >
+                          {reply}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             

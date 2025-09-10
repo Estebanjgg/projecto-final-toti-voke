@@ -2,20 +2,43 @@
 
 // URLs disponibles
 const API_URLS = {
-  // API de producción en Heroku (siempre disponible)
+  // API de producción en Heroku
   production: 'https://tu-app-voke-backend-7da6ed58e5fc.herokuapp.com/api',
   
-  // API de desarrollo local (requiere backend corriendo)
+  // API de desarrollo local
   development: 'http://localhost:3001/api'
 };
 
-// Configuración por defecto: usar producción en Heroku
-export const API_BASE_URL = API_URLS.production;
+// Función para detectar el ambiente automáticamente
+const getEnvironment = () => {
+  // En Vercel, NODE_ENV es 'production' y hay variables específicas
+  if (import.meta.env.PROD || import.meta.env.VITE_VERCEL_ENV) {
+    return 'production';
+  }
+  
+  // En desarrollo local
+  if (import.meta.env.DEV || window.location.hostname === 'localhost') {
+    return 'development';
+  }
+  
+  // Por defecto, usar producción como fallback
+  return 'production';
+};
 
-// Para desarrolladores que quieran usar backend local:
-// 1. Descomenta la línea siguiente
-// 2. Comenta la línea anterior
-// export const API_BASE_URL = API_URLS.development;
+// Configuración automática basada en el ambiente
+const currentEnvironment = getEnvironment();
+export const API_BASE_URL = import.meta.env.VITE_API_URL || API_URLS[currentEnvironment];
+
+// Log para debugging (solo en desarrollo)
+if (import.meta.env.DEV) {
+  console.log('🔧 Configuración API:', {
+    environment: currentEnvironment,
+    apiUrl: API_BASE_URL,
+    hostname: window.location.hostname,
+    isDev: import.meta.env.DEV,
+    isProd: import.meta.env.PROD
+  });
+}
 
 // Configuración adicional
 export const API_CONFIG = {

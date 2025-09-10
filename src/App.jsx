@@ -27,8 +27,10 @@ import OrderDetail from './components/orders/OrderDetail';
 import AdminPanel from './components/admin/AdminPanel';
 import NotFound from './components/NotFound';
 import ChatBot from './components/ChatBot';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useAlert } from './contexts/AlertContext';
 import './App.css';
+import './components/ErrorBoundary.css';
 
 // Componente Layout que incluye Header y Footer
 const Layout = ({ children }) => {
@@ -160,7 +162,9 @@ function App() {
                 } />
               </Routes>
               <GlobalAlerts />
-              <ChatBot />
+              <ErrorBoundary>
+                <ChatBot />
+              </ErrorBoundary>
             </Router>
           </CartProvider>
         </FavoritesProvider>
